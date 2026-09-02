@@ -1,3 +1,0 @@
-auditoriageneral:
-    path:     /
-    defaults: { _controller: "ADMINAdminBundle:AuditoriaGeneral:index" }

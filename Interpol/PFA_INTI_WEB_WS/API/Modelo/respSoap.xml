@@ -1,0 +1,12 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://ws.inti.dnm/">
+   <SOAP-ENV:Body>
+      <ns0:ConsultaInterpolPersonasResponse xmlns:ns0="http://ws.inti.dnm/">
+         <return><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PFA>
+   <COD_RTA>1</COD_RTA>
+   <COLOR>VERDE</COLOR>
+   <COD_DETALLE_RTA>0</COD_DETALLE_RTA>
+</PFA>]]></return>
+      </ns0:ConsultaInterpolPersonasResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

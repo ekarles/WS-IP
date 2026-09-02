@@ -1,0 +1,13 @@
+<configuration xmlns="http://logging.apache.org/log4php/">
+    <appender name="default" class="LoggerAppenderDailyFileGZ">
+        <layout class="LoggerLayoutPattern">
+            <param name="conversionPattern" value="%M %date{d.m.Y H:i:s,u} %logger %-5level %msg%n" />
+        </layout>                
+        <param name="file" value="/App_logs/DNM/DNM_WEB_WS-%s.log" />
+        <param name="datePattern" value="Y-m-d" />
+    </appender>
+    <root>
+        <level value="info" />        
+        <appender_ref ref="default" />
+    </root>
+</configuration>

@@ -1,9 +1,0 @@
-lotesprocesados:
-    path:     /
-    defaults: { _controller: "GESTIONGestionBundle:Lote:indexProcesados" }
-lotesprocesados_show:
-    path:     /lotesprocesadosshow/{page}
-    defaults: { _controller: "GESTIONGestionBundle:Lote:showProcesados",page:1 }
-lotesprocesados_descargar:
-    path:     /lotesprocesadosdescargar/
-    defaults: { _controller: "GESTIONGestionBundle:Lote:descargar" }

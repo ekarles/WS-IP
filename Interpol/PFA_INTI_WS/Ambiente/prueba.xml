@@ -1,0 +1,53 @@
+<lote>
+	<consulta>
+		<apellido>GROSKY</apellido>
+		<otrosApellidos></otrosApellidos>
+		<nombre>RICARDO</nombre>
+		<otrosNombres>HÉCTOR</otrosNombres>
+		<fechaNacimiento>1960-08-05</fechaNacimiento>
+		<sexo>M</sexo>
+		<tipoDoc>1</tipoDoc>
+		<numeroDoc>AAA847356</numeroDoc>
+		<idNacionalidad>ARG</idNacionalidad>
+		<idPaisEmisor>ARG</idPaisEmisor>
+		<tipoDenuncia>RENA</tipoDenuncia>
+		<accion>A</accion>
+		<fechaRegistro>03/02/2020 10:52:55</fechaRegistro>
+		<idPersona>181278584</idPersona>
+		<motivo>DENUNCIADO (POR ROBO O EXTRAVIO)</motivo>
+	</consulta>
+	<consulta>
+		<apellido>COCCHI</apellido>
+		<otrosApellidos>IURETIC</otrosApellidos>
+		<nombre>EXEQUIEL</nombre>
+		<otrosNombres>CHRISTIAN</otrosNombres>
+		<fechaNacimiento>1990-03-31</fechaNacimiento>
+		<sexo>M</sexo>
+		<tipoDoc>1</tipoDoc>
+		<numeroDoc>AAE951909</numeroDoc>
+		<idNacionalidad>ARG</idNacionalidad>
+		<idPaisEmisor>ARG</idPaisEmisor>
+		<tipoDenuncia>RENA</tipoDenuncia>
+		<accion>A</accion>
+		<fechaRegistro>03/02/2020 10:53:00</fechaRegistro>
+		<idPersona>502464155</idPersona>
+		<motivo>DENUNCIADO (POR ROBO O EXTRAVIO)</motivo>
+	</consulta>
+	<consulta>
+		<apellido>LOPEZ</apellido>
+		<otrosApellidos>VERON</otrosApellidos>
+		<nombre>CARLOS</nombre>
+		<otrosNombres>RUBEN</otrosNombres>
+		<fechaNacimiento>1956-06-03</fechaNacimiento>
+		<sexo>M</sexo>
+		<tipoDoc>1</tipoDoc>
+		<numeroDoc>AAB664175</numeroDoc>
+		<idNacionalidad>ARG</idNacionalidad>
+		<idPaisEmisor>ARG</idPaisEmisor>
+		<tipoDenuncia>RENA</tipoDenuncia>
+		<accion>A</accion>
+		<fechaRegistro>03/02/2020 10:53:55</fechaRegistro>
+		<idPersona>247448478</idPersona>
+		<motivo>DENUNCIADO (POR ROBO O EXTRAVIO)</motivo>
+	</consulta>
+</lote>

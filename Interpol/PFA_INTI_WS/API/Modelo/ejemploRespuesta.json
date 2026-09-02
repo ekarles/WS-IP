@@ -1,0 +1,85 @@
+{
+	"status": "success",
+	"message": "Consulta ejecutada correctamente",
+	"respuesta": {
+		"header": {
+			"schema_version": "x.x.1.0.0.0",
+			"generator": "IPSG\/nominals.asmx\/search",
+			"generator_version": "1.1.7",
+			"language_id": "120"
+		},
+		"datas": {
+			"search": {
+				"origin": {
+					"nominal": [
+						{
+							"query_score": {
+								"value": "40",
+								"reason": "PEREZ,JUAN CARLOS,1985-01-01"
+							},
+							"name": "PEREZ",
+							"forename": "JUAN CARLOS",
+							"date_of_birth": "19850101",
+							"entityId": "VLBSICDDB101-290696977:2015\/5222"
+						},
+						{
+							"query_score": {
+								"value": "110",
+								"reason": "PEREZ,PATRICIO,1990-12-12"
+							},
+							"name": "PEREZ",
+							"forename": "PATRICIO",
+							"date_of_birth": "19901212",
+							"entityId": "VLBSICDDB101-290696977:2018\/10031"
+						},
+						{
+							"query_score": {
+								"value": "160",
+								"reason": "Alias: PEREZ"
+							},
+							"name": "PEREZ PEREZ",
+							"forename": "RICARDO ANTONIO",
+							"date_of_birth": "19830711",
+							"entityId": "VLBSICDDB101-290696977:2015\/4381"
+						},
+						{
+							"query_score": {
+								"value": "260",
+								"reason": "FLORES PEREZ,CARLOS ALFREDO,1991-08-30"
+							},
+							"name": "FLORES PEREZ",
+							"forename": "CARLOS ALFREDO",
+							"date_of_birth": "19910830",
+							"entityId": "VLBSICDDB101-290696977:2015\/4379"
+						},
+						{
+							"query_score": {
+								"value": "260",
+								"reason": "GARCIA PEREZ,OSCAR,1985"
+							},
+							"name": "GARCIA PEREZ",
+							"forename": "OSCAR",
+							"date_of_birth": "19859999",
+							"entityId": "VLBSICDDB101-290696977:2015\/5161"
+						},
+						{
+							"query_score": {
+								"value": "260",
+								"reason": "PEREZ PEREZ,PABLO ALOZO,1983-07-11"
+							},
+							"name": "PEREZ PEREZ",
+							"forename": "PABLO ALOZO",
+							"date_of_birth": "19830711",
+							"entityId": "VLBSICDDB101-290696977:2018\/9095"
+						}
+					],
+					"status_id": "NO_ERROR",
+					"name": "IPSG"
+				},
+				"query": "\/NAME=PEREZ\/DOB=19850101\/"
+			}
+		}
+	},
+	"fecha": "25-01-2019 13:22:29",
+	"hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

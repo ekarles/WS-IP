@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xsd:schema xmlns:ns0="http://ws.inti.dnm/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://ws.inti.dnm/">
+	<xsd:complexType name="ConsultaInterpolPersonas">
+		<xsd:sequence>
+			<xsd:element name="nombre" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="apellido" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="fechaNacimiento" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="tipoDoc" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="nroDoc" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="pais" type="xsd:string" minOccurs="0" />
+			<xsd:element name="genero" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="transito" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="fechaConsulta" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="tipoConsulta" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="usuarioGenerico" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="passGenerico" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="usuarioNombre" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="usuarioApellido" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="usuarioIp" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="usuarioDepen" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="usuarioDepenId" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="usuarioTipoDoc" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="usuarioDoc" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="usuarioJerarquia" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="usuario" type="xsd:string"
+				minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType
+		name="ConsultaInterpolPersonasResponse">
+		<xsd:sequence>
+			<xsd:element name="return" type="xsd:string"
+				minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LoteDocumentos">
+		<xsd:sequence>
+			<xsd:element name="lote" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LoteDocumentosResponse">
+		<xsd:sequence>
+			<xsd:element name="return" type="xsd:string"
+				minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LoteInterpolPersonas">
+		<xsd:sequence>
+			<xsd:element name="lote" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="LoteInterpolPersonasResponse">
+		<xsd:sequence>
+			<xsd:element name="return" type="xsd:string"
+				minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="ConsultaInterpolPersonas"
+		type="ns0:ConsultaInterpolPersonas" />
+	<xsd:element name="ConsultaInterpolPersonasResponse"
+		type="ns0:ConsultaInterpolPersonasResponse" />
+	<xsd:element name="LoteDocumentos"
+		type="ns0:LoteDocumentos" />
+	<xsd:element name="LoteDocumentosResponse"
+		type="ns0:LoteDocumentosResponse" />
+	<xsd:element name="LoteInterpolPersonas"
+		type="ns0:LoteInterpolPersonas" />
+	<xsd:element name="LoteInterpolPersonasResponse"
+		type="ns0:LoteInterpolPersonasResponse" />		
+</xsd:schema>

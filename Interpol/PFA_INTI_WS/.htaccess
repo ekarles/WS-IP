@@ -1,0 +1,7 @@
+RewriteEngine on
+
+RewriteRule ^API/?DNM_INTI_WSService\.wsdl$ - [L]
+RewriteRule ^API/?DNM_INTI_WSService\.xsd$ - [L]
+
+# otherwise forward it to index.php
+RewriteRule (.*)  API/index.php [L]

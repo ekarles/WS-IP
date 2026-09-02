@@ -1,3 +1,0 @@
-en_construccion:
-    path:     /enconstruccion
-    defaults: { _controller: "ADMINAdminBundle:Default:enConstruccion" }    

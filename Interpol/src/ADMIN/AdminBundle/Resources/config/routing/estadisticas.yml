@@ -1,3 +1,0 @@
-estadisticas:
-    path:     /
-    defaults: { _controller: "ADMINAdminBundle:Estadisticas:index" }

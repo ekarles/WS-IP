@@ -1,9 +1,0 @@
-wisdm_cargaMasiva:
-    path:     /cargaMasiva
-    defaults: { _controller: "ADMINAdminBundle:LoteDocumento:indexCargaMasiva" }
-wisdm_showCargaMasiva:
-    path:     /{page}/cargaMasiva
-    defaults: { _controller: "ADMINAdminBundle:LoteDocumento:showCargaMasiva",page:1 }
-wisdm_cargaMasivaProcesar:
-    path:     /cargaMasivaProcesar
-    defaults: { _controller: "ADMINAdminBundle:LoteDocumento:cargaMasivaProcesar" }    

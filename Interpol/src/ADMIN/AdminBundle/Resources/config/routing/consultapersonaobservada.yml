@@ -1,8 +1,0 @@
-gestion_consultapersonaobservada_estado:
-    path:     /{id}/estado
-    defaults: { _controller: "ADMINAdminBundle:ConsultaPersonaObservada:estado" }
-    requirements: { _method: post|get }
-gestion_consultapersonaobservada_interpollog:
-    path:     /{id}/interpolLog
-    defaults: { _controller: "ADMINAdminBundle:ConsultaPersonaObservada:interpolLog" }
-    requirements: { _method: post|get }

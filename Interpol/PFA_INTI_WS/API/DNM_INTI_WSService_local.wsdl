@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:wsp="http://www.w3.org/ns/ws-policy"
+	xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy"
+	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://ws.inti.dnm/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://schemas.xmlsoap.org/wsdl/"
+	targetNamespace="http://ws.inti.dnm/" name="DNM_INTI_WSService">
+	<types>
+		<xsd:schema>
+			<xsd:import namespace="http://ws.inti.dnm/" schemaLocation="http://10.1.103.42/PFA_INTI_WS/API/DNM_INTI_WSService.xsd" />	
+		</xsd:schema>	
+	</types>
+	<message name="ConsultaInterpolPersonas">
+		<part name="parameters" element="tns:ConsultaInterpolPersonas" />
+	</message>
+	<message name="ConsultaInterpolPersonasResponse">
+		<part name="parameters"
+			element="tns:ConsultaInterpolPersonasResponse" />
+	</message>
+	<message name="LoteInterpolPersonas">
+		<part name="parameters" element="tns:LoteInterpolPersonas" />
+	</message>
+	<message name="LoteInterpolPersonasResponse">
+		<part name="parameters"
+			element="tns:LoteInterpolPersonasResponse" />
+	</message>
+	<message name="LoteDocumentos">
+		<part name="parameters" element="tns:LoteDocumentos" />
+	</message>
+	<message name="LoteDocumentosResponse">
+		<part name="parameters" element="tns:LoteDocumentosResponse" />
+	</message>
+	<portType name="DNM_INTI_WS">
+		<operation name="ConsultaInterpolPersonas">
+			<input
+				wsam:Action="http://ws.inti.dnm/DNM_INTI_WS/ConsultaInterpolPersonasRequest"
+				message="tns:ConsultaInterpolPersonas" />
+			<output
+				wsam:Action="http://ws.inti.dnm/DNM_INTI_WS/ConsultaInterpolPersonasResponse"
+				message="tns:ConsultaInterpolPersonasResponse" />
+		</operation>
+		<operation name="LoteInterpolPersonas">
+			<input
+				wsam:Action="http://ws.inti.dnm/DNM_INTI_WS/LoteInterpolPersonasRequest"
+				message="tns:LoteInterpolPersonas" />
+			<output
+				wsam:Action="http://ws.inti.dnm/DNM_INTI_WS/LoteInterpolPersonasResponse"
+				message="tns:LoteInterpolPersonasResponse" />
+		</operation>
+		<operation name="LoteDocumentos">
+			<input
+				wsam:Action="http://ws.inti.dnm/DNM_INTI_WS/LoteDocumentosRequest"
+				message="tns:LoteDocumentos" />
+			<output
+				wsam:Action="http://ws.inti.dnm/DNM_INTI_WS/LoteDocumentosResponse"
+				message="tns:LoteDocumentosResponse" />
+		</operation>		
+	</portType>	<binding name="DNM_INTI_WSPortBinding"
+		type="tns:DNM_INTI_WS">
+		<soap:binding
+			transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+		<operation name="ConsultaInterpolPersonas">
+			<soap:operation soapAction="ConsultaInterpolPersonas" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="LoteInterpolPersonas">
+			<soap:operation soapAction="LoteInterpolPersonas" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="LoteDocumentos">
+			<soap:operation soapAction="LoteDocumentos" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>	
+	</binding>
+	<service name="DNM_INTI_WSService">
+		<port name="DNM_INTI_WSPort"
+			binding="tns:DNM_INTI_WSPortBinding">
+			<soap:address
+				location="http://10.1.103.42/DNM_INTI_WSService" />
+		</port>
+	</service>
+</definitions>

@@ -1,0 +1,9 @@
+RewriteEngine on
+
+RewriteRule ^DNM_INTI_WSService\.wsdl$ - [L]
+RewriteRule ^DNM_INTI_WSService\.xsd$ - [L]
+RewriteRule ^servidorSoap\.php$ - [L]
+
+
+RewriteRule (.*) index.php [L]
+

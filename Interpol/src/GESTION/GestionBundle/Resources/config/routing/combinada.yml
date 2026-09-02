@@ -1,7 +1,0 @@
-combinada:
-    path:     /
-    defaults: { _controller: "GESTIONGestionBundle:Combinada:index" }
-
-combinada_show:
-    path:     /personashow
-    defaults: { _controller: "GESTIONGestionBundle:Combinada:show" }

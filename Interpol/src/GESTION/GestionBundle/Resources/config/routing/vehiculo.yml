@@ -1,9 +1,0 @@
-vehiculo:
-    path:     /
-    defaults: { _controller: "GESTIONGestionBundle:Vehiculo:index" }
-vehiculo_show:
-    path:     /vehiculoshow
-    defaults: { _controller: "GESTIONGestionBundle:Vehiculo:show" }
-vehiculo_showdetails:
-    path:     /vehiculoshowdetails
-    defaults: { _controller: "GESTIONGestionBundle:Vehiculo:showdetails" }    

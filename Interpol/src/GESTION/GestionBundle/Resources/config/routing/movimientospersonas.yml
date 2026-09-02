@@ -1,9 +1,0 @@
-movimientospersonas:
-    path:     /
-    defaults: { _controller: "GESTIONGestionBundle:MovimientosPersonas:index" }
-movimientospersonas_show:
-    path:     /movimientospersonashow
-    defaults: { _controller: "GESTIONGestionBundle:MovimientosPersonas:show" }
-movimientospersonas_showdetails:
-    path:     /movimientospersonasshowdetails
-    defaults: { _controller: "GESTIONGestionBundle:MovimientosPersonas:showdetails" }    
