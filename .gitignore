@@ -4,8 +4,12 @@
 # 2. Permitir el archivo .gitignore propiamente (recomendado)
 !.gitignore
 
-
-# 3. Permitir carpetas específicas (agrega una barra diagonal '/' al final)
+# 3. Permitir carpetas específicas y TODO su contenido interno
 !PFA_INTI_WEB_WS/
+!PFA_INTI_WEB_WS/*
+
 !PFA_INTI_WS/
+!PFA_INTI_WS/*
+
 !Interpol/
+!Interpol/*
