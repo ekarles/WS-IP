@@ -1,0 +1,11 @@
+# 1. Ignorar absolutamente todo en el proyecto
+*
+
+# 2. Permitir el archivo .gitignore propiamente (recomendado)
+!.gitignore
+
+
+# 3. Permitir carpetas específicas (agrega una barra diagonal '/' al final)
+!PFA_INTI_WEB_WS/
+!PFA_INTI_WS/
+!Interpol/
