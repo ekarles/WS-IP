@@ -1,0 +1,539 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %} {% block body -%}
+<!-- Selectpicker -->
+<link rel="stylesheet" href="{{ asset('bundles/odometer-0.4.6/themes/odometer-theme-car.css') }}">
+<script src="{{ asset('bundles/odometer-0.4.6/odometer.min.js') }}"></script>
+<script src="{{ asset('bundles/chart-2.8.0/chart.js') }}"></script>
+<style>
+
+    #depenultimas24hs > .panel {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #depenultimas24hs > .panel .panel-body {
+        flex: 1 1 auto;
+        min-height: 350px;
+        overflow-y: auto;
+    }
+
+	.panel-danger > .panel-heading {
+		background-color: #a94442;
+		color: white;
+	}
+</style>
+
+	<div class="container" style="margin-top:10px;margin-bottom:10px;">	
+		<div class="form-inline col-md-12" style="background-color:lightgray;">
+			<span class="pull-left" style="margin-top:15px;font-size:16px;"><strong>Instituci&oacute;n:</strong></span>
+			<div class="col-md-8" style="margin-top:10px;margin-bottom:10px;">
+				<select class="form-control col-md-4">
+					<option value="0">TODAS LAS INSTITUCIONES</option>
+					{% for institucion in instituciones %}
+					<option value="{{institucion.id}}">{{institucion.nombre}}</option>
+					{% endfor %}
+				</select>
+			
+				<select class="form-control col-md-2" style="margin-left:6px;">
+					<option value="0">&Uacute;ltima hora</option>
+					<option value="1">&Uacute;ltimas 24 horas</option>
+					<option value="7">&Uacute;ltimos 7 d&iacute;as</option>
+					<option value="30">&Uacute;ltimos 30 d&iacute;as</option>
+					<option value="365">&Uacute;ltimos 365 d&iacute;as</option>
+				</select><br>
+			</div>
+	    </div>
+	</div>
+	<div class="container col-xs-12">
+		<div class="col-md-4">
+			<div id="consultasxdia">
+				<div class="panel panel-primary" style="box-shadow: 10px 10px 5px;">
+					<div class="panel-heading">
+						<b>CONSULTAS DEL D&Iacute;A</b>
+					</div>
+					<div class="panel-body text-center" style="min-height:143px;overflow-y: auto;">
+						<div class="odometer-subtitle"></div>					
+						<div class="odometer odometer-theme-car odometer-example" style="font-size:60px">123</div>
+					</div>
+				</div>
+			</div>
+			<div id="alarmasultimas24hs">
+				<div class="panel panel-primary" style="box-shadow: 10px 10px 5px;">
+					<div class="panel-heading">
+						<b>ALARMAS &Uacute;LTIMAS 24 HORAS</b>
+					</div>
+					<div class="panel-body" style="min-height:143px;overflow-y: auto;">
+						{% if ultimas24|length > 0%}
+							<div class="alerts-wrapper">
+								{% for alert in ultimas24 %}
+				                <div class="alert-container" style="color: {{alert.textcolor}}; background-color: {{alert.backcolor}};">
+				                    <div class="alert-cantidad-container" {{ alert.tipo == 'DIFUSION' ? 'style="border-color: #000000 !important;"' : '' }}>
+				                        <div class="alert-cantidad">{{alert.cant}}</div>
+				                        <div class="alert-tipo">{{alert.tipo}}</div>
+				                    </div>
+				                </div>
+				                {% endfor %}
+				            </div>
+						{% else %}
+							<span>No se encontraron alarmas</span>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="depenultimas24hs" class="col-xs-12 col-sm-12 col-md-8">
+			<div class="panel panel-primary" style="box-shadow: 10px 10px 5px;">
+				<div class="panel-heading">
+					<b>DEPENDENCIAS &Uacute;LTIMAS 24 HORAS</b>
+				</div>
+				<div class="panel-body" style="height: 350px;overflow-y: auto;">
+					{% if consultasDepen|length > 0 %}
+						<table class="table table-striped" style="font-size: 24px;letter-spacing:-1px;">
+			                <thead>
+			                    <tr>
+			                        <th>ID</th>
+			                        <th>Dependencia</th>
+			                        <th>Consultas</th>
+			                    </tr>
+			                </thead>
+			                <tbody>
+			                    {% for depen in consultasDepen %}
+								<tr class="item-tabla {{ depen.EXISTE == 0 ? 'problema' : '' }}">
+			                        <td>
+			                            {{depen.DEPENID}}&nbsp;
+			                        </td>
+			                        <td>
+			                            {{depen.DEPEN}}
+			                        </td>
+			                        <td>
+			                            {{depen.CONSULTAS}}
+			                        </td>
+			                    </tr>
+			                    {% endfor %}
+							</tbody>
+			            </table>
+					{% else %}
+					<span>No se encontraron registros</span>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>	
+	<div class="container col-xs-12">
+		<div id="consultasminuto" class="col-xs-12 col-sm-4">
+			<div class="panel panel-default" style="border-color: #000000;box-shadow: 10px 10px 5px;"">
+				<div class="panel-heading" style="border-color: #000000;">
+					<b>CONSULTAS POR MINUTO</b>
+				</div>
+				<div class="panel-body text-center" style="min-height: 350px;height:auto;">
+					<div style="height: 280px;">
+						<canvas id="chartconsultasxminuto"></canvas>
+					</div>
+                    <div class="container-leyendas-consultas">
+                        <span class="leyenda"><span class="ultimosErrores sqr-leyenda"></span>Errores: <span id="txtErrores">0</span></span>
+                        <span class="leyenda-right"><span class="ultimasConsultas sqr-leyenda"></span>Consultas:<span id="txtConsultas">0</span></span>
+                    </div>
+                
+				</div>
+			</div>
+		</div>
+		
+		<div id="ultimas24hsprom" class="col-xs-12 col-sm-4">
+			<div class="panel panel-default" style="border-color: #000000;box-shadow: 10px 10px 5px;"">
+				<div class="panel-heading" style="border-color: #000000;">
+					<b>Consultas &uacute;ltimas 24hs y promedio semanal</b>
+				</div>
+				<div class="panel-body" style="min-height: 350px;">
+					<div style="height: 280px;">
+						<canvas id="chartconsultas24"></canvas>
+					</div>
+                    <div class="container-leyendas-consultas">
+                        <span class="leyenda"><span class="ultimasConsultas sqr-leyenda"></span>Últimas 24hs: <span id="txtUltimas24">0</span></span>
+                        <span class="leyenda-right"><span class="promedioConsultas sqr-leyenda"></span>Promedio: <span id="txtPromedio">0</span></span>
+                    </div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="tiemposresp" class="col-xs-12 col-sm-4">
+			<div class="panel panel-default" style="border-color: #000000;box-shadow: 10px 10px 5px;">
+				<div class="panel-heading" style="border-color: #000000;">
+					<b>TIEMPOS DE RESPUESTA (segundos)</b>
+				</div>
+				<div class="panel-body" style="height: 350px;overflow-y: auto;">
+					<div style="height: 280px;">
+						<canvas id="charttiempos"></canvas>
+					</div>
+					<div class="container-leyendas-consultas">
+						<span class="leyenda"><span class="sqr-leyenda" style="background-color:#F00;"></span>Máx.:<span id="txtMaximo">0</span></span>
+						<span class="leyenda-right"><span class="sqr-leyenda" style="background-color:#00F;"></span>Prom.:<span id="txtPromedioTiempo">0</span><span>&nbsp;&nbsp;</span></span>
+						<span class="leyenda"><span class="sqr-leyenda" style="background-color:#0F0;"></span>Mín.:<span id="txtMinimo">0</span></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+<script>
+	var chartConsultasxminuto;
+	var chartConsultas24;
+	var chartTiempos;
+	var indexConsultasxminuto = 1;
+	var indexTiempos = 1;
+	var total24 = 0;
+	var dataConsultasxminuto = {
+	            labels: [''],
+	            datasets: [{
+	                backgroundColor: '#F00',
+	                borderColor: '#F00',
+	                data: [0],
+	                fill:false,
+	                borderWidth: 4
+	            },{
+	                backgroundColor: '#00F',
+	                borderColor: '#00F',
+	                data: [0],
+	                fill:false,
+	                borderWidth: 4
+	            }]
+	        };
+
+	var dataTiempos = {
+		labels: [''],
+		datasets: [{
+			label: 'Máximo',
+			backgroundColor: '#F00',
+			borderColor: '#F00',
+			data: [0],
+			fill: false,
+			borderWidth: 4
+		},{
+			label: 'Promedio',
+			backgroundColor: '#00F',
+			borderColor: '#00F',
+			data: [0],
+			fill: false,
+			borderWidth: 4
+		},{
+			label: 'Mínimo',
+			backgroundColor: '#0F0',
+			borderColor: '#0F0',
+			data: [0],
+			fill: false,
+			borderWidth: 4
+		}]
+	};
+
+$(document).ready(function () {
+		// Ajusta la altura del panel de dependencias según la altura de la columna de alarmas
+		function ajustarAlturaDependencias() {
+			// Fila superior (consultas / alarmas vs dependencias)
+			var $filaSuperior = $('.container.col-xs-12').first();
+			var $columnaIzquierda = $filaSuperior.find('.col-md-4').first();
+			var $panelDerecha = $('#depenultimas24hs .panel');
+			var $panelBodyDerecha = $('#depenultimas24hs .panel-body');
+			var $panelHeadingDerecha = $('#depenultimas24hs .panel-heading');
+
+			if (!$columnaIzquierda.length || !$panelDerecha.length || !$panelBodyDerecha.length) {
+				return;
+			}
+
+			var alturaColumnaIzquierda = $columnaIzquierda.outerHeight(true)-21;
+			var alturaHeadingDerecha = $panelHeadingDerecha.outerHeight(true) || 0;
+
+			// Ajustamos alto del panel completo y del body para que ocupe todo
+			$panelDerecha.height(alturaColumnaIzquierda);
+			var nuevaAlturaBody = alturaColumnaIzquierda - alturaHeadingDerecha;
+			$panelBodyDerecha.height(nuevaAlturaBody);
+		}
+
+		// Ajuste inicial
+		ajustarAlturaDependencias();
+
+		// Ajuste cuando cambia el tamaño de la ventana
+		$(window).on('resize', function () {
+			ajustarAlturaDependencias();
+		});
+
+		$(document).ajaxStart(function () {
+        	$("#alertCarga").fadeIn("slow");
+		});
+
+		$(document).ajaxStop(function () {
+			$("#alertCarga").fadeOut();
+		});
+
+		// Observa cambios en el panel de alarmas para reajustar dinámicamente
+		if (window.ResizeObserver) {
+			var panelAlarmas = document.querySelector('#alarmasultimas24hs .panel');
+			if (panelAlarmas) {
+				var ro = new ResizeObserver(function () {
+					ajustarAlturaDependencias();
+				});
+				ro.observe(panelAlarmas);
+			}
+		} else {
+			// Fallback simple en navegadores sin ResizeObserver
+			setInterval(ajustarAlturaDependencias, 1000);
+		}
+
+		$('#cerrarMenu').click();
+		
+	    var odometerValue = {{consultas}};
+	    var odometer = new Odometer({ el: $('.odometer-example')[0], theme: 'car', value: odometerValue, format: '(.ddd)' });
+	    odometer.render()
+		
+		$.ajax("{{path('panel_ultimas_consultas_list')}}", {
+	        cache: false,
+	        success: function(data){
+	          if (data){
+	        	  console.log(data);
+	        	  let resp = jQuery.parseJSON(data);
+				  odometer.update(odometer.value+parseInt(resp.consultas));
+	        	  if (resp.tiempos) {
+					  actualizarTiemposChart(resp.tiempos);
+				  }
+	          }
+	        }
+	    });
+	      
+	    const config = {
+	    		 type: 'line',
+	    		 data: dataConsultasxminuto,
+	    		 options: {
+	    			responsive: true,
+	    		    maintainAspectRatio: false,
+	    			elements: {
+	    				line: {
+	    		            tension: 0.2
+	    		        },
+	                    point:{
+	                        radius: 0
+	                    }
+	                },
+    			    scales: {
+    			        yAxes: [{
+    			            ticks: {
+    			                beginAtZero:true
+    			            }
+    			        }]
+    			    },  
+	    			legend: { display: false }
+	    		  },
+	    		};
+	    
+	    
+	    var ctx = document.getElementById('chartconsultasxminuto').getContext('2d');
+	    chartConsultasxminuto = new Chart(ctx, config); 
+
+		// Datos para gráfico de barras: últimas 24hs vs promedio semanal
+		var consultas24CP = {{ consultas24CP|raw }};
+
+		
+		if (consultas24CP.consultas24 !== undefined && consultas24CP.consultas24 !== null) {
+			// puede venir como número directo o dentro de un array
+			if (Array.isArray(consultas24CP.consultas24)) {
+				if (consultas24CP.consultas24.length > 0) {
+					var v = consultas24CP.consultas24[0];
+					if (typeof v === 'object') {
+						var key = Object.keys(v)[0];
+						total24 = parseInt(v[key] || 0, 10);
+					} else {
+						total24 = parseInt(v || 0, 10);
+					}
+				}
+			} else {
+				total24 = parseInt(consultas24CP.consultas24 || 0, 10);
+			}
+		}
+
+		var promedio = 0;
+		if (consultas24CP.cp && consultas24CP.cp.length) {
+			var suma = 0;
+			for (var i = 0; i < consultas24CP.cp.length; i++) {
+				var item = consultas24CP.cp[i];
+				var valor = 0;
+				if (typeof item === 'object') {
+					valor = parseInt(item.CONSULTAS || item.consultas || 0, 10);
+				}
+				suma += isNaN(valor) ? 0 : valor;
+			}
+			if (consultas24CP.cp.length > 0) {
+				promedio = Math.round(suma / consultas24CP.cp.length);
+			}
+		}
+
+		// Actualizar leyendas numéricas
+		$('#txtUltimas24').html(total24);
+		$('#txtPromedio').html(promedio);
+
+		var dataConsultas24 = {
+			labels: ['Últimas 24hs', 'Promedio'],
+			datasets: [{
+				backgroundColor: ['#00F', '#a3d6ff'],
+				borderColor: ['#000', '#000'],
+				borderWidth: 1,
+				data: [total24, promedio]
+			}]
+		};
+
+		var ctx24 = document.getElementById('chartconsultas24').getContext('2d');
+		chartConsultas24 = new Chart(ctx24, {
+			type: 'bar',
+			data: dataConsultas24,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				legend: { display: false },
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true,
+							precision: 0
+						}
+					}]
+				},
+				tooltips: {
+					callbacks: {
+						label: function(tooltipItem, data) {
+							return data.labels[tooltipItem.index] + ': ' + tooltipItem.yLabel;
+						}
+					}
+				}
+			}
+		});
+
+
+		// Refresca tiempos de respuesta periódicamente desde el backend
+		setInterval(function(){
+			$.ajax("{{path('panel_ultimas_consultas_list')}}", {
+				cache: false,
+				success: function(data){
+					if (data){
+						let resp = jQuery.parseJSON(data);
+						odometer.update(odometer.value+parseInt(resp.consultas));
+						
+						if (resp.tiempos) {
+							actualizarTiemposChart(resp.tiempos);
+						}
+					}
+				}
+			});
+		}, 5000);
+
+	    setInterval(function(){
+	    	updateCharts();	
+	    }, 5000);
+	});
+	
+	
+	var tiemposInicializado = false;
+
+	function actualizarTiemposChart(tiempos){
+		if (!tiempos) {
+			return;
+		}
+
+		var max = parseFloat(tiempos.MAXIMO || tiempos.MAX || tiempos.maximo || 0);
+		var prom = parseFloat(tiempos.PROMEDIO || tiempos.promedio || 0);
+		var min = parseFloat(tiempos.MINIMO || tiempos.MIN || tiempos.minimo || 0);
+
+		if (isNaN(max)) max = 0;
+		if (isNaN(prom)) prom = 0;
+		if (isNaN(min)) min = 0;
+
+		// Actualizar leyendas
+		$('#txtMaximo').html(max);
+		$('#txtPromedioTiempo').html(prom);
+		$('#txtMinimo').html(min);
+
+		if (!tiemposInicializado) {
+			dataTiempos.labels = [''];
+			dataTiempos.datasets[0].data = [max];
+			dataTiempos.datasets[1].data = [prom];
+			dataTiempos.datasets[2].data = [min];
+
+			var ctxT = document.getElementById('charttiempos').getContext('2d');
+			chartTiempos = new Chart(ctxT, {
+				type: 'line',
+				data: dataTiempos,
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					elements: {
+						line: {
+							tension: 0.2
+						},
+						point: {
+							radius: 0
+						}
+					},
+					legend: { display: false },
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}]
+					}
+				}
+			});
+
+			tiemposInicializado = true;
+			indexTiempos = 1;
+		} else {
+			dataTiempos.labels.push('');
+			dataTiempos.datasets[0].data.push(max);
+			dataTiempos.datasets[1].data.push(prom);
+			dataTiempos.datasets[2].data.push(min);
+			indexTiempos++;
+
+			if (indexTiempos > 50) {
+				dataTiempos.labels.shift();
+				dataTiempos.datasets[0].data.shift();
+				dataTiempos.datasets[1].data.shift();
+				dataTiempos.datasets[2].data.shift();
+			}
+
+			if (chartTiempos) {
+				chartTiempos.update();
+			}
+		}
+	}
+
+	function updateCharts(){
+		let number = Math.floor(Math.random()*(350-50+1)+50);
+		let numError = Math.floor(Math.random()*(11));
+		
+		dataConsultasxminuto.labels.push('');
+		dataConsultasxminuto.datasets[0].data.push(numError);
+		$('#txtErrores').html(numError);
+		dataConsultasxminuto.datasets[1].data.push(number);
+		$('#txtConsultas').html(number);
+		indexConsultasxminuto++;
+		
+		if(indexConsultasxminuto>50){
+			dataConsultasxminuto.labels.shift();
+			dataConsultasxminuto.datasets[0].data.shift();
+			dataConsultasxminuto.datasets[1].data.shift();
+		}
+	
+		let panelConsultasxminuto = $('#consultasminuto').children('div');
+
+		if(number>total24){  // cambiar lógica en produccion para que calcule si las consultas del último minuto extrapoladas al día entero da mayor que el promedio diario semanal
+			if(panelConsultasxminuto.hasClass('panel-default')){
+				panelConsultasxminuto.removeClass('panel-default');
+			}
+			panelConsultasxminuto.addClass('panel-danger');
+		}else{
+			if(panelConsultasxminuto.hasClass('panel-danger')){
+				panelConsultasxminuto.removeClass('panel-danger');
+			}
+			panelConsultasxminuto.addClass('panel-default');
+		}
+
+		chartConsultasxminuto.update();
+	}
+
+</script>
+{% endblock %}

@@ -1,15 +1,19 @@
 # 1. Ignorar absolutamente todo en el proyecto
 *
-
-# 2. Permitir el archivo .gitignore propiamente (recomendado)
 !.gitignore
 
-# 3. Permitir carpetas específicas y TODO su contenido interno
-!PFA_INTI_WEB_WS/
-!PFA_INTI_WEB_WS/*
-
-!PFA_INTI_WS/
-!PFA_INTI_WS/*
-
+# 2. Permitir la carpeta raíz Interpol y su contenido inmediato
 !Interpol/
-!Interpol/*
+Interpol/*
+
+# 3. Permitir específicamente la carpeta src y TODO su contenido
+!Interpol/src/
+!Interpol/src/**
+
+# 4. Permitir específicamente PFA_INTI_WS y TODO su contenido
+!Interpol/PFA_INTI_WS/
+!Interpol/PFA_INTI_WS/**
+
+# 5. Permitir específicamente PFA_INTI_WEB_WS y TODO su contenido
+!Interpol/PFA_INTI_WEB_WS/
+!Interpol/PFA_INTI_WEB_WS/**

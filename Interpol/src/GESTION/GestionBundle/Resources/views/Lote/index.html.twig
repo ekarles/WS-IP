@@ -1,0 +1,253 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+{% block body -%}
+{% block javascripts %}
+    <script src="{{asset('bundles/pfa/language-encoding.min.js')}}"></script>
+{% endblock %}
+<form method="POST" action="{{ path('lote_alta') }}" enctype="multipart/form-data" id="frm">
+{% set bInvestigativo = "NO" %}
+{% for perfil  in usuario.perfilid %}
+    {% for permiso in perfil.permisoid %}
+        {% if permiso.id == '101' %}
+        	{% set bInvestigativo = "SI" %}
+        {% endif %}
+    {% endfor %}	
+{% endfor %}	
+
+		<div id="panelconsulta" class="col-xs-12 col-md-6" style="margin-bottom:2%;">
+		
+			<div class="panel panel-default">
+				<div class="panel-body" style="margin-left: 2%;">
+				
+					<div class="container" width="100%">
+			    		<div class="row">
+			    		<img width="300px" src="{{asset('bundles/pfa/img/ocnbuenosaires.png')}}" />
+				    	</div>
+						<div class="row">
+							<div>&nbsp;</div>
+						</div>
+						<div class="row form-inline">
+							<span style="color:#00457D; font-size:24px;">Interpol - Lotes</span>
+							<a class="btn btn-primary pull-right" data-toggle="tooltip" href="{{path('lotesprocesados')}}" title="Ver Lotes Procesados" data-placement="bottom">Ver Lotes Procesados</a>
+		    			</div>
+					</div>
+				</div>
+			</div>
+		
+			<div class="panel panel-default">    			
+				<div class="panel-body" style="margin-left: 2%;" id="dvEjemploArch">
+				</div>
+			</div>
+		
+			<div class="panel panel-default">
+				<div class="panel-body">
+		        	<div class="col-sm-12 col-md-12" >
+   						<div class="form-group">
+           	        		<label>Tipo consulta</label>
+           	                <select id="lstTipoCons" name="lstTipoCons" required="required" class="selectpicker">
+           	                    <option value="" selected>Seleccione el tipo de consulta</option>
+           	                    <option value="NOMINALS">PERSONAS</option>
+		            			<option value="SLTD">DOCUMENTOS</option>
+		            			<option value="SMV">VEHICULOS</option>
+           	                </select>
+           	            </div>
+       	        	</div>	        	
+		        	<div class="col-sm-12 col-md-12" >
+   						<div class="form-group">
+           	        		<label>Seleccione el archivo</label>
+           	                <input id="uploadFile" name="uploadFile" type="file" required="required" class="file-upload" accept="text/plain,.csv"/>
+           	            </div>
+       	        	</div>
+					<div class="col-sm-12 col-md-12" {{bInvestigativo != "SI"?'style="display:none;"':''}}>
+   						<div class="form-group">
+           	        		<label>Modo  consulta</label>
+           	                <select id="lstModoCons" name="lstModoCons" required="required" class="selectpicker">
+           	                    <option value="BC" >Control fronterizo</option>
+               	                {% if bInvestigativo == "SI" %}
+               	                    <option value="AD" selected>Investigación</option>
+               	                {% endif %}
+               	                 
+           	                </select>
+           	            </div>
+       	        	</div>
+            	</div>
+                <div class="col-xs-12" align="center">
+                	<div class="row col-sm-12 col-md-12">
+						<div>&nbsp;</div>
+						<div>&nbsp;</div>
+					</div>
+    				<div class="col-sm-6 col-md-6">
+    					<button class="btn btn-success col-xs-12" data-toggle="tooltip" id="consultar" title="Consultar" type="submit" data-placement="bottom">
+    						<div class="hidden-xs hidden-sm">Consultar</div>
+    						<div class="hidden-md hidden-lg">
+    							<i class="fa fa-search" aria-hidden="true"></i>
+    						</div>
+    					</button>
+    					<button id="sendForm" type="submit" class="hide"></button>
+    				</div>
+    				<div class="col-sm-6 col-md-6">
+    					<button class="btn btn-default col-xs-12" data-toggle="tooltip" title="Limpiar Par&aacute;metros de B&uacute;squeda" id="limpiar" type="button" data-placement="bottom">
+    						<div class="hidden-xs hidden-sm">Limpiar B&uacute;squeda</div>
+    						<div class="hidden-md hidden-lg">
+    							<i class="fa fa-undo" aria-hidden="true"></i>
+    						</div>
+    					</button>
+    				</div>
+    			</div>
+    		</div>
+			
+        </div>
+        
+        <input type="hidden" id="txtFormato">
+        
+        <iframe id="descarga" style="display:none;"></iframe>
+</form>
+
+<div class="modal fade" id="MensajeValidar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header modal-header-danger">
+				<h5 class="modal-title text-center" id="exampleModalLabel"><b>Atención</b></h5>
+			</div>
+			<div class="modal-body text-center" id="dvMensaje"><b>No se seleccionó un archivo.</b></div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default res" data-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+    $(document).ready(function () {
+    		var encodingArchivo ="";
+    		
+    		document.getElementById("uploadFile").addEventListener("change", inputHandler);
+			if ($(window).width() < 600) {
+				$("#panelconsulta").attr("style","margin-bottom:2%;");
+		    }else{
+		    	$("#panelconsulta").attr("style","margin-left:25%;margin-bottom:2%;");
+		    }	//	if ($(window).width() < 600) {
+	
+	    	
+	    	function inputHandler(e) {
+			    const file = e.target.files[0];
+			    encodingArchivo = "";
+			    oRes = languageEncoding(file).then(fileInfo => {
+			    	encodingArchivo = fileInfo.encoding;
+			    });
+			}
+	    		    	
+		    $('#consultar').click(function () {
+		        event.preventDefault();
+			 	if($('#uploadFile').val()==''){
+			 		$('#dvMensaje').html("<b>No se seleccionó un archivo.</b>");
+			 		$('#MensajeValidar').modal('show');
+				}else{
+					if(encodingArchivo!="UTF-8"){
+						if($('#lstTipoCons').val()=="NOMINALS"){
+							var sHtml = "<a href=\"{{ asset('bundles/pfa/doc/charset.pdf') }}\" target=\"_blank\">";
+							sHtml += "<img height=\"25\" width=\"25\" src=\"{{asset('bundles/pfa/img/link_icon.png')}}\"/>";
+							sHtml += "</a>";
+						
+							$('#dvMensaje').html("<b>La codificación del archivo incorrecta, el archivo debe tener codificación UTF-8 para ser procesado correctamente.<br/><br/>Presione el siguiente link " + sHtml + " y siga las instrucciones para modificar su lote de manera CORRECTA.</b>");
+							$('#MensajeValidar').modal('show');
+							return -1;
+						}
+					}
+					$("#sendForm").click();
+			    }
+		     });	    
+	
+	        $('#limpiar').click(function () {
+	        	$("#lstModoCons").val("AD").selectpicker('refresh');
+	            $("#lstTipoCons").val("").selectpicker('refresh');
+	            $("#uploadFile").val('');
+	        });	//	$('#limpiar').click(function () {
+			
+			$("#dvEjemploArch").html( "" );
+			
+	        $('#lstTipoCons').change(function () {
+	        //console.log( $('#lstTipoCons').val() );
+	        switch($('#lstTipoCons').val()){
+	        	case "NOMINALS":
+		        	var sHtml = "<div class=\"panel-body\">";
+					sHtml += "	        <div class=\"col-xs-12 col-sm-12 col-md-12 col-xl-12\">";
+					sHtml += "	            <div class=\"list-group\">";
+					sHtml += "	                <a class=\"list-group-item list-group-item-info col-xs-12 col-sm-12 col-md-12 col-xl-12\">Ejemplo de Confección de archivo .csv (" + $('#lstTipoCons').val() + ")</a>";
+					sHtml += "	                <a class=\"list-group-item list-group-item-info col-xs-12 col-sm-12 col-md-12 col-xl-12\">Columnas del archivo:</a>";
+					sHtml += "	    			<a class=\"list-group-item col-xs-4 col-sm-4 col-md-4 col-xl-4\">APELLIDO;</a>";
+					sHtml += "	    			<a class=\"list-group-item col-xs-4 col-sm-4 col-md-4 col-xl-4\">NOMBRE;</a>";
+					sHtml += "	    			<a class=\"list-group-item col-xs-4 col-sm-4 col-md-4 col-xl-4\">FECHA.NACIMIENTO</a>";
+					sHtml += "	            </div>";
+					sHtml += "	        </div>";
+					sHtml += "		</div>";
+					sHtml += "		<div class=\"row text-center\">";
+					sHtml += "    		<img src=\"{{asset('bundles/pfa/img/ejcsvpersona.png')}}\" />";
+					sHtml += "	    </div>";
+					sHtml += "		<div class=\"row text-right \">";
+					sHtml += "	            <div class=\"list-group-item-info\">";
+					sHtml += "    				<a download href=\"{{ asset('bundles/pfa/doc/personas.csv') }}\">";
+					sHtml += "    				    Descargar Archivo de ejemplo<img src=\"{{asset('bundles/pfa/img/download_csv.png')}}\" />";
+					sHtml += "    				</a>";
+					sHtml += "	            </div";
+					sHtml += "	    </div>";
+				break;
+				case "SLTD":
+		        	var sHtml = "<div class=\"panel-body\">";
+					sHtml += "	        <div class=\"col-xs-12 col-sm-12 col-md-12 col-xl-12\">";
+					sHtml += "	            <div class=\"list-group\">";
+					sHtml += "	                <a class=\"list-group-item list-group-item-info col-xs-12 col-sm-12 col-md-12 col-xl-12\">Ejemplo de Confección de archivo .csv (" + $('#lstTipoCons').val() + ")</a>";
+					sHtml += "	                <a class=\"list-group-item list-group-item-info col-xs-12 col-sm-12 col-md-12 col-xl-12\">Columnas del archivo:</a>";
+					sHtml += "	    			<a class=\"list-group-item col-xs-4 col-sm-4 col-md-4 col-xl-4\">NRO.DOCUMENTO;</a>";
+					sHtml += "	    			<a class=\"list-group-item col-xs-4 col-sm-4 col-md-4 col-xl-4\">TIPO.DOCUMENTO;</a>";
+					sHtml += "	    			<a class=\"list-group-item col-xs-4 col-sm-4 col-md-4 col-xl-4\">PAIS</a>";
+					sHtml += "	            </div>";
+					sHtml += "	        </div>";
+					sHtml += "		</div>";
+					sHtml += "		<div class=\"row text-center\">";
+					sHtml += "    		<img src=\"{{asset('bundles/pfa/img/ejcsvdocumento.png')}}\" />";
+					sHtml += "	    </div>";
+					sHtml += "		<div class=\"row text-right\">";
+					sHtml += "	            <div class=\"list-group-item-info\">";
+					sHtml += "    				<a download href=\"{{ asset('bundles/pfa/doc/documentos.csv') }}\">";
+					sHtml += "    				    Descargar Archivo de ejemplo<img src=\"{{asset('bundles/pfa/img/download_csv.png')}}\" />";
+					sHtml += "    				</a>";
+					sHtml += "	            </div";
+					sHtml += "	    </div>";
+				break;
+				case "SMV":
+		        	var sHtml = "<div class=\"panel-body\">";
+					sHtml += "	        <div class=\"col-xs-12 col-sm-12 col-md-12 col-xl-12\">";
+					sHtml += "	            <div class=\"list-group\">";
+					sHtml += "	                <a class=\"list-group-item list-group-item-info col-xs-12 col-sm-12 col-md-12 col-xl-12\">Ejemplo de Confección de archivo .csv (" + $('#lstTipoCons').val() + ")</a>";
+					sHtml += "	                <a class=\"list-group-item list-group-item-info col-xs-12 col-sm-12 col-md-12 col-xl-12\">Columnas del archivo:</a>";
+					sHtml += "	    			<a class=\"list-group-item col-xs-4 col-sm-4 col-md-4 col-xl-4\">VIM;</a>";
+					sHtml += "	    			<a class=\"list-group-item col-xs-4 col-sm-4 col-md-4 col-xl-4\">DOMINIO;</a>";
+					sHtml += "	    			<a class=\"list-group-item col-xs-4 col-sm-4 col-md-4 col-xl-4\">NRO.MOTOR</a>";
+					sHtml += "	            </div>";
+					sHtml += "	        </div>";
+					sHtml += "		</div>";
+					sHtml += "		<div class=\"row text-center\">";
+					sHtml += "    		<img src=\"{{asset('bundles/pfa/img/ejcsvvehiculo.png')}}\" />";
+					sHtml += "	    </div>";
+					sHtml += "		<div class=\"row text-right\">";
+					sHtml += "	            <div class=\"list-group-item-info\">";
+					sHtml += "    				<a download href=\"{{ asset('bundles/pfa/doc/vehiculos.csv') }}\">";
+					sHtml += "    				    Descargar Archivo de ejemplo<img src=\"{{asset('bundles/pfa/img/download_csv.png')}}\" />";
+					sHtml += "    				</a>";
+					sHtml += "	            </div";
+					sHtml += "	    </div>";	
+				break;
+			}
+            $("#dvEjemploArch").html(sHtml);
+        });
+
+                
+        
+		function exportar(url){	
+		//	console.log("Exportar");
+		    document.getElementById('descarga').src = url;
+		}
+		
+    });
+</script>
+{% endblock %}

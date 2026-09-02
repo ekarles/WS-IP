@@ -1,0 +1,155 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+{% block body -%}
+<form method="POST" action="{{ path('wisdm_showCargaMasiva') }}">
+    	<div class="container" width="100%">
+    		<div class="panel panel-info text-center" width="80%">
+				<div class="panel-heading">
+		    		<h1>Interpol - Lotes WISDM - Carga Masiva</h1>
+		    	</div>
+    		</div>
+		<div id="panelconsulta" class="col-xs-12 col-md-12" style="margin-bottom:2%;">
+			<div class="panel panel-default">
+				<div class="panel-body">
+                    <form method="GET" action=""> 
+                    	<div class="col-sm-4">
+                    		<label>Apellido</label>
+                    		<input type="text" name="txtApellido" id="txtApellido" value="" class="form-control">
+                    	</div>
+                        <div class="col-sm-4">
+                    		<label>Nombre</label>
+                    		<input type="text" name="txtNombre" id="txtNombre" value="" class="form-control">
+                    	</div>
+                    	<div class="col-sm-4">
+                    		<label>Tipo Documento</label>
+                    		<input type="text" name="txtTipDoc" id="txtTipDoc" value="" class="form-control">
+                    	</div>
+                    	<div class="col-sm-3">
+                    		<label>Nro. documento</label>
+                    		<input type="text" name="txtNroDoc" id="txtNroDoc" value="" class="form-control">
+                    	</div>
+                    	<div class="col-sm-3">
+                    		<label>Fecha desde</label>
+                    		<input type="date" id="txtFechaDesde" name="txtFechaDesde" value="" class="form-control">
+                    	</div>
+                    	<div class="col-sm-3">
+                    		<label>Fecha hasta</label>
+                    		<input type="date" id="txtFechaHasta" name="txtFechaHasta" value="" class="form-control">
+                    	</div>
+                    	<div class="col-sm-3" align="center">
+                    		  <label>Error Francia</label>
+                              <div align="center" class="">
+                                <input type="checkbox" class="checkbox" id="customCheck" name="chkError">
+                              </div>
+                    	</div>
+                    	<div class="row col-sm-12 col-md-12">
+                    		<div>&nbsp;</div>
+							<div>&nbsp;</div>
+    					</div>
+        				<div class="col-sm-4 col-md-4">
+        					<button class="btn btn-success col-xs-12" data-toggle="tooltip" id="consultar" title="" type="submit" data-placement="bottom" data-original-title="Consultar">
+        						<div class="hidden-xs hidden-sm">Consultar</div>
+        						<div class="hidden-md hidden-lg">
+        							<i class="fa fa-search" aria-hidden="true"></i>
+        						</div>
+        					</button>
+        					<button id="sendForm" type="submit" class="hide"></button>
+        				</div>
+                	<div class="row col-sm-4 col-md-4">
+						<div>&nbsp;</div>
+						<div>&nbsp;</div>
+					</div>
+        				<div class="col-sm-4 col-md-4">
+        					<button class="btn btn-default col-xs-12" data-toggle="tooltip" title="" id="limpiar" type="button" onclik="limpiarForm" data-placement="bottom" data-original-title="Limpiar Parámetros de Búsqueda">
+        						<div class="hidden-xs hidden-sm">Limpiar Búsqueda</div>
+        						<div class="hidden-md hidden-lg">
+        							<i class="fa fa-undo" aria-hidden="true"></i>
+        						</div>
+        					</button>
+        				</div>
+	        			<div class="row col-sm-4 col-md-4">
+							<div>&nbsp;</div>
+							<div>&nbsp;</div>
+						</div>
+        				<div class="col-sm-12 col-md-12">
+                            <table id="tablaLoteDoc" class="table-bordered table-striped mb-0">
+                                <thead>
+                                    <tr style='text-align:center' bgcolor="#e9e9e9">
+                                        <th>Apellido / Nombres</th>
+	                                    <th>Fecha Nacimiento</th>
+	                                    <th>Sexo</th>
+	                                    <th>Numeo. Doc.</th>
+	                                    <th>Id. Nacionalidad</th>
+	                                    <th>Id. Pais Emisor</th>
+	                                    <th>Tipo Denuncia</th>
+	                                    <th>Acción</th>
+	                                    <th>Motivo</th>
+	                                    <th>Fecha</th>
+	                                    <th>{{ 'Acción' }}</th>
+                                    </tr>
+                                </thead>
+                            </table>
+        				</div>
+            		</form>
+            	</div>
+           	</div>
+   		</div>
+       </div>
+</form>
+    <script>
+        $(document).ready(function () {
+    		if ($(window).width() < 600) {
+    			$("#panelconsulta").attr("style","margin-bottom:2%;");
+    	    }else{
+    	    	$("#panelconsulta").attr("style","margin-left:0%;margin-bottom:2%;");
+    	    }	//	if ($(window).width() < 600) {
+    	    
+
+    	    $("#customCheck").removeClass("form-control");
+    	    
+            $('#limpiar').click(function () {
+                $("#txtNombre").val("");
+                $("#txtApellido").val("");
+                $("#txtFechaNac").val("");
+                $("#lstTipoCons").val("AD").selectpicker('refresh');
+                document.getElementById("optNominals").checked = true;
+            });	//	$('#limpiar').click(function () {
+
+            $('#optNominals').click(function () {
+            	document.getElementById("txtNombre").required = false;
+            	document.getElementById("txtFechaNac").required = false;
+            });
+            
+            $('#optNominalsExact').click(function () {
+                document.getElementById("txtNombre").required = true;
+                document.getElementById("txtFechaNac").required = true;                
+            });
+
+            $('#tablaLoteDoc').DataTable({
+            	"scrollY": "600px",
+            	"scrollX": true,
+                "filter": false,
+                "paging": false,
+                "info": false,
+                "order": [[1, "desc"]],
+                "scrollCollapse": true,
+                "responsive": true,
+                "oLanguage": {
+    				"sSearch": 		   "Buscar:",
+    				"sEmptyTable": 	   "No se encontraron registros.",			
+    				"sProcessing":     "Procesando...",
+    				"sLengthMenu":     "Mostrar _MENU_ registros",
+    				"sZeroRecords":    "No se encontraron resultados",
+    				"sInfo":           "Mostrando registros del: _START_ al _END_ (de un total de _TOTAL_ registros)",
+    				"sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+    				"sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+    				"sInfoPostFix":    "",
+    				"sSearch":         "Buscar:",
+    				"sUrl":            "",
+    				"sInfoThousands":  ",",
+    				"sLoadingRecords": "Cargando..."
+    			}
+            });	
+        });
+        
+    </script>
+    {% endblock %}

@@ -1,0 +1,204 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+{% block body -%}
+<form id="frm" method="POST" action="{{ path('admin_mapa') }}">
+	<div class="container" width="100%">
+		<div class="row text-center">
+			<h1>Interpol - Mapas</h1>
+		</div>
+		<div id="panelconsulta" class="col-xs-12 col-md-12"
+			style="margin-bottom: 2%;">
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<b>BUSCADOR</b> <i class="fa fa-search"></i>
+					<div _ngcontent-ktt-12="" class="pull-right">
+                        <a class="btn btn-success res mb-2" title="Nuevo" href="{{path('admin_mapa_new')}}">
+	                       	<i class="fa fa-plus"> Nuevo</i>
+	                   	</a>
+                    </div>
+					<div _ngcontent-ktt-12="" class="pull-right">
+                        <a class="btn btn-default res mb-2" href="javascript:exportar()" id="exportarCsv" style="margin-right:10px;" title="Exportar CSV">
+	                       	<i class="fas fa-file-excel" style="color:green;"> Exportar CSV</i>
+	                   	</a>
+                    </div>	
+				</div>
+				<div class="panel-body">
+				    <input type="hidden" id="accion" name="accion" value="{{app.request.get( "accion")}}" class="form-control">
+					<input type="hidden" id="busqueda" name="busqueda" value="{{app.request.get( 'busqueda')}}" class="form-control">
+					<div class="row" style="margin-bottom:5px;">
+						<div class="col-sm-4 mb-3">
+							<label>Descripción</label> <input type="text" id="txtDescripcion"
+								name="txtDescripcion" value="{{app.request.get( 'txtDescripcion')}}"
+								class="form-control">
+						</div>
+						<div class="col-sm-4 mb-3">
+							<label>Nombre</label> <input type="text" id="txtNombre"
+								name="txtNombre" value="{{app.request.get( 'txtNombre')}}"
+								class="form-control">
+						</div>
+					</div>
+					<div class="row col-sm-12 col-md-12">
+						<div>&nbsp;</div>
+						<div>&nbsp;</div>
+					</div>
+					<div class="col-sm-4 col-md-4">
+						<button class="btn btn-info col-xs-12" data-toggle="tooltip"
+							id="consultar" title="" type="button" data-placement="bottom"
+							data-original-title="Consultar">
+							<div class="hidden-xs hidden-sm">Consultar</div>
+							<div class="hidden-md hidden-lg">
+								<i class="fa fa-search" aria-hidden="true"></i>
+							</div>
+						</button>
+						<button id="sendForm" type="submit" class="hide"></button>
+					</div>
+					<div class="row col-sm-4 col-md-4">
+						<div>&nbsp;</div>
+						<div>&nbsp;</div>
+					</div>
+					<div class="col-sm-4 col-md-4">
+						<button class="btn btn-default col-xs-12" data-toggle="tooltip"
+							title="" id="limpiar" type="button" onclik="limpiarForm"
+							data-placement="bottom"
+							data-original-title="Limpiar Parámetros de Búsqueda">
+							<div class="hidden-xs hidden-sm">Limpiar Búsqueda</div>
+							<div class="hidden-md hidden-lg">
+								<i class="fa fa-undo" aria-hidden="true"></i>
+							</div>
+						</button>
+					</div>
+					<div class="row col-sm-12 col-md-12">
+						<div>&nbsp;</div>
+						<div>&nbsp;</div>
+					</div>
+					<div class="col-sm-1. col-md-12">
+						<table id="tablaMapa" class="table-bordered table-striped mb-0">
+                            <thead>
+                                <tr style='text-align:center' bgcolor="#e9e9e9">
+					                <th style='text-align:center'>Id</th>
+					                <th style='text-align:center'>Descripcion</th>
+					                <th style='text-align:center'>Latitud</th>
+					                <th style='text-align:center'>Longitud</th>
+					                <th style='text-align:center'>Nombre</th>
+					                <th style='text-align:center'>Zoom</th>
+					                <th style='text-align:center'>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                        <td align="center">{{ entity.id }}</td>
+                                        <td align="center">{{ entity.descripcion }}</td>
+                                        <td align="center">{{ entity.latitud }}</td>
+                                        <td align="center">{{ entity.longitud }}</td>
+                                        <td align="center">{{ entity.nombre }}</td>
+                                        <td align="center">{{ entity.zoom }}</td>
+                                        <td align="right">
+	                                        	<a class="btn btn-danger res" title="Borrar" href="{{path('admin_mapa_show',{'id':entity.id})}}">
+	                                            	<i class="fas fa-trash-alt">Borrar</i>
+	                                        	</a>
+                                        		<a class="btn btn-info res" title="Editar" href="{{path('admin_mapa_edit',{'id':entity.id})}}">
+	                                            	<i class="fa fa-edit">Editar</i>
+	                                        	</a>
+	                                        	<a class="btn btn-warning res" title="Dependencias" href="{{path('admin_mapa_mapaDependencia',{'id':entity.id})}}">
+	                                            	<i class="fa fa-edit">Dependencias</i>
+	                                        	</a>                                      	
+	                                        	                                      	
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="row-fluid" align="center">        
+		                    {{ pagerfanta (entities,'twitter_bootstrap_translated', { 'prev_message' : 'Anterior', 'next_message': 'Siguiente',
+		                    				"routeParams": {
+		                    				   				'txtNombre': app.request.get( "txtNombre")
+						                    				}
+						           		}) 
+		                    }}
+		                </div>                        
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<script>
+	$(document).ready(function () {
+        
+		if ($(window).width() < 600) {
+			$("#panelconsulta").attr("style","margin-bottom:2%;");
+		}else{
+			$("#panelconsulta").attr("style","margin-left:0%;margin-bottom:2%;");
+		}
+		
+		$("#consultar").click(function(){
+			$("#accion").val("busqueda");
+			$("#frm").attr('action',"{{ path('admin_mapa') }}");
+			$("#sendForm").click();
+		});
+
+		{% if app.request.get( "busqueda")=='SI' or app.request.get( "page")!='' %}
+			$(window).scrollTop($('#panelconsulta').offset().top);
+		{% endif %}
+		
+		$('#limpiar').click(function () {
+		    
+		    $("#txtNombre").val("");
+		    
+		});
+	    $('.pagination a').attr('class', 'btn btn-default');
+        $('.pagination li').css('float', 'left');
+        $('.pagination .active span').attr('class', 'btn btn-info');
+        $('.pagination .prev span').attr('class', 'btn btn-default disabled');
+        $('.pagination .next span').attr('class', 'btn btn-default disabled');
+		
+        $('#tablaMapa').DataTable({
+        	"scrollY": "600px",
+        	"scrollX": true,
+            "filter": true,
+            "paging": false,
+            "info": false,
+            "order": [[ 0, 'asc' ]],
+            "scrollCollapse": true,
+            "responsive": true,
+            "columnDefs": [ {
+            	"targets": 5,
+            	"orderable": false
+            	} ],	
+            "oLanguage": {
+				"sSearch": 		   "Buscar en registros visibles:",
+				"sEmptyTable": 	   '<div class="alert alert-seccondary"><i class="fa fa-info-circle" style="font-size: 20px"></i> <span style="font-size: 20px;"> No existen Mapas con los parámetros de búsqueda ingresados.</span></div>',			
+				"sProcessing":     "Procesando...",
+				"sLengthMenu":     "Mostrar _MENU_ registros",
+				"sZeroRecords":    "No se encontraron resultados",
+				"sInfo":           "Mostrando registros del: _START_ al _END_ (de un total de _TOTAL_ registros)",
+				"sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+				"sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+				"sInfoPostFix":    "",
+				"sUrl":            "",
+				"sInfoThousands":  ",",
+				"sLoadingRecords": "Cargando...",
+				"columnDefs": [ {
+	            	"targets": 5,
+	            	"orderable": false
+	            	} ],
+				"oPaginate": {
+                    "sFirst":    "Pri",
+                    "sLast":     "Ult",
+                    "sNext":     "Sig",
+                    "sPrevious": "Ant"
+                	}
+			}
+        });
+	});
+
+	function exportar(){	
+		$("#accion").val("csv");
+		$("#frm").attr('target',"_blank");
+		$("#sendForm").click();
+		$("#accion").val("");
+		$("#frm").removeAttr('target');
+	}
+</script>
+{% endblock %}
+    

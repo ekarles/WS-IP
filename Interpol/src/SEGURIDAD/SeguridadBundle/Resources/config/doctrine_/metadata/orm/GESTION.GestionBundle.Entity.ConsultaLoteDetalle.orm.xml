@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity repository-class="GESTION\GestionBundle\Entity\ConsultaLoteDetalleRepository" name="GESTION\GestionBundle\Entity\ConsultaLoteDetalle" table="ConsultaLoteDetalle">
+    <id name="id" type="integer" column="id">
+      <generator strategy="SEQUENCE"/>
+    </id>
+    <field name="apellido" type="string" column="Apellido" length="100" precision="0" scale="0" nullable="true"/>
+    <field name="nombre" type="string" column="Nombre" length="200" precision="0" scale="0" nullable="true"/>
+    <field name="fechaNacimiento" type="string" column="FechaNacimiento" length="200" precision="0" scale="0" nullable="true"/>
+    <field name="tipoDocumento" type="string" column="TipoDocumento" length="10" precision="0" scale="0" nullable="true"/>
+    <field name="nroDocumento" type="string" column="NroDocumento" length="100" precision="0" scale="0" nullable="true"/>
+    <field name="pais" type="string" column="Pais" length="5" precision="0" scale="0" nullable="true"/>
+    <field name="vin" type="string" column="Vin" length="100" precision="0" scale="0" nullable="true"/>
+    <field name="dominio" type="string" column="Dominio" length="20" precision="0" scale="0" nullable="true"/>
+    <field name="nroMotor" type="string" column="NroMotor" length="100" precision="0" scale="0" nullable="true"/>
+    <field name="tipoConsulta" type="string" column="TipoConsulta" length="20" precision="0" scale="0" nullable="false"/>
+    <field name="modoConsulta" type="string" column="ModoConsulta" length="2" precision="0" scale="0" nullable="false"/>
+    <field name="resultCode" type="string" column="ResultCode" length="255" precision="0" scale="0" nullable="true"/>
+    <field name="respuesta" type="blob" column="Respuesta" precision="0" scale="0" nullable="true"/>
+    <field name="entityId" type="string" column="EntityId" length="255" precision="0" scale="0" nullable="true"/>
+    <field name="respuestaDetails" type="blob" column="RespuestaDetails" precision="0" scale="0" nullable="true"/>
+    <field name="fecAlta" type="string" column="FecAlta" precision="0" scale="0" nullable="false"/>
+    <field name="fecMod" type="string" column="FecMod" precision="0" scale="0" nullable="true"/>
+    <field name="leido" type="string" column="Leido" length="1" precision="0" scale="0" nullable="true"/>
+    <many-to-one field="consultaLoteId" target-entity="GESTION\GestionBundle\Entity\ConsultaLote" inversed-by="consultaLoteDetalle">
+      <join-columns>
+        <join-column name="ConsultaLoteId" referenced-column-name="id" nullable="1"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

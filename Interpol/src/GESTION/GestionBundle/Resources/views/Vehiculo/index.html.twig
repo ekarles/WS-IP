@@ -1,0 +1,138 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %} {% block body -%}
+<form method="POST" action="{{ path('vehiculo_show') }}">
+	<div class="container" width="100%">
+        <div class="col-xs-12 col-md-7 text-left" id="panelconsulta">
+
+			<div class="panel panel-default">
+				<div class="panel-body" style="margin-left: 2%;">
+				
+					<div class="container" width="100%">
+			    		<div class="row text-cemter">
+			    		<img width="300px" src="{{asset('bundles/pfa/img/ocnbuenosaires.png')}}" />
+				    	</div>
+						<div class="row">
+							<div>&nbsp;</div>
+						</div>
+						<div class="row">
+							<div><p style="color:#00457D; font-size:24px;">Interpol - Vehiculos</p></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+            <div class="panel panel-default">
+                <div class="panel-body">                            
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="txtVin">VIN (Nro. Chasis)</label>  
+                            <input type="text" value="" class="form-control interpol" name="txtVin" id="txtVin" placeholder="Ingrese VIN" >
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">                        
+                            <label for="txtDominio">Dominio</label>  
+                            <input type="text" value="" class="form-control interpol" name="txtDominio" id="txtDominio" placeholder="Ingrese Dominio" >                          
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="txtNroMotor">Nro. Motor</label>  
+                            <input type="text" value="" class="form-control" name="txtNroMotor" id="txtNroMotor" placeholder="Ingrese Número de Motor">                          
+                        </div>
+                    </div>
+{% set bInvestigativo = "NO" %}
+{% for perfil  in usuario.perfilid %}
+    {% for permiso in perfil.permisoid %}
+        {% if permiso.id == '7' %}
+        	{% set bInvestigativo = "SI" %}
+        {% endif %}
+    {% endfor %}	
+{% endfor %}
+                    <div class="col-md-12 {{bInvestigativo == 'SI'?'':'hidden'}}">
+                        <div class="form-group">
+                            <label for="tipoDocumento">Tipo de Consulta</label>  
+                            <select name="lstTipoCons" class="selectpicker form-control" id="lstTipoCons" required>
+                                <option value="BC">Control Fronterizo</option>
+               	                {% if bInvestigativo == "SI" %}
+               	                    <option value="AD" selected>Investigación</option>
+               	                {% endif %}  
+                            </select>                                
+                        </div>
+                     </div>
+                     <div class="row">
+						<div>&nbsp;</div>
+						<div>&nbsp;</div>
+					</div>
+					<div class="row">
+						<div>&nbsp;</div>
+						<div>&nbsp;</div>
+					</div>   
+                    <div class="col-xs-12" align="center">
+                        <div class="col-md-6">
+                            <button class="btn btn-success col-xs-12" data-toggle="tooltip" id ="consultar" title="Consultar" type="submit" data-placement="bottom" >
+                                <div class="hidden-xs hidden-sm">
+                                    Consultar
+                                </div>
+                                <div class="hidden-md hidden-lg">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </div>
+                            </button>
+                        </div>   
+                        <div class="col-md-6">
+                            <button class="btn btn-default col-xs-12" data-toggle="tooltip" title="Limpiar Par&aacute;metros de B&uacute;squeda" id="limpiar" type="button" data-placement="bottom">
+                                <div class="hidden-xs hidden-sm">
+                                    Limpiar B&uacute;squeda
+                                </div>
+                                <div class="hidden-md hidden-lg">
+                                    <i class="fa fa-undo" aria-hidden="true"></i>
+                                </div>
+                            </button>
+                        </div>   
+                    </div>  
+                </div>
+            </div>
+        </div>
+	</div>
+</form>
+<script>
+	$(document).ready(function() {
+		if ($(window).width() < 600) {
+			$("#panelconsulta").attr("style", "margin-bottom:2%;");
+		} else {
+			$("#panelconsulta").attr("style", "margin-left:20%;margin-bottom:2%;");
+		}
+		$('#limpiar').click(function() {
+			$("#txtVin").val("");
+			$("#txtDominio").val("");
+			$("#txtNroMotor").val("");
+			$("#lstTipoCons").val("INV").selectpicker('refresh');
+		});
+		
+		$("#lstTipoCons").change(function(){
+			$('form').unbind();
+			$('form').submit(function(){
+				if($("#txtVin").val()=='' && $("#txtNroMotor").val()==''){
+					alert("Datos insuficientes para realizar la consulta");
+					return false;
+				}
+			});
+		});
+	});
+	{% if bInvestigativo == "SI" %}
+		$('form').submit(function(){
+			if($("#txtVin").val()=='' && $("#txtNroMotor").val()==''){
+				alert("Datos insuficientes para realizar la consulta");
+				return false;
+			}
+		});
+	{% else %}
+		$('form').submit(function(){
+			if($("#txtVin").val()=='' || $("#txtDominio").val()=='' || $("#txtNroMotor").val()==''){
+				alert("Completar todos los campos para realizar la consulta");
+				return false;
+			}
+		});
+	{% endif %}
+	
+</script>
+{% endblock %}

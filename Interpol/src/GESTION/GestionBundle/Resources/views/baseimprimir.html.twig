@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="SGCC">
+        <meta name="keywords" content="SGCC">
+        <meta name="author" content="Corvalan Nicolas">
+
+        <title>PFA</title>
+
+		<link href="{{entorno}}/SGCC/web/bundles/DataTableEXPORT/buttons.dataTables.min.css" rel='stylesheet' type='text/css'>                     
+        <link href="{{entorno}}/SGCC/web/bundles/nuevo/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="{{entorno}}/SGCC/web/bundles/nuevo/bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+        <link href="{{entorno}}/SGCC/web/bundles/nuevo/dist/css/sb-admin-2.css?rand={{ random(5) }}" rel="stylesheet">
+        <link href="{{entorno}}/SGCC/web/bundles/nuevo/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link  href="{{entorno}}/SGCC/web/bundles/joyas/img/favicon.ico" rel="icon" type="image/x-icon" />
+        <link rel="stylesheet" href="{{entorno}}/SGCC/web/bundles/style.css?rand={{ random(5) }}">
+    </head>
+    <body>
+        <div id="wrapper">
+			<div id="page-wrapper">
+			{% block content %}
+			{% endblock %} 
+			</div>
+		</div>
+    </body>
+
+</html>

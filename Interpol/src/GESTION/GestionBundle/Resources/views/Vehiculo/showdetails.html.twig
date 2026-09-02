@@ -1,0 +1,212 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+{% block body -%}
+<style>
+.table td {
+   text-align: left;
+   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+   font-size: 14px;
+}
+</style>
+<form method="POST" action="{{ path('vehiculo_showdetails') }}">
+			{% if app.request.get('txtCombinada') is defined and app.request.get('txtCombinada')=='SI' %}
+				<input type="hidden" id="txtCombinadaPer" name="txtCombinada" value="SI"/>
+			{% endif %}			
+			<input type="hidden" id="txtEntity" name="txtEntity" value="{{ app.request.get('txtEntity')|default('') }}" />
+			<input type="hidden" id="txtVin" name="txtVin" value="{{ app.request.get('txtVin'  )|default('') }}" /> 
+			<input type="hidden" id="txtDominio" name="txtDominio" value="{{ app.request.get('txtDominio')|default('') }}" />
+			<input type="hidden" id="txtNroMotor" name="txtNroMotor" value="{{ app.request.get('txtNroMotor')|default('') }}" />
+			<input type="hidden" id="lstTipoCons" name="lstTipoCons" value="{{ app.request.get('lstTipoCons')|default('') }}" />
+			
+<div id="panelTitulo" class="col-xs-12 col-md-6" style="margin-left:25%;">
+			<div class="panel panel-default">
+				<div class="panel-body" style="margin-left: 2%;">
+			    		<div class="row text-cemter">
+			    		<img width="300px" src="{{asset('bundles/pfa/img/ocnbuenosaires.png')}}" />
+				    	</div>
+						<div class="row">
+							<div>&nbsp;</div>
+						</div>
+						<div class="row">
+							<div><p style="color:#2d3c90; font-size:24px;">Interpol - Vehiculos</p></div>
+						</div>
+				</div>
+			</div>
+</div>
+
+						
+	<div id="panelconsulta" class="col-xs-12 col-md-6" style="margin-bottom:2%;">
+	{% if (smvDetails.ERROR is defined) %}
+        <div class="panel panel-danger">
+          <div class="panel-heading"><b>Atención se produjo el siguiente mensaje de error:</b></div>
+          <div class="panel-body"><h3>{{ smvDetails.ERROR }}</h3></div>
+          <div class="panel-body">
+          	<div _ngcontent-xyt-6="" class="panel-heading">
+	  		<a href="#" onclick="window.history.back();" role="button" id="btnCerrar1"     name="btnCerrar1"     _ngcontent-soi-7="" class="btn btn-default pull-right">Volver</a>
+	    	</div>
+	      </div>
+        </div>
+
+	{% else %}
+
+  <br _ngcontent-meu-7="">
+	<div id="panelconsulta" class="col-xs-12" style="margin-bottom:2%;">
+	    <div class="panel panel-danger">
+	        <div class="panel-heading" style="height:50px;">
+	            <h4><span class="glyphicon glyphicon-info-sign"></span>Resultado Positivo!</h4>                          
+	        </div>
+	        <div class="panel-body">
+	            <div class="form-group">
+	                <label class="col-md-12" style="font-weight:normal; font-size:16px;">
+	                    {{ encabezados.leyenda_A }}
+	                </label>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-md-12" style="font-weight:normal; font-size:16px;">
+	                    {{ encabezados.leyenda_B }}
+	                </label>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-md-12" style="font-weight:normal; font-size:16px;">
+	                    {{ encabezados.leyenda_C }}
+	                </label>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-md-12" style="font-weight:normal; font-size:16px;">
+	                    {{ encabezados.leyenda_D }}
+	                </label>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-md-12" style="font-weight:normal; font-size:16px;">
+	                    {{ encabezados.leyenda_E }}
+	                </label>
+	            </div>
+	                        <div class="form-group">
+	                <label class="col-md-12" style="font-weight:normal; font-size:16px;">
+	                    {{ encabezados.leyenda_F }}
+	                </label>
+	            </div>            
+	        </div>
+	
+	
+		    <div _ngcontent-xyt-6="" class="panel-heading">
+		      	<a href="#" onclick="window.history.back();" role="button" id="btnVolver" name="btnVolver"     _ngcontent-soi-7="" class="btn btn-default pull-right">Volver</a>
+		      	<a href="#" role="button" id="btnReintentar" name="btnReintentar" _ngcontent-soi-7="" class="btn btn-default pull-right">Reintentar</a>	      
+		        <h4 _ngcontent-xyt-6="">Datos de: {{smvDetails.vin|default('')}} {{smvDetails.make|default('')}} {{smvDetails.model|default('')}}</h4>
+		    </div>
+		    <div _ngcontent-xyt-6="" class="panel-heading">
+		      <h4 _ngcontent-xyt-6="">Información Complementaria</h4>
+		    </div>
+		    
+    <div _ngcontent-xyt-6="" class="panel-body">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-xl-12">
+            <div class="list-group">
+                <a class="list-group-item list-group-item-info">Robo</a>
+{% if smvDetails['theft'] is defined and smvDetails['theft'] is iterable %}				    
+    {% for key, value in smvDetails['theft'] %}
+    		{% if 'country' in key %}
+    			<a class="list-group-item">{{ key|trans }}: <strong>{{ paises[value]["DESCRIPCION"] }}</strong></a>
+    		{% elseif 'date' in key or 'db_insert_on' in key %}
+    			<a class="list-group-item">{{ key|trans }}: <strong>{{ value|slice(6,2) ~ "/" ~ value|slice(4,2) ~ "/" ~ value|slice(0,4) | default('NO DATA') }}</strong></a>
+    		{% else %}
+                <a class="list-group-item">{{ key|trans }}: <strong>{{ value }}</strong></a>
+            {% endif %}    
+    {% endfor %}
+{% endif %}
+            </div>
+        </div>
+     </div>
+     <div _ngcontent-xyt-6="" class="panel-body">
+        <div class="col-xs-10 col-sm-10 col-md-12 col-xl-12">
+            <div class="list-group">
+                <a class="list-group-item list-group-item-info">Vehículo</a>
+{% if smvDetails is iterable %}
+    {% for key, value in smvDetails %}
+        {% if key != 'theft' and key != 'vinId' %}
+        	{% if 'country' in key %}
+    			<a class="list-group-item">{{ key|trans }}: <strong>{{ paises[value]["DESCRIPCION"] }}</strong></a>
+    		{% elseif 'color_id' in key %}
+    			<a class="list-group-item">{{ key|trans }}: <strong>{{ coloresId[value]|default(value) }}</strong></a>
+    		{% else %}
+                <a class="list-group-item">{{ key|trans }}: <strong>{{ value }}</strong></a>
+            {% endif %}    
+        {% endif %}
+    {% endfor %}
+{% endif %}
+            </div>
+        </div>
+	</div>
+		    <div _ngcontent-xyt-6="" class="panel-footer">
+ 				<button _ngcontent-xyt-6="" id="btnVolver2" name="btnVolver2" class="btn btn-default" onclick="window.history.back();">Volver</button>		    
+		    </div>
+	    </div>
+    </div>
+{% endif %}	<!-- if (documentDetails.ERROR is defined) -->
+	<div class="modal fade" id="MensajeConfirmacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header modal-header-danger">
+					<h5 class="modal-title text-center" id="exampleModalLabel"><b>Confirmación</b></h5>
+				</div>
+				<div class="modal-body text-center" id="dvMensaje"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default res"
+						data-dismiss="modal">Cancelar</button>
+					<button id="btDetalle" type="button" class="btn btn-danger res" data-dismiss="modal" onClick="">Aceptar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+
+<script languaje="javascript">
+    $(document).ready(function () {
+    	if ($(window).width() < 600) {
+    		$("#panelconsulta").attr("style","margin-bottom:2%;");
+        }else{
+        	$("#panelconsulta").attr("style","margin-left:25%;margin-bottom:2%;");
+        }
+    });
+
+    $( "#btnReintentar" ).click(function() { 
+    	event.preventDefault();       
+		confirmaDetalle( $("#txtVin").val(), $("#txtEntity").val() );
+    });
+    
+    $( "#btnCerrar" ).click(function() {
+    	cerrar();
+    });
+    
+    $( "#btnCerrar2" ).click(function() {
+    	cerrar();
+    });
+	
+	function confirmaDetalle(pVin, pEntity) {
+		$("#txtEntity").val(pEntity);
+		$('#dvMensaje').html("¿Est&aacute; seguro de que quiere consultar los datos de <b>" + pVin + "</b>? <br><br> <b>ESTA ACCI&Oacute;N PUEDE GENERAR ALARMAS</b>.");
+		$('#btDetalle').attr('onclick', '');
+		$('#btDetalle').click(function() {
+			mostrarDetalle();
+		});
+		$('#MensajeConfirmacion').modal('show');
+	} //	function mostrarDivDetalle(){
+	
+	function mostrarDetalle( ){
+		if( $( "#txtEntity" ).val() == ""){
+			alert("Para ver el detalle debe seleccionar un renglón haciendo click en la lupa del mismo.");
+			return false;
+		}	//	if( $( "#txtEntity" ).val() == ""){
+		$( "form" ).submit();
+	}	//	function mostrarDetalle( ){
+    
+    function cerrar(){
+    	{% if app.request.get('txtCombinada') is defined and app.request.get('txtCombinada')=='SI' %}
+    		$("form").attr('action', "{{path('combinada')}}");
+    	{% else %}
+    		$("form").attr('action', "{{path('vehiculo')}}");
+		{% endif %}
+    	$("form").submit();
+    }
+
+    </script>
+{% endblock %}

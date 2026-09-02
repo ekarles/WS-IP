@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="ADMIN\AdminBundle\Entity\Alarmadetalle" table="ALARMADETALLE">
+    <id name="aldetid" type="integer" column="ALDETID">
+      <generator strategy="SEQUENCE"/>
+    </id>
+    <field name="descripcion" type="string" column="DESCRIPCION" length="1000" precision="0" scale="0" nullable="true"/>
+    <field name="fecha" type="datetime" column="FECHA" precision="0" scale="0" nullable="true"/>
+    <many-to-one field="usuarioid" target-entity="SEGURIDAD\SeguridadBundle\Entity\Usuario">
+      <join-columns>
+        <join-column name="USUARIOID" referenced-column-name="USUARIOID" nullable="1"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="aldtid" target-entity="ADMIN\AdminBundle\Entity\Alarmadetalletipo">
+      <join-columns>
+        <join-column name="ALDTID" referenced-column-name="ALDTID" nullable="1"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="alarid" target-entity="ADMIN\AdminBundle\Entity\Alarma">
+      <join-columns>
+        <join-column name="ALARID" referenced-column-name="ALARID" nullable="1"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

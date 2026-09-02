@@ -1,0 +1,183 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+{% block body -%}
+{% set PermisoDetalle = app.session.get('PERMISODETALLE') %}
+<form method="POST" action="{{ path('arma_showdetails') }}">
+
+	<input type="hidden" id="txtEntity"     name="txtEntity"     value="" />
+	<input type="hidden" id="txtMarca"      name="txtMarca"      value="{{ app.request.get('txtMarca'      ) | default('') }}" />
+	<input type="hidden" id="txtSN"         name="txtSN"         value="{{ app.request.get('txtSN'         ) | default('') }}" />
+	<input type="hidden" id="txtModelo"     name="txtModelo"     value="{{ app.request.get('txtModelo'     ) | default('') }}" />
+	<input type="hidden" id="txtCalibre"    name="txtCalibre"    value="{{ app.request.get('txtCalibre'    ) | default('') }}" />
+	<input type="hidden" id="txtFabricante" name="txtFabricante" value="{{ app.request.get('txtFabricante' ) | default('') }}" />
+	<input type="hidden" id="txtTipo"       name="txtTipo"       value="{{ app.request.get('txtTipo' ) | default('') }}" />
+	<input type="hidden" id="dtfechaDesde"  name="dtfechaDesde"  value="{{ app.request.get('dtfechaDesde' ) | default('') }}" />
+	<input type="hidden" id="dtFechaHasta"  name="dtFechaHasta"  value="{{ app.request.get('dtFechaHasta' ) | default('') }}" />
+	
+	<div id="panelconsulta" class="col-xs-12" style="margin-bottom:2%;">
+	
+			<div class="panel panel-default">
+				<div class="panel-body" style="margin-left: 2%;">
+			    	<div class="col-sm-12 col-md-6">
+			    		<div class="row text-cemter">
+			    			<img width="300px" src="{{asset('bundles/pfa/img/ocnbuenosaires.png')}}" />
+				    	</div>
+						<div class="row">
+							<div>&nbsp;</div>
+						</div>
+						<div class="row">
+							<div><p style="color:#2d3c90; font-size:24px;">Interpol - Armas</p></div>
+						</div>
+					</div>
+					
+					<div class="col-sm-12 col-md-6">
+						<div class="row">
+							<div><p style="color:#2d3c90; font-size:24px;">Datos consultados</p></div>
+						</div>
+						<div class="panel-body">
+		       	        	<div class="col-sm-6 col-md-6" >
+								<div class="form-group">
+						<strong>Número de serie: </strong>{{ app.request.get('txtSN')    | default('') }}<br>
+						<strong>Marca:      </strong>{{ app.request.get('txtMarca')      | default('') }}<br>
+						<strong>Modelo:     </strong>{{ app.request.get('txtModelo')     | default('') }}<br>
+						<strong>Calibre:    </strong>{{ app.request.get('txtCalibre')    | default('') }}<br>
+		           	        	</div>
+		           	        </div>
+								
+		       	        	<div class="col-sm-6 col-md-6" >
+								<div class="form-group">
+						<strong>Fabricante: </strong>{{ app.request.get('txtFabricante') | default('') }}<br>
+						<strong>Tipo:       </strong>{{ app.request.get('txtTipo')       | default('') }}<br>
+						<strong>Fecha desde:</strong>{{ app.request.get('dtfechaDesde')  | default('') }}<br>
+						<strong>Fecha hasta:</strong>{{ app.request.get('dtFechaHasta')  | default('') }}<br>
+		           	        	</div>
+		           	        </div>
+					</div>
+					</div>
+					</div>
+
+				</div>
+			</div>
+	{{ dump(armas) }}
+	
+	<div class="panel panel-default">
+		<div class="panel-heading clearfix">
+		{% if ( ( armas.ERROR is defined and armas.ERROR=='' ) or (armas.message is defined and armas.message=='' )  ) %}
+			{% if armas|length > 0 %}
+			<div class="pull-left">
+				<span style="color:red;margin-left:50px;"><strong>Resultado POSITIVO</strong></span>
+			</div>
+			{% endif %}
+		{% endif %}
+			<div class="list-group">
+	      		<a href="#" onclick="window.history.back();" role="button" id="btnVolver" name="btnVolver" _ngcontent-soi-7="" class="btn btn-default pull-right">Volver</a>
+	      		<a href="#" role="button" id="btnReintentar" name="btnReintentar" _ngcontent-soi-7="" class="btn btn-default pull-right">Reintentar</a>	      
+	    	</div>
+	    </div>	
+	<div class="panel-body">
+	
+		<div class="col-sm-12 col-md-12" >
+		<div class="form-group">
+		
+	{% if ( ( armas.ERROR is defined and armas.ERROR!='' ) or (armas.message is defined and armas.message!='' )  ) %}
+        <div class="panel panel-danger">
+          <div class="panel-heading"><b>Atención se produjo el siguiente mensaje de error:</b></div>
+          {% if ( armas.ERROR is defined ) %}
+          <div class="panel-body"><h3>{{ armas.ERROR }}</h3></div>
+          {% endif %}
+          {% if ( armas.message is defined ) %}
+          <div class="panel-body"><h3>{{ armas.message }}</h3></div>
+          {% endif %}          
+
+        </div>
+	{% else %}
+	        <table class="display" id="tablas">
+                <thead>
+                    <tr>
+                    {% if PermisoDetalle.NOMINALSDETAILS == 1 %}
+                        <th>Opciones</th>
+                    {% endif %}
+                        <th>Nombre/s</th>      
+                        <th>Apellido/s</th>
+                        <th>Fecha Nacimiento</th>
+                        {% if app.request.get('lstTipoCons') == 'AD' %}
+                        	<th title="A menor puntaje mayor correspondencia con los datos de b&uacute;squeda">Puntaje [Raz&oacute;n]</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+{{ dump( armas ) }}
+                </tbody>
+            </table>
+        {% endif %}
+		</div>
+    	</div>
+		
+		<div class="modal fade" id="MensajeConfirmacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header modal-header-danger">
+						<h5 class="modal-title text-center" id="exampleModalLabel"><b>Confirmación</b></h5>
+					</div>
+					<div class="modal-body text-center" id="dvMensaje"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default res"
+							data-dismiss="modal">Cancelar</button>
+						<button type="button" class="btn btn-danger res" data-dismiss="modal" onClick="mostrarDetalle();">Aceptar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+   	</div>
+	</div>
+	</div>
+
+</form>
+<script languaje="javascript">
+    $(document).ready(function () {
+        table = $('#tablas').DataTable({
+                    "scrollY": "600px",
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": false,
+                    "info": false,
+                    responsive: true,
+                    "filter": true,
+                    "order": [[0, "asc"]],
+                    "oLanguage": {
+						"sSearch":         "Buscar:",
+						"sEmptyTable": 	   '<div class="alert alert-success"><strong>OK: No se encontraron registros.</strong></div>',			
+						"sProcessing":     "Procesando...",
+						"sLengthMenu":     "Mostrar _MENU_ registros",
+						"sZeroRecords":    "No se encontraron resultados.",
+						"sInfo":           "Mostrando registros del: _START_ al _END_ (de un total de _TOTAL_ registros)",
+						"sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+						"sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+						"sInfoPostFix":    "",
+						"sUrl":            "",
+						"sInfoThousands":  ",",
+						"sLoadingRecords": "Cargando..."
+					}
+                });
+    });
+
+    function confirmaDetalle( pApellido, pNombre, pFechaNac, pEntity ){
+		$("#txtEntity").val( pEntity );
+    	$('#dvMensaje').html( "¿Est&aacute; seguro de que quiere consultar los datos de <b>" + pApellido + ", " + pNombre + "</b>, fecha de nacimiento: <b>"+pFechaNac+"</b>?<br/><br/><b>ESTA ACCI&Oacute;N PUEDE GENERAR ALARMAS</b>." );
+    	$('#MensajeConfirmacion').modal( 'show' );
+    }	//	function mostrarDivDetalle(){
+
+	function mostrarDetalle( ){
+		if( $( "#txtEntity" ).val() == ""){
+			alert("Para ver el detalle debe seleccionar un renglón haciendo click en la lupa del mismo.");
+			return false;
+		}	//	if( $( "#txtEntity" ).val() == ""){
+		$( "form" ).submit();
+	}	//	function mostrarDetalle( ){
+
+    $( "#btnReintentar" ).click(function() { 
+    	location.reload();
+    });	
+
+</script>
+{% endblock %}

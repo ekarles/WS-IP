@@ -1,0 +1,334 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %} {% block body -%}
+<form id="frm" method="GET" action="{{ path('usuario') }}">
+	<div class="container" width="100%">
+		<div class="row text-center">
+			<h1>Interpol - Usuarios</h1>
+		</div>
+		
+		{% set queryParams = app.request.query.all|merge(app.request.attributes.get('_route_params')) %}
+		{% set queryParams = queryParams | filter((v, k) => k != 'accion') | filter((v, k) => k != 'tablaAlarmas_length') | filter((v, k) => v != '') %}
+
+		<div id="panelconsulta" class="col-xs-12 col-md-12" style="margin-bottom: 2%;">
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<a class="btn btn-info res mb-2" href="javascript:busquedaAmpliada()" {% if queryParams|length == 0 %}title="Ver m&aacute;s opciones de b&uacute;squeda"{% else %}title="Ocultar opciones de b&uacute;squeda"{% endif %}>
+						<b>B&uacute;squeda Ampliada</b> <i id="arrowSearch" {% if queryParams|length == 0 %}class="fa fa-arrow-down"{% else %}class="fa fa-arrow-up"{% endif %}></i>
+					</a>
+					&nbsp;
+					<div _ngcontent-ktt-12="" class="pull-right">
+                        <a class="btn btn-success res mb-2" title="Nuevo" href="{{path('usuario_new')}}">
+	                       	<i class="fa fa-plus"> Nuevo</i>
+	                   	</a>
+                    </div>
+					<div _ngcontent-ktt-12="" class="pull-right">
+                        <a class="btn btn-default res mb-2" href="javascript:exportar()" id="exportarCsv" style="margin-right:10px;" title="Exportar CSV">
+	                       	<i class="fas fa-file-excel" style="color:green;"> Exportar CSV</i>
+	                   	</a>
+                    </div>	
+				</div>
+				<div class="panel-body">
+					<div id="dvBusqueda" class="container" {% if queryParams|length == 0 %}style="display:none;"{% endif %}>
+						<input type="hidden" id="accion" name="accion" value="{{app.request.get( "accion")}}" class="form-control">
+						<div class="row" style="margin-bottom:5px;">
+							<div class="col-sm-3 mb-2">
+								<label>Usuario</label> <input type="text" id="txtUsuario"
+									name="txtUsuario" value="{{app.request.get( "txtUsuario")}}"
+									class="form-control">
+							</div>
+							<div class="col-sm-3 mb-2">
+								<label>Nombre</label> <input type="text" id="txtNombre"
+									name="txtNombre" value="{{app.request.get( "txtNombre")}}"
+									class="form-control">
+							</div>
+							<div class="col-sm-3 mb-2">
+								<label>Apellido</label> <input type="text" id="txtApellido"
+									name="txtApellido" value="{{app.request.get( "txtApellido")}}"
+									class="form-control">
+							</div>
+							<div class="col-sm-3 mb-2">
+								<label>Estado</label> 
+								<select id="optEstado"
+									name="optEstado"
+									class="form-control">
+									<option value=""></option>
+									<option value="A">Activo</option>
+									<option value="I">Inactivo</option>
+									<option value="B">Borrado</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">	
+							<div class="col-sm-3">
+								<label>Dependencia</label> <input type="hidden" id="txtIdDependencia" name="txtIdDependencia">
+								<input type="text" id="txtDependencia" name="txtDependencia" value="{{app.request.get( "txtDependencia")}}" class="form-control">
+							</div>
+							<div class="col-sm-3 mb-2">
+								<label>Fecha Alta Desde</label> <input type="date" id="txtFechaDesde"
+									name="txtFechaDesde" value="{{app.request.get( "txtFechaDesde")}}" 
+									class="form-control">
+							</div>
+							<div class="col-sm-3 mb-2">
+								<label>Fecha Alta Hasta</label> <input type="date" id="txtFechaHasta"
+									name="txtFechaHasta" value="{{app.request.get( "txtFechaHasta")}}" 
+									class="form-control">
+							</div>
+							<div class="col-sm-3 mb-2">
+								<label>Perfiles</label> 
+								<select id="optPerfiles" name="optPerfiles[]" class="selectpicker form-control" multiple="true">
+									<option value=""></option>
+									{% for perfil in perfiles %}
+									<option value="{{perfil.id}}" {{ perfil.id in app.request.get( "optPerfiles") ? 'selected' : '' }}>{{perfil.nombre}}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+						<div class="row col-sm-12 col-md-12">
+							<div>&nbsp;</div>
+							<div>&nbsp;</div>
+						</div>
+						<div class="col-sm-4 col-md-4">
+							<button class="btn btn-info col-xs-12" data-toggle="tooltip"
+								id="consultar" title="" type="button" data-placement="bottom"
+								data-original-title="Consultar">
+								<div class="hidden-xs hidden-sm">Consultar</div>
+								<div class="hidden-md hidden-lg">
+									<i class="fa fa-search" aria-hidden="true"></i>
+								</div>
+							</button>
+							<button id="sendForm" type="submit" class="hide"></button>
+						</div>
+						<div class="row col-sm-4 col-md-4">
+							<div>&nbsp;</div>
+							<div>&nbsp;</div>
+						</div>
+						<div class="col-sm-4 col-md-4">
+							<button class="btn btn-default col-xs-12" data-toggle="tooltip"
+								title="" id="limpiar" type="button" onclik="limpiarForm"
+								data-placement="bottom"
+								data-original-title="Limpiar Parámetros de Búsqueda">
+								<div class="hidden-xs hidden-sm">Limpiar Búsqueda</div>
+								<div class="hidden-md hidden-lg">
+									<i class="fa fa-undo" aria-hidden="true"></i>
+								</div>
+							</button>
+						</div>
+						<div class="row col-sm-12 col-md-12">
+							<div>&nbsp;</div>
+							<div>&nbsp;</div>
+						</div>
+					</div>	
+					<div class="row text-center">
+						<h4><strong>Total: {{cant}} Usuario{{ cant>1 ? 's' : '' }}</strong></h4>
+					</div>
+					<div class="col-sm-12 col-md-12">
+						<table id="tablaAlarmas" class="table-bordered table-striped mb-0">
+                            <thead>
+                                <tr style='text-align:center' bgcolor="#e9e9e9">
+                                	<th style='text-align:center'>Nombre</th>
+                                	<th style='text-align:center'>Apellido</th>
+                                	<th style='text-align:center'>Usuario</th>
+                                	<th style='text-align:center'>Jerarqu&iacute;a</th>
+                                	<th style='text-align:center'>Dependencia</th>
+                                    <th style='text-align:center;'>Perfiles</th>
+                                    <th style='text-align:center'>Fecha Alta</th>
+                                    <th style='text-align:center'>Estado</th>
+                                    <th style='text-align:center'>Cant. Consultas</th>
+                                    <th style='text-align:center'>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in usuarios %}
+                                    <tr {{ usuario.borrado ? 'class="text-danger" style="font-weight:bold"' : usuario.activo ? '' : 'class="text-warning" style="font-weight:bold"'}}>
+                                        <td align="center">{{ usuario.nombre }}</td>
+                                        <td align="center">{{ usuario.apellido }}</td>
+                                        <td align="center">{{ usuario.usuario }}</td>
+                                        <td align="center">{{ usuario.jerarquia }}</td>
+                                        <td align="center">{{ usuario.depenid }}</td>
+                                        <td align="left">
+                                        	{% if usuario.perfilid |length > 0 %}
+	                                        	{% for perfil in usuario.perfilid %}
+	                                        		<div style="background-color:{{ loop.index is divisible by(2) ? '#dbdbdb;' : '#eee;' }}">{{perfil.nombre}}</div>
+	                                        	{% endfor %}
+                                        	{% endif %}
+                                        </td>
+                                        <td align="center">{{ usuario.fechaalta!=null ? usuario.fechaalta|date('Y-m-d') : '' }}</td>
+                                        <td align="center">{{ usuario.borrado ? 'Borrado' : usuario.activo ? 'Activo' : 'Inactivo'}}</td>
+                                        <td align="center">{{ usuario.cantPersona+usuario.cantDocumento+usuario.cantVehiculo+usuario.cantCombinada+usuario.cantLote }}</td>
+                                        <td align="right">
+                                        		<a class="btn btn-primary res" title="Perfiles" href="{{path('usuario_edit_perfiles',{'id':usuario.id})}}">
+	                                            	<i class="fa fa-tasks"> Perfiles</i>
+	                                        	</a>
+                                        	{% if usuario.borrado %}
+                                        		<a class="btn btn-success res" title="Recuperar" href="{{path('usuario_borrar',{'id':usuario.id,'opcion':false})}}">
+	                                            	<i class="fas fa-user-plus"> Recuperar</i>
+	                                        	</a>
+                                        	{% elseif not usuario.activo %}
+                                        		<a class="btn btn-success res" title="Activar" href="{{path('usuario_activar',{'id':usuario.id,'opcion':true})}}">
+	                                            	<i class="fas fa-user-check"> Activar</i>
+	                                        	</a>
+                                        	{% else %}
+	                                        	<a class="btn btn-danger res" title="Borrar" href="{{path('usuario_borrar',{'id':usuario.id,'opcion':true})}}">
+	                                            	<i class="fas fa-trash-alt"> Borrar</i>
+	                                        	</a>
+	                                        	<a class="btn btn-warning res" title="Desactivar" href="{{path('usuario_activar',{'id':usuario.id,'opcion':false})}}">
+	                                            	<i class="fas fa-user-slash"> Desactivar</i>
+	                                        	</a> 
+                                        	{% endif %}
+                                        		<a class="btn btn-info res" title="Editar" href="{{path('usuario_edit',{'id':usuario.id})}}">
+	                                            	<i class="fa fa-edit"> Editar</i>
+	                                        	</a>                                      	
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                                            
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<script>
+	$(document).ready(function () {
+        
+		$('#cerrarMenu').click();
+		
+		if ($(window).width() < 600) {
+			$("#panelconsulta").attr("style","margin-bottom:2%;");
+		}else{
+			$("#panelconsulta").attr("style","margin-left:0%;margin-bottom:2%;");
+		}
+
+		$("#optEstado").val('{{app.request.get( "optEstado")}}').change();
+		
+		$("#optPerfiles").selectpicker({
+	        noneSelectedText : 'Seleccionar perfiles'
+	    });
+		
+			
+		$("#consultar").click(function(){
+			$("#accion").val("busqueda");
+			$("#frm").attr('action',"{{ path('usuario') }}");
+			$("#sendForm").click();
+		});
+
+		{% if app.request.get( "busqueda")=='SI' or app.request.get( "page")!='' %}
+			$(window).scrollTop($('#panelconsulta').offset().top);
+		{% endif %}
+				
+		
+		$('#limpiar').click(function () {
+		    $("#txtUsuario").val("");
+		    $("#txtNombre").val("");
+		    $("#txtApellido").val("");
+		    $("#txtFechaDesde").val("");
+		    $("#txtFechaHasta").val("");
+		    $("#txtDependencia").val("");
+		    $("#optEstado").val("").change();
+		    $("#optPerfiles option:selected").removeAttr("selected").change();
+		});
+
+	    $('.pagination a').attr('class', 'btn btn-default');
+        $('.pagination li').css('float', 'left');
+        $('.pagination .active span').attr('class', 'btn btn-info');
+        $('.pagination .prev span').attr('class', 'btn btn-default disabled');
+        $('.pagination .next span').attr('class', 'btn btn-default disabled');
+
+        
+
+        $('#tablaAlarmas').DataTable({
+        	"scrollY": "600px",
+        	"scrollX": true,
+            "filter": true,
+            "paging": true,
+            "info": true,
+            "order": [[ 6, 'desc' ]],
+            "scrollCollapse": true,
+            "responsive": true,
+            "columnDefs": [ {
+            	"targets": 9,
+            	"orderable": false
+            	} ],	
+            "oLanguage": {
+				"sSearch": 		   "Buscar en registros visibles:",
+				"sEmptyTable": 	   '<div class="alert alert-seccondary"><i class="fa fa-info-circle" style="font-size: 20px"></i> <span style="font-size: 20px;"> No existen usuarios con los parámetros de búsqueda ingresados.</span></div>',			
+				"sProcessing":     "Procesando...",
+				"sLengthMenu":     "Mostrar _MENU_ registros",
+				"sZeroRecords":    "No se encontraron resultados",
+				"sInfo":           "Mostrando registros del _START_ al _END_ de _TOTAL_ registros ",
+				"sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+				"sInfoFiltered":   "filtrados de un total de _MAX_ registros",
+				"sInfoPostFix":    "",
+				"sUrl":            "",
+				"sInfoThousands":  ",",
+				"sLoadingRecords": "Cargando...",
+				"columnDefs": [ {
+	            	"targets": 8,
+	            	"orderable": false
+	            	} ],
+				"oPaginate": {
+                    "sFirst":    "Pri",
+                    "sLast":     "Ult",
+                    "sNext":     "Sig",
+                    "sPrevious": "Ant"
+                	}
+			}
+        });
+
+        $("#txtDependencia").autocomplete({
+            source: function( request, response ) {
+              $.ajax({
+                url: "{{ path('dependencia_autocompletar') }}",
+                dataType: "json",
+                data: {
+                  term: request.term
+                },
+                success: function( data ) {
+                  response(data);
+                }
+              });
+            },
+            minLength: 3,
+            select: function( event, ui ) {
+          	  $("#txtIdDependencia").val(ui.item.id);
+      		  $("#txtDependencia").val(ui.item.nombre);
+            },
+            open: function() {
+              $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+            },
+            close: function() {
+              $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+            },
+            messages: {
+                noResults: 'No se encontr\u00F3 ning\u00FAn resultado.',
+                results: function(amount) {
+                    return 'Se encontraron ' + amount + ' resultados. Use las teclas arriba y abajo para navegar.'
+                }
+            }
+         });
+	     
+	});
+	
+	
+	function exportar(){	
+		$("#accion").val("csv");
+		$("#frm").attr('target',"_blank");
+		$("#sendForm").click();
+		$("#accion").val("");
+		$("#frm").removeAttr('target');
+	}
+	
+	function busquedaAmpliada(){
+		if($("#arrowSearch").hasClass("fa-arrow-down")){
+			$("#arrowSearch").addClass("fa-arrow-up").removeClass("fa-arrow-down");
+			$("#arrowSearch").parent().removeAttr("title").attr("title","Ocultar opciones de b\u00FAsqueda.");
+		}else{
+			$("#arrowSearch").addClass("fa-arrow-down").removeClass("fa-arrow-up");
+			$("#arrowSearch").parent().removeAttr("title").attr("title","Ver m\u00E1s opciones de b\u00FAsqueda.");
+		}
+		$("#dvBusqueda").slideToggle("slow");
+	}
+
+</script>
+{% endblock %}

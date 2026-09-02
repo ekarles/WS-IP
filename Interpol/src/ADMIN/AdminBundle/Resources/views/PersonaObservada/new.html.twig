@@ -1,0 +1,78 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+{% block body -%}
+	<div class="row text-center">
+		<h1>Nuevo Aviso de Movimientos</h1>
+	</div>
+	{{ form_start(form) }}
+	<div class="col-xs-12 col-md-12" style="margin-bottom: 2%;">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div class="container">
+					<button type="submit" class="btn btn-success pull-right">Guardar</button>
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('gestion_personaobservada') }}">
+		                Volver
+		            </a>
+	            </div>
+			</div>
+			<div class="panel-body">
+				<div class="col-sm-12 col-md-12">
+                   	<div class="row">
+			            <div class="col-md-6">
+			                {{ form_label(form.apellido) }}
+		                    {{ form_widget(form.apellido) }}
+		                    {{ form_errors(form.apellido) }}
+			            </div>
+			            <div class="col-md-6">
+			                {{ form_label(form.nombre) }}
+		                    {{ form_widget(form.nombre) }}
+		                    {{ form_errors(form.nombre) }}
+			            </div>
+			        </div>
+			        <div class="row">
+			            <div class="col-md-6">
+			            	{{ form_label(form.fechaNacimiento) }}
+		                    {{ form_widget(form.fechaNacimiento) }}
+		                    {{ form_errors(form.fechaNacimiento) }}
+			            </div>
+			        </div>
+			        <div class="row">
+			            <div class="col-md-6">
+			            	{{ form_label(form.fecDesde) }}
+		                    {{ form_widget(form.fecDesde) }}
+		                    {{ form_errors(form.fecDesde) }}
+			            </div>
+			            <div class="col-md-6">
+			            	{{ form_label(form.fecHasta) }}
+		                    {{ form_widget(form.fecHasta) }}
+		                    {{ form_errors(form.fecHasta) }}
+			            </div>
+			        </div>
+			        <div class="row">
+		            	<div class="col-md-12">
+		                    {{ form_label(form.mail) }}
+		                    {{ form_widget(form.mail) }}
+		                    {{ form_errors(form.mail) }}
+		                </div>
+		            </div>
+				</div>
+		</div>
+			<div class="panel-footer">
+	            <div class="container">
+	                <button type="submit" class="btn btn-success pull-right">Guardar</button>
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('gestion_personaobservada') }}">
+		                Volver
+		            </a>
+	            </div>
+	        </div>
+		</div>
+	</div>
+	<script>
+	</script>
+	{{ form_end(form) }}
+
+<script>
+	$(document).ready(function () {
+	});
+</script>
+
+{% endblock %}

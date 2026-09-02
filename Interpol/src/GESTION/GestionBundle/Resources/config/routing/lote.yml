@@ -1,0 +1,27 @@
+lote:
+    path:     /
+    defaults: { _controller: "GESTIONGestionBundle:Lote:index" }
+    
+lote_show:
+    path:     /loteshow
+    defaults: { _controller: "GESTIONGestionBundle:Lote:show" }
+    
+lote_alta:
+    path:     /lotealta
+    defaults: { _controller: "GESTIONGestionBundle:Lote:alta" }
+
+lote_procesar:
+    path:     /loteprocesar
+    defaults: { _controller: "GESTIONGestionBundle:Lote:procesar" }
+    
+lote_obtener_respuestas:
+    path:     /loteobtenerrespuestas
+    defaults: { _controller: "GESTIONGestionBundle:Lote:obtenerRespuestas" }    
+    
+lote_getresultados:
+    path:     /lotegetresultados
+    defaults: { _controller: "GESTIONGestionBundle:Lote:getResultados" }  
+    
+lote_actualizar_tabla:
+    path:     /loteactualizartabla
+    defaults: { _controller: "GESTIONGestionBundle:Lote:actualizarTabla" }

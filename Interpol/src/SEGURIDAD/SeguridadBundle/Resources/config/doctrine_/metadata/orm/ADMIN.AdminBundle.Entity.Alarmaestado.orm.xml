@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="ADMIN\AdminBundle\Entity\Alarmaestado" table="ALARMAESTADO">
+    <id name="estadoid" type="integer" column="ESTADOID">
+      <generator strategy="SEQUENCE"/>
+    </id>
+    <field name="nombre" type="string" column="NOMBRE" length="255" precision="0" scale="0" nullable="true"/>
+  </entity>
+</doctrine-mapping>

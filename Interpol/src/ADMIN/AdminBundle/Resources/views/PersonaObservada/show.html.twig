@@ -1,0 +1,86 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+
+{% block body -%}
+	<div class="row text-center">
+		{% if confirm %}
+		<h1>Deshabilitar Aviso de Movimientos</h1>
+		{% else %}
+		<h1>Aviso de Movimientos</h1>
+		{% endif %}
+	</div>
+	{% set is_admin = false %} 
+	{% for perfil  in app.user.perfilid %}
+		{% if perfil.id == 1 %}
+			{% set is_admin = true %}
+		{% endif  %}
+	{% endfor %}
+	{{ form_start(delete_form) }}
+	<div class="col-xs-12 col-md-12" style="margin-bottom: 2%;">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				{% if confirm %}
+				<b>Confirma que desea deshabilitar a la persona</b><i class="fa fa-question"></i>
+				{% else%}
+				&nbsp;
+				{% endif %}	
+					<div _ngcontent-ktt-12="" class="pull-right">
+					{% if confirm %}
+					<button type="submit" class="btn btn-danger pull-right" >Deshabilitar</button>
+					{% endif %}
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('gestion_personaobservada') }}">
+		                Volver
+		            </a>
+                    </div>
+			</div>
+			<div class="panel-body">
+				<div class="col-sm-12 col-md-12">
+                   	<div class="row">
+                   		<div class="col-md-6" >
+			                <div class="col-md-3 alert alert-secondary" role="alert">Id</div>
+			                <div class="col-md-6 alert alert-secondary" role="alert">{{ entity.id }}</div>
+			            </div>
+			            <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Apellido</div>
+			                <div class="col-md-6 alert alert-secondary">{{ entity.apellido }}</div>
+			            </div>
+			        	<div class="col-md-6" >
+			                <div class="col-md-3 alert alert-secondary">Nombre</div>
+			                <div class="col-md-6 alert alert-secondary">{{ entity.nombre }}</div>
+			            </div>
+			            <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Fecha Nacimiento</div>
+			                <div class="col-md-6 alert alert-secondary">{{ entity.fechaNac|slice(6,2) ~ '/' ~ entity.fechaNac|slice(4,2) ~ '/' ~ entity.fechaNac|slice(0,4) }}</div>
+			            </div>
+			            <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Fecha Desde</div>
+			                <div class="col-md-6 alert alert-secondary">{{ entity.fecDesde|date('d/m/Y') }}</div>
+			            </div>
+			            <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Fecha Hasta</div>
+			                <div class="col-md-6 alert alert-secondary">{{ entity.fecHasta|date('d/m/Y') }}</div>
+			            </div>
+			            {% if is_admin %}
+			            <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Dependencia</div>
+			                <div class="col-md-6 alert alert-secondary">{{ entity.dependencia }}</div>
+			            </div>
+			            {% endif %}
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer">
+	            <div class="container">
+	            	{% if confirm %}
+	                <button type="submit" class="btn btn-danger pull-right" >Deshabilitar</button>
+					{% endif %}
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('gestion_personaobservada') }}">
+		                Volver
+		            </a>
+	            </div>
+	        </div>
+		</div>
+	</div>
+	<script>
+	</script>
+    {{ form_end(delete_form) }}
+{% endblock %}

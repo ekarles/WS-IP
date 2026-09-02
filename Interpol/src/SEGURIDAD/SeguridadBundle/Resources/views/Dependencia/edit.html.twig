@@ -1,0 +1,151 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %} 
+{% block body -%}
+	<div class="row text-center">
+		<h1>Editar Dependencia</h1>
+	</div>
+	{{ form_start(edit_form) }}
+	<div class="col-xs-12 col-md-12" style="margin-bottom: 2%;">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div class="container">
+					<button type="submit" class="btn btn-success pull-right" id="btnGuardarA">Guardar</button>
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('admin_dependencia') }}">
+		                Volver
+		            </a>
+	            </div>
+			</div>
+			<div class="panel-body">
+				<div class="col-sm-12 col-md-12">
+                   	<div class="row">
+                   		<div class="col-md-6">
+		                    {{ form_label(edit_form.codigo) }}
+		                    {{ form_widget(edit_form.codigo) }}
+		                    {{ form_errors(edit_form.codigo) }}
+		                </div>
+                   		<div class="col-md-6">
+		                    {{ form_label(edit_form.nombre) }}
+		                    {{ form_widget(edit_form.nombre) }}
+		                    {{ form_errors(edit_form.nombre) }}
+		                </div>
+                   		<div class="col-md-6">
+		                    {{ form_label(edit_form.contacto) }}
+		                    {{ form_widget(edit_form.contacto) }}
+		                    {{ form_errors(edit_form.contacto) }}
+		                </div>
+                   		<div class="col-md-6">
+		                    {{ form_label(edit_form.direccion) }}
+		                    {{ form_widget(edit_form.direccion) }}
+		                    
+		                    {{ form_errors(edit_form.direccion) }}
+		                </div>
+		                <div class="col-md-6">
+		                    {{ form_label(edit_form.latitud) }}
+		                    {{ form_widget(edit_form.latitud) }}
+		                    {{ form_errors(edit_form.latitud) }}
+		                </div>
+                   		<div class="col-md-6">
+		                    {{ form_label(edit_form.longitud) }}
+		                    {{ form_widget(edit_form.longitud) }}
+		                    {{ form_errors(edit_form.longitud) }}
+		                </div>
+                   		<div class="col-md-6">
+		                    {{ form_label(edit_form.maximousuarios) }}
+		                    {{ form_widget(edit_form.maximousuarios) }}
+		                    {{ form_errors(edit_form.maximousuarios) }}
+		                </div>
+		                <div class="col-md-6">
+		                    {{ form_label(edit_form.minaviso) }}
+		                    {{ form_widget(edit_form.minaviso) }}
+		                    {{ form_errors(edit_form.minaviso) }}
+		                </div>
+                   		<div class="col-md-6">
+		                    {{ form_label(edit_form.orden) }}
+		                    {{ form_widget(edit_form.orden) }}
+		                    {{ form_errors(edit_form.orden) }}
+		                </div>
+                   		<div class="col-md-6">
+		                    {{ form_label(edit_form.tipo) }}
+		                    {{ form_widget(edit_form.tipo) }}
+		                    {{ form_errors(edit_form.tipo) }}
+		                </div>
+                   		<div class="col-md-6">
+		                    {{ form_label(edit_form.institucionid) }}
+		                    {{ form_widget(edit_form.institucionid) }}
+		                    {{ form_errors(edit_form.institucionid) }}
+		                </div>
+		                <div class="col-md-6">
+		                    {{ form_label(edit_form.borrado) }}
+		                    {{ form_widget(edit_form.borrado) }}
+		                    {{ form_errors(edit_form.borrado) }}
+		                </div>
+		            </div>
+		            <div class="row">
+		            	<div class="col-md-12">
+		                    {{ form_label(edit_form.observaciones) }}
+		                    {{ form_widget(edit_form.observaciones) }}
+		                    {{ form_errors(edit_form.observaciones) }}
+		                </div>
+		            </div>
+		            <div class="row">
+		            	<div class="col-md-12">
+		                    {{ form_label(edit_form.mail) }}
+		                    {{ form_widget(edit_form.mail) }}
+		                    {{ form_errors(edit_form.mail) }}
+		                </div>
+		            </div>
+		            <br>        
+				</div>
+			</div>
+			<div class="panel-footer">
+	            <div class="container">
+	                <button type="submit" class="btn btn-success pull-right" id="btnGuardarB">Guardar</button>
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('admin_dependencia') }}">
+		                Volver
+		            </a>
+	            </div>
+	        </div>
+		</div>
+	</div>
+	<script>
+	</script>
+	{{ form_end(edit_form) }}
+<script>
+	$(document).ready(function () {
+        
+		$("#btnGuardarA").click(function(){
+			return tratarLatitudLongitud();
+		});
+
+		$("#btnGuardarB").click(function(){
+			return tratarLatitudLongitud();
+		});
+
+   
+	});
+	
+	function tratarLatitudLongitud(){
+	
+		var sLatitud = $("#seguridad_seguridadbundle_dependencia_latitud").val();
+		var sLongitud = $("#seguridad_seguridadbundle_dependencia_longitud").val();
+		
+		sLatitud  = sLatitud.replace(",", ".");
+		sLongitud = sLongitud.replace(",", ".");
+		$("#seguridad_seguridadbundle_dependencia_latitud").val(sLatitud);
+		$("#seguridad_seguridadbundle_dependencia_longitud").val(sLongitud);
+		
+		if( isNaN( sLatitud  ) ){
+			alert("Valor no válido en campo latitud.");
+			$("#seguridad_seguridadbundle_dependencia_latitud").focus();
+			return false
+		}
+		
+		if( isNaN( sLongitud ) ){
+			alert("Valor no válido en campo longitud.");
+			$("#seguridad_seguridadbundle_dependencia_longitud").focus();
+			return false
+		}
+		return true;
+	}
+
+</script>
+{% endblock %}

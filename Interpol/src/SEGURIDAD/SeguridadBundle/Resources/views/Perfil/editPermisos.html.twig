@@ -1,0 +1,54 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %} 
+
+{% block body -%}
+	<div class="row text-center">
+		<h1>Permisos para el perfil <strong>{{entity}}</strong></h1>
+	</div>
+	{{ form_start(edit_form) }}
+	<div class="col-xs-12 col-md-12" style="margin-bottom: 2%;">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div class="container">
+					<button type="submit" class="btn btn-success pull-right">Guardar</button>
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('admin_perfil') }}">
+		                Volver
+		            </a>
+	            </div>
+			</div>
+			<div class="panel-body">
+			    {{ form_widget(edit_form.permisoid)}}
+	            {{ form_errors(edit_form.permisoid) }}
+			</div>
+			<div class="panel-footer">
+	            <div class="container">
+	                <button type="submit" class="btn btn-success pull-right">Guardar</button>
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('admin_perfil') }}">
+		                Volver
+		            </a>
+	            </div>
+	        </div>
+		</div>
+	</div>
+	{{ form_end(edit_form) }}
+
+	<script>
+		$(document).ready(function(){
+			$("form :input[type='checkbox']").each(function(){
+				$(this).wrap('<ul class="list-group"><div class="col-md-6"><li class="list-group-item"><div class="nombre"><div class="squaredFour" style="text-align:center;"></div></li></div></ul>').after($("label[for='"+$(this).attr("id")+"']"));
+			});
+			
+			$("label").css('margin-top','20px');
+			
+			var altura = 0;
+			
+			$(".squaredFour").each(function(){
+				if($(this).height() > altura){
+					altura = $(this).height();
+				}
+			});
+			
+			$(".squaredFour").css('height',altura+'px');
+		});
+	</script>
+	
+{% endblock %}
