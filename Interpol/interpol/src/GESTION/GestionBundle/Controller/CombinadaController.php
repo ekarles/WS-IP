@@ -134,6 +134,14 @@ class CombinadaController extends Controller
             //  ESTA SITUACIÓN HACE QUE NO SE REALICE EL RENDER DE LA PÁGINA, POR LO TANTO SOLO CAMBIAMOS EL OBJETO VACÍO POR EL
             //  VALOR "NO DATA", CONTEMPLANDO QUE ADEMÁS DE ESTE CASO PUDIERA INFORMARSE UN OBJETO CON NOMBRES.
             //  SI HUBO UN ERROR ($nominals["ERROR"]) NO HAY FILAS QUE RECORRER
+            //  LA LISTA DE PERSONAS DEBE SER PLANA (UN OBJETO POR FILA): SI LA RESPUESTA TRAJO UNA LISTA DENTRO DE OTRA
+            //  (UN SOLO RESULTADO EN INVESTIGACIÓN O LA LISTA DE CONTROL FRONTERIZO) SE USA LA LISTA INTERNA.
+            if (is_array($nominals) && !isset($nominals["ERROR"]) && isset($nominals[0]) && is_array($nominals[0])) {
+                $nominals = $nominals[0];
+            } elseif (is_object($nominals)) {
+                $nominals = [$nominals];
+            }
+
             $nominalsFilas = isset($nominals["ERROR"]) ? [] : $nominals;
 
             foreach ($nominalsFilas as $claveFila => $valorFila) {

@@ -8,6 +8,7 @@ require_once('DNMResponse.php');
 /**
  * Description of ConexionInti
  *
+ * 
  */
 class Conexion {
     
@@ -22,6 +23,8 @@ class Conexion {
     private $response;
     private $javaTime = array();
     private $t_ini;
+    private $version;
+    
     
     //Setter y Getters
     public function getAmbiente()
@@ -162,6 +165,25 @@ class Conexion {
             /* Fin validacion de parametros */
             
             $inti = new Inti();
+            
+            $consulta->NRecord = "100";
+            
+            unset($consulta->usuarioGenerico);
+            unset($consulta->passGenerico);
+            unset($consulta->fechaConsulta);
+            unset($consulta->tipoConsulta);
+
+            foreach ($consulta as $clave => $valor) {
+                if (is_null($valor)) {
+                    $consulta->$clave = "";
+                }
+            }
+            
+            $consulta->user = !empty($consulta->user)?$consulta->user:$consulta->usuario;
+            $consulta->DIN = !empty($consulta->DIN)?$consulta->nroDoc:$consulta->nroDoc;
+            $consulta->version = !empty($consulta->version)?$consulta->version:$inti->getVersion();
+            $consulta->tipoProceso = 'ONLINE';
+            
             $inti->setConsulta($consulta);
             
             $intiNOMINALS = clone $inti;
@@ -182,6 +204,7 @@ class Conexion {
             $t_fin =microtime(true);
             
             $intervalTotal = number_format(($t_fin-$this->t_ini),3)*1000;
+           
             
             if(is_object($intiNOMINALS->getRespuesta()) && $intiNOMINALS->getAccion()=='NOMINALSEXACT'){  // Si es EXACTA y es un objeto es un resultado positivo => consulto el detalle (genera alarma en Interpol)
                 return $this->obtenerDetalle($intiNOMINALS,$intiNOMINALS->getAccion(),$intiNOMINALS->getRespuesta());
@@ -408,6 +431,7 @@ class Conexion {
             
             $response = curl_exec($curl);
             $err = curl_error($curl);
+            //$code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             
             curl_close($curl);
             
@@ -471,6 +495,7 @@ class Conexion {
             
             $response = curl_exec($curl);
             $err = curl_error($curl);
+            //$code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             
             curl_close($curl);
             

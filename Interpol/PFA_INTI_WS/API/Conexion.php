@@ -8,7 +8,7 @@ require_once('DNMResponse.php');
 /**
  * Description of ConexionInti
  *
- * @author PFA28266521
+ * 
  */
 class Conexion {
     
@@ -166,12 +166,6 @@ class Conexion {
             
             $inti = new Inti();
             
-            $version = (isset($parametrosConsulta->version) && $parametrosConsulta->version != '')
-            ? $parametrosConsulta->version
-            : '1.1';
-            
-            $inti->setVersion($version);
-            
             $consulta->NRecord = "100";
             
             unset($consulta->usuarioGenerico);
@@ -184,6 +178,11 @@ class Conexion {
                     $consulta->$clave = "";
                 }
             }
+            
+            $consulta->user = !empty($consulta->user)?$consulta->user:$consulta->usuario;
+            $consulta->DIN = !empty($consulta->DIN)?$consulta->nroDoc:$consulta->nroDoc;
+            $consulta->version = !empty($consulta->version)?$consulta->version:$inti->getVersion();
+            $consulta->tipoProceso = 'ONLINE';
             
             $inti->setConsulta($consulta);
             

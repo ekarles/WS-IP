@@ -16,8 +16,8 @@ class Ambiente {
     private $sistema;
     private $origen;
     private $hostFrontEnd;
+    private $version;
     private $modoDnm;
-
     
     
     //Getters y Setters
@@ -77,6 +77,14 @@ class Ambiente {
         $this->modoDnm = $modoDnm;
     }
     
+    public function getVersion() {
+        return $this->version;
+    }
+    
+    private function setVersion($version) {
+        $this->version = $version;
+    }
+    
            
     //Constructor
     function __construct() {
@@ -88,6 +96,7 @@ class Ambiente {
 //         $this->setSistema2(SISTEMA_INTI_1_2);
         $this->setHostFrontEnd(HOST_FRONT_END);
         $this->setModoDnm(MODO_DNM);
+        $this->setVersion(WS_INTI_BACKEND_VERSION);
     }
     
     

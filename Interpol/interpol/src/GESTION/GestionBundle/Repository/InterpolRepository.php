@@ -235,31 +235,8 @@ class InterpolRepository extends ConsultaCurl
 
         //return json_decode('{"header":{"schema_version":"x.x.1.0.0.0","generator":"IPSG\/nominals.asmx\/search","generator_version":"1.1.8.bc","language_id":"120"},"datas":{"search":{"origin":{"nominal":[{"query_score":{"value":"10","reason":{}},"name":"YDONE CASTILLO","forename":"ALEX ROGER","date_of_birth":"19750817","entityId":"VPBSCRIDB101-31830096439:2025\/80826"},{"query_score":{"value":"10","reason":{}},"name":"YDONE CASTILLO","forename":"ALEX ROGER","date_of_birth":"19750817","entityId":"VPBSCRIDB101-31830096439:2019\/103164"}],"status_id":"NO_ERROR","name":"IPSG"},"query":"\/NAME=YDONE CASTILLO\/FORENAME=ALEX ROGER\/DOB=19750817\/"}}}');
 
-        $respuesta = $this->query('NOMINALSEXACT', $params);
 
-        if ($respuesta === FALSE) {
-            $respuesta = array('NOMINALSEXACT' => array("Error" => "Error de conexión con Interpol"));
-
-        } else if ($respuesta == 'Sin resultados') {
-            $respuesta = array('NOMINALSEXACT' => array("Info" => "Sin datos para mostrar"));
-
-        } else if (isset($respuesta->datas) && $respuesta->datas->search->origin->status_id != 'NO_ERROR') {
-            $respuesta = array('NOMINALSEXACT' => array("Error" => "Error de conexión con Interpol"));
-
-        } else if (isset($respuesta->datas)) {
-            $respuesta = array('NOMINALSEXACT' => $respuesta->datas->search->origin->nominal);
-            $id = $respuesta->datas->search->origin->nominal;
-
-            if (is_array($id)) {
-                $entityId = $id[0]->entityId;
-
-            } else {
-                $entityId = $id->entityId;
-
-            }   //  if (is_array($id)) {
-        }   //  if ($respuesta === FALSE) {
-
-        return ($respuesta);
+        return $this->query('NOMINALSEXACT', $params);
 
     }   //  public function getNOMINALSEXACT(){
 

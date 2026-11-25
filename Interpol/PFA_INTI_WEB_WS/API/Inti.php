@@ -12,7 +12,7 @@ require_once('Modelo/MOK.php');
 /**
  * Description of Inti
  *
- * @author pfa27667140
+ * 
  * SERVICIO FRONTEND DE CONSUMO DEL SERVICIO INTERPOL FRANCIA
  */
 class Inti
@@ -28,16 +28,18 @@ class Inti
     protected $idConsulta;
     protected $intervalQuery = 0;
     // se agraga esto
-    private $version = "1";
-
-
-
+    private $version;
 
     public function setVersion($v)
     {
         $this->version = $v;
     }
 
+    public function getVersion()
+    {
+        return $this->version;
+    }
+    
     //Setter y Getters
     function getConsulta()
     {
@@ -125,6 +127,7 @@ class Inti
         Logger::configure('../Ambiente/config.xml');
         $this->logRoot = Logger::getRootLogger();
         $this->setAmbiente(new Ambiente());
+        $this->version = $this->getAmbiente()->getVersion();
     }
 
     //Metodos
@@ -147,7 +150,8 @@ class Inti
             $this->response(400, "error", "Formato Incorrecto");
             exit();
         }
-        ;
+        
+        $this->setVersion(!empty($consulta->version) ? $consulta->version : $this->version);
 
         if (!isset($consulta->fconsulta) || $consulta->fconsulta == '') {
             $hoy = new DateTime();
@@ -264,7 +268,8 @@ class Inti
             $postFields = json_encode($this->consulta);
 
             $headers = [
-                "Content-Type: application/json"
+                "Content-Type: application/json",
+                'X-Client-Date: ' . date("d-m-Y H:i:s")
             ];
 
         } else if ($this->version == '1') {
@@ -294,6 +299,7 @@ class Inti
         ]);
 
         $response = curl_exec($curl);
+        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $err = curl_error($curl);
         curl_close($curl);
 
@@ -301,15 +307,20 @@ class Inti
             $this->getLogRoot()->trace('ERROR CURL: ' . $err);
             $this->response(500, "error", "Error de Comunicacion: " . $err . " | URL: " . $url);
         } else {
-
             // SWITCH DE RESPUESTA
             if ($this->version == "1.1" || $this->version == "1.2") {
 
                 $decoded = json_decode($response, true);
-
+                
                 if ($this->consulta->origen == 'DNM') {
                     $this->respuesta = $this->obtenerRespuesta2($decoded['respuesta']);
                 } else {
+                    
+                    if($code!=200||$decoded['status']!=200){
+                        $this->response($decoded['status'], $decoded['result'], $decoded['message']);
+                        exit();
+                    }
+                    
                     $this->respuesta = $decoded['respuesta'] ?? $decoded;
                 }
 
@@ -332,15 +343,9 @@ class Inti
         }
     }
 
-
-
-
-
     private function obtenerRespuesta($response)
     {
         //Para tomar los campos traidos desde JAVA
-        echo "respuesta: " . json_encode($response);
-        die();
         if ($this->accion == 'NOMINALSIMAGE') {
             $response = array('imagen' => $this->getResponse($response, 0));
         } else {

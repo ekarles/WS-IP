@@ -95,17 +95,22 @@ class PersonaController extends Controller
             }
 
         } else {
-            //  EN CASO DE NOMINALSEXACT RETORNO UN ARRAY PARA LA POSICIÓN 0, SOLO PARA QUE EL RESTO DE LA INTERFAZ SE COMPORTE EXACTAMENTE IGUAL AL RESULTADO DE NOMINALS.
+            //  CONTROL FRONTERIZO (NOMINALSEXACT): LA RESPUESTA TRAE LA LISTA DE PERSONAS IGUAL QUE NOMINALS.
             $respuestaNominals = $interpolPersona->getNOMINALSEXACT();
 
             if (isset($respuestaNominals->datas->search->origin->nominal)) {
-                $nominals[0] = $respuestaNominals->datas->search->origin->nominal;
-                if (is_array($nominals[0]) && count($nominals[0]) == 0) {
-                    $nominals = [];
-                }
+                $nominals = $respuestaNominals->datas->search->origin->nominal;
             } else {
                 $nominals = [];
             }
+        }
+
+        //  LA LISTA DE PERSONAS DEBE SER PLANA (UN OBJETO POR FILA): SI VIENE UN SOLO OBJETO SE ENVUELVE EN UNA LISTA
+        //  Y SI VIENE UNA LISTA DENTRO DE OTRA LISTA SE USA LA INTERNA.
+        if (is_object($nominals)) {
+            $nominals = [$nominals];
+        } elseif (is_array($nominals) && isset($nominals[0]) && is_array($nominals[0])) {
+            $nominals = $nominals[0];
         }
 
 
@@ -120,11 +125,6 @@ class PersonaController extends Controller
         //  VALOR "NO DATA", CONTEMPLANDO QUE ADEMÁS DE ESTE CASO PUDIERA INFORMARSE UN OBJETO CON NOMBRES.
 
         foreach ($nominals as $claveFila => $valorFila) {
-
-            if (is_array($nominals[0]) && count($nominals[0]) > 1) {
-                $nominals[0] = $nominals[0][0];
-            }
-
             foreach ($valorFila as $clave => $valor) {
                 if ($clave == "forename") {
                     if (is_object($valor)) {
