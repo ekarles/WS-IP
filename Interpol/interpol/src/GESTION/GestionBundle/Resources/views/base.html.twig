@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Interpol{{ ambiente != 'PRODUCCION' ? ' [' ~ ambiente ~ ']' : '' }}">
+        <meta name="keywords" content="INTI">
+        <meta name="author" content="Div.Desarrollo de Aplicativos Institucionales">
+        <title>Interpol{{ ambiente != 'PRODUCCION' ? ' [' ~ ambiente ~ ']' : '' }}</title> 
+        <script type="text/javascript" src="{{ asset('bundles/jquery12/external/jquery/jquery.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/jquery12/jquery-ui.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/DataTable/jquery.dataTables.min.js') }}"></script>
+		<script language="JavaScript" type="text/JavaScript" src="{{ asset('bundles/DataTableEXPORT/jszip.min.js') }}"> </script> 
+		<script language="JavaScript" type="text/JavaScript" src="{{ asset('bundles/DataTableEXPORT/pdfmake.min.js') }}"> </script> 
+		<script language="JavaScript" type="text/JavaScript" src="{{ asset('bundles/DataTableEXPORT/vfs_fonts.js') }}"> </script> 
+		<script language="JavaScript" type="text/JavaScript" src="{{ asset('bundles/DataTableEXPORT/buttons.html5.min.js') }}"> </script> 
+ 
+	    <link href="{{ asset('bundles/DataTableEXPORT/buttons.dataTables.min.css') }}" rel='stylesheet' type='text/css'>                    
+		<link rel="stylesheet" href="{{ asset('bundles/DataTable/jquery.dataTables.css') }}"> 
+        
+		<!-- Bootstrap Core CSS -->
+        <link href="{{ asset('bundles/nuevo/bower_components/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
+
+        <!-- MetisMenu CSS -->	
+        <link href="{{ asset('bundles/nuevo/bower_components/metisMenu/dist/metisMenu.min.css') }}" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="{{ asset('bundles/nuevo/dist/css/sb-admin-2.css') }}" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="{{ asset('bundles/nuevo/bower_components/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css"> 
+		<link href="{{ asset('bundles/fortawesome/font-awesome/css/all.min.css') }}" rel="stylesheet" type="text/css"> 
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="{{ asset('bundles/nuevo/bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+
+        <!-- Metis Menu Plugin JavaScript -->
+        <script src="{{ asset('bundles/nuevo/bower_components/metisMenu/dist/metisMenu.min.js') }}"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="{{ asset('bundles/nuevo/dist/js/sb-admin-2.js') }}"></script>
+        <!-- Datepicker -->
+        <link rel="stylesheet" href="{{ asset('bundles/datetimepicker/jquery.datetimepicker.css') }}">
+        <script src="{{ asset('bundles/datetimepicker/jquery.datetimepicker.js') }}"></script>		
+
+        <!-- Selectpicker -->
+        <link rel="stylesheet" href="{{ asset('bundles/selectpicker/dist/css/bootstrap-select.css') }}">
+        <script src="{{ asset('bundles/selectpicker/dist/js/bootstrap-select.js') }}"></script>	
+
+        <link  href="{{ asset('bundles/pfa/img/favicon.ico') }}" rel="icon" type="image/x-icon" />
+        <link href="{{ asset('bundles/pfa/css/pfa.css?rnd=')~random(500) }}" rel="stylesheet" type="text/css">
+
+        <script>
+            var table;
+            var tableSF;
+            
+            function borrar(link){
+                    if(confirm("Esta seguro que desea borrar?")){
+                            window.location.href=link;
+                    }
+            }
+			
+            $(document).ready(function () {
+                    
+                $('input').addClass('form-control');
+				
+                $( "input:file" ).removeClass('form-control').removeAttr('required');
+                $('input:first').focus();
+
+                tableSF = $('#tablaSF').DataTable({
+                    "scrollY": "400px",
+                    "scrollCollapse": true,
+                    "scrollX": true,
+                    "paging": false,
+                    "info": false,
+                    responsive: true,
+                    "filter": false,
+                    "order": [[0, "desc"]]
+                });
+
+                
+                $(".datetimepicker").datetimepicker({
+                    format: 'Y-m-d'
+                });
+
+                $("select").addClass('form-control');
+                $('[data-toggle="tooltip"]').tooltip();
+
+            });
+
+            $(window).resize(function () {
+                $('#tablas').DataTable().columns.adjust().draw();
+                $('#tablaSF').DataTable().columns.adjust().draw();
+                $('.tablashow').DataTable().columns.adjust().draw();
+            });
+
+            $(window).load(function () {    
+                $('.animationload').fadeOut("slow");
+            });
+
+            $(window).bind('beforeunload', function(){
+                $('.animationload').fadeIn();
+            });
+
+            $(window).on("pageshow", function(event) {
+                $('.animationload').fadeOut("slow");
+            });
+
+        </script>
+        <link rel="stylesheet" href="{{ asset('bundles/style.css') }}?rand={{ random(5) }}">
+    </head>
+    {% set perfil = app.session.get('perfil') %}
+    <div id="alertCarga" class="row" style="display:none;margin-left:45%;">
+		<div class="alert alert-primary mx-auto" style="position:fixed;margin-top:0px;z-index:9999;display:inline-block;opacity:0.9;font-size:18px;font-weight:bold;">
+		  <span style="margin-top:10px;"><strong>&nbsp;&nbsp;&nbsp;Cargando&nbsp;</strong><i class="fas fa-spinner fa-spin"></i></span>
+		</div>
+	</div>
+    <body>
+    	<div id="wrapper">
+	        <div class="animationload">
+	            <div class="loader" style="background-image: url('{{asset('bundles/pfa/img/loading.gif')}}');">Cargando ...</div>
+	        </div>
+                <div class="animationload2">
+	            <div class="loader" style="background-image: url('{{asset('bundles/pfa/img/loading.gif')}}');">Cargando ...</div>
+	        </div>
+            <!-- Navigation -->
+            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0;{{ ambiente == 'PREPRODUCCION' ? 'background-color:#fffdb9;' : '' }}{{ ambiente == 'DESARROLLO' ? 'background-color:#d3fdc2;' : '' }}">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" >
+                        <img width="180px" src="{{asset('bundles/pfa/img/ocnbuenosaires.png')}}" />
+                    </a>
+                    <div class="textHeader" style="display:inline-block;margin-left:400px;font-size:20px;margin-top:10px;font-weight: bold;font-style:italic;">
+                    {{ ambiente != 'PRODUCCION' ? ambiente|capitalize : '' }}
+                    </div>       
+                </div>
+                
+                
+                
+            <!-- /.navbar-header -->                
+            {% if app.user %}
+            	<ul class="nav navbar-top-links navbar-right">
+                    <!-- /.dropdown -->
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">                               
+                            {{ app.user }} <i class="fa fa-user fa-fw"></i><i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="{{ path('usuario_datos')}}"><i class="fas fa-id-badge"></i> Mis Datos</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="{{ path('logout') }}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesi&oacute;n</a>
+                            </li>
+                        </ul>
+                        <!-- /.dropdown-user -->
+                    </li>
+                    <!-- /.dropdown -->
+                </ul>
+                
+                <!-- /.navbar-top-links -->
+                {% set path = app.request.attributes.get('_route') %}
+                {% if 'ADMINISTRADOR (Administrador del sistema)' in app.user.perfilid %}
+                	{% set is_admin = true %}
+                {% else %}
+                	{% set is_admin = false %}	
+                {% endif %}
+                {% if is_admin %}
+                	{% set path = 'admin_' ~ path %}
+                {% endif %}
+                {% set hash = herramientas_service.obtener_hash(path) %}
+                
+                {% if herramientas_service.existe_archivo('/apache/htdocs' ~ asset('bundles/pfa/faq/' ~ path ~ '_' ~ hash ~ '.pdf')) %}
+                <a target="_blank" title="Ver Instructivo" href="{{ asset('bundles/pfa/faq/' ~ path ~ '_' ~ hash ~ '.pdf') }}"><span class="glyphicon glyphicon-question-sign pull-right" style="margin-top:12px;position:relative;margin-right:10px;font-size:23px;"></span></a>
+                {% endif %}
+            {% endif %}
+            {% set Menu = app.session.get('Menu') %}
+            {% set SubMenu = app.session.get('SubMenu') %}
+ 
+                  <div class="navbar-default sidebar" role="navigation">
+                    <div class="showMenu" title="Expandir Men&uacute;">Scroll to Top</div> 
+                    <div class="sidebar-nav navbar-collapse">
+                        <ul class="nav" id="side-menu">
+	                        <li id="homeM">
+	                            <a id="home" href="{{path('_homepage')}}"><i class="fa fa-home"></i> Home</a>
+	                        </li>
+	                        <li id="cerrarM">
+	                            <a id="cerrarMenu"><i class="fa fa-compress fa-fw"></i> Ocultar Men&uacute;<span class="fa arrow"></span></a>
+	                        </li>
+	                        {% if is_admin %}
+	                        	{% set diasSinCnrt = cnrtpersona_service.diasSinRegistrosCnrt() %}
+	                        {% else %}
+	                        	{% set diasSinCnrt = 0 %}	
+ 							{% endif %}
+ 							{% for menu in Menu %}
+ 								<li>
+								<a href="#"><i class="{{ menu.ICONOMENU|default('') }}"></i>  {{ menu.TITULOMENU | raw }} 
+	                                 {% if is_admin and menu.TITULOMENU == 'Administraci&oacute;n de lotes' and diasSinCnrt != 0 %}
+	                                 	 <div class="notificacion-container-3">
+	                                         <div class="notificacion-value">
+	                                             <strong>!</strong>   
+	                                         </div>
+	                                     </div>
+	                                 {% endif %}
+	                                 {% if  menu.TITULOMENU == 'Gesti&oacute;n' %}
+	                                     {% if app.session.get('ALARMASULTIMAS24HS') != 0 %}
+	                                     <div class="notificacion-container">
+	                                         <div class="notificacion-value">
+	                                             <strong>!</strong>   
+	                                         </div>
+	                                     </div>
+	                                     {% endif %}
+	                                     {% if app.session.get('MOVIMIENTOSPENDIENTES') != 0 %}
+	                                     <div class="notificacion-container-2" {{app.session.get('ALARMASULTIMAS24HS') != 0 ? 'style="left: 60%;"' : ''}}>
+	                                         <div class="notificacion-value">
+	                                             <strong>!</strong>   
+	                                         </div>
+	                                     </div>
+	                                     {% endif %}
+	                                 {% endif %}
+	                                 <span class="fa arrow"></span>
+                                  </a>
+								<ul class="nav nav-second-level">
+									{% for submenu in SubMenu %}
+								    	{% if(menu.PERFILID == submenu.MENU) %}
+    								    	<li>
+    								    	
+    								    		{% if submenu.TITULOMENU == 'Avisos de Movimiento' %}
+        										<a class="menu" href="{{ path(submenu.ACCION) }}">
+        											<i class="{{ submenu.ICONOMENU|default('') }}"></i>  {{ 'Avisos de<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Movimiento' | raw }}
+        										</a>
+        										{% else %}
+        										<a class="menu" href="{{ path(submenu.ACCION) }}">
+        											<i class="{{ submenu.ICONOMENU|default('') }}"></i>  {{ submenu.TITULOMENU | raw }}
+        										</a>
+        										{% endif %}
+        										{% if submenu.TITULOMENU == 'Alarmas' %}
+												<div class="notificacion-container">
+										            <div class="notificacion-value" id="dvAlarmas24">
+										             	{{app.session.get('ALARMASULTIMAS24HS')}}   
+										            </div>
+										        </div>
+        										{% endif %}
+        										
+        										{% if submenu.TITULOMENU == 'Avisos de Movimiento' %}
+												<div class="notificacion-container-2">
+										            <div class="notificacion-value" id="dvMovimientosPendientes">
+										             	{{app.session.get('MOVIMIENTOSPENDIENTES')}}   
+										            </div>
+										        </div>
+        										{% endif %}
+        										{% if is_admin and 'CNRT' in submenu.TITULOMENU and diasSinCnrt != 0 %}
+												<div class="notificacion-container-3">
+										            <div class="notificacion-value" id="dvAlertaCnrt">
+										             	<strong>!</strong>   
+										            </div>
+										        </div>
+        										{% endif %}
+        									</li>
+    								    {% endif %}
+								    {% endfor %}
+								</ul>
+								</li>
+							{% endfor %}
+							{% if 'ROLE_SUPER_ADMIN' in app.user.roles %}
+								<br>
+								<li class="list-group-item-info">
+									<a href="#">
+										<i class="fas fa-file-code"></i> Admin DESA 
+                                        <span class="fa arrow"></span>
+                                	</a>
+                                	<ul class="nav nav-second-level">
+   								    	<li>
+   								    		<a class="menu" href="{{ path('admin_proceso') }}">
+       											<i class="fas fa-terminal"></i>  Procesos
+       										</a>
+       									</li>
+       									<li>
+   								    		<a class="menu" href="{{ path('admin_proceso_parametros') }}">
+       											<i class="fas fa-wrench"></i>  Par&aacute;metros
+       										</a>
+       									</li>
+									</ul>
+								</li>
+							{% endif %}
+						</ul>
+						<br>
+						<div style="text-align:center;display:none;">
+							<img width="60%" src="{{asset('bundles/pfa/img/escudo-pfa.gif')}}" style="display:inlay-block"/>
+						</div>
+						<br>
+						<div style="text-align:center;display:none;">
+							<img width="60%" src="{{asset('bundles/pfa/img/escudo-sftiyc.gif')}}" style="display:inlay-block"/>
+						</div>
+                	</div>
+                	<!-- /.sidebar-collapse -->
+                </div>
+                
+                <!-- /.navbar-static-side -->
+            </nav>
+
+            <!-- Page Content -->
+				<div id="page-wrapper">
+                    <div class="container-fluid">
+                        <div class="row-fluid text-center" id="dvFlashMsg">
+                            {% for flashMessage in app.session.flashbag.get('msgError') %}
+                                <div class="span4 offset4" >
+                                    <div class="alert alert-block fade in alert-error">
+                                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                        <h4>{{ flashMessage|raw }}</h4> 
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            {% for flashMessage in app.session.flashbag.get('msgWarn') %}
+                                <div class="span4 offset4" >
+                                    <div class="alert alert-block fade in alert-warning">
+                                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                        <h4>{{ flashMessage|raw }}</h4>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            {% for flashMessage in app.session.flashbag.get('msgOk') %}
+                                <div class="span4 offset4" >
+                                    <div class="alert alert-block fade in alert-success">
+                                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                        <h4>{{ flashMessage|raw }}</h4>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            {% for flashMessage in app.session.flashbag.get('msgInfo') %}
+                                <div class="span4 offset4" >
+                                    <div class="alert alert-block fade in alert-info">
+                                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                        <h4>{{ flashMessage|raw }}</h4>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% block body %}
+                        {% endblock %} 
+                    </div>
+                    <!-- /.container-fluid -->
+                </div>
+	            <div class="footer-zone">
+	            	<div class="container" align="right">{{ 'ROLE_SUPER_ADMIN' in app.user.roles and ambiente != 'PRODUCCION' ? '/apache/htdocs' ~ asset('bundles/pfa/faq/' ~ path ~ '_' ~ hash ~ '.pdf'):''}}<img id="logoDesa" width="600px" src="{{asset('bundles/pfa/img/desarrollo-transparent.png')}}?rand={{ random(5) }}"></div>
+	            </div>
+                <!-- /#page-wrapper -->
+            </div>
+            <!-- /#wrapper --> 
+</body>
+</html>
+<script>
+
+$(window).on('resize', function(){
+	if ($(window).width() <= 767) {
+		$('#cerrarMenu').hide();
+		$('#logoDesa').hide();
+		$('.glyphicon').hide();
+	}else{
+		$('#cerrarMenu').show();
+		$('#logoDesa').show();
+		$('.glyphicon').show();
+	}
+	showTextHeader();
+});
+
+$(window).load(function () {    
+	showTextHeader();
+});
+
+function showTextHeader(){
+    if ($(window).width() >= 812) {
+        $(".textHeader").show();
+    }else{
+        $(".textHeader").hide();
+    }
+}
+
+
+$(document).ready(function(){	
+	{% if app.session.get('Menu')|length == 0  %}
+		$('.animationload2').css('display','block');
+		$.post('{{path('_homepage')}}')
+			.done(function (data) {
+				location.reload();
+			}).fail(function (jqXHR, textStatus, errorThrown) {
+		        console.log('Status:'+jqXHR.status+' Error:'+errorThrown);
+			}); 
+	{% endif  %}
+	showTextHeader();
+});
+
+$('#cerrarMenu').click(function () {
+    if ($(window).width() > 767) {
+        $('.navbar-collapse').hide();
+        $('.sidebar').css({width: '0px'});
+        $('#page-wrapper').css({marginLeft: '30px'});
+        $('.dataTable').DataTable().columns.adjust().draw();
+        $('.showMenu').show();
+    }
+});
+$('.showMenu').click(function () {
+    if ($(window).width() > 767) {
+        $('.showMenu').hide();
+        $('.navbar-collapse').show();
+        $('.sidebar').css({width: '250px'});
+        $('#page-wrapper').css({marginLeft: '255px'});
+        $('.dataTable').DataTable().columns.adjust().draw();
+    }
+});
+</script>

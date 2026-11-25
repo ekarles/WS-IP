@@ -1,0 +1,4 @@
+auditoriawisdm:
+    path:     /{page}
+    defaults: { _controller: "ADMINAdminBundle:AuditoriaWisdm:index",page:1 }
+    

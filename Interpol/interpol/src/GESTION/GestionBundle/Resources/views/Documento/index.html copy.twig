@@ -1,0 +1,153 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %} {% block body -%}
+<form method="POST" action="{{ path('documento_show') }}">
+	<div class="container" width="100%">
+		<div id="panelconsulta" class="col-xs-12 col-md-6" style="margin-bottom:2%;">
+		
+			<div class="panel panel-default">
+				<div class="panel-body" style="margin-left: 2%;">
+			    		<div class="row text-cemter">
+			    		<img width="300px" src="{{asset('bundles/pfa/img/ocnbuenosaires.png')}}" />
+				    	</div>
+						<div class="row">
+							<div>&nbsp;</div>
+						</div>
+						<div class="row">
+							<div><p style="color:#2d3c90; font-size:24px;">Interpol - Documentos</p></div>
+						</div>
+				</div>
+			</div>
+		{% set bInvestigativo = "NO" %}
+		{% for perfil  in usuario.perfilid %}
+		    {% for permiso in perfil.permisoid %}
+		        {% if permiso.id == '7' %}
+		        	{% set bInvestigativo = "SI" %}
+		        {% endif %}
+		    {% endfor %}	
+		{% endfor %}		
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div class="col-sm-12 col-md-12"">
+						<div class="form-group">
+							<label for="tipoDocumento">Tipo de Documento</label> 
+							<select id="lstTipoDoc" name="lstTipoDoc" data-live-search="true" class="selectpicker" required>
+                                {% for Documento in documentos %}
+                            		<option value="{{ Documento.COD }}" {{ Documento.COD=='P'?'selected':'' }}>{{ Documento.COD ~ ' - ' ~ Documento.DESCRIPCION }}</option>
+										
+                                {% endfor %}
+							</select>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="form-group">
+							<label for="txtNumeroDoc">Nro. de Documento</label> 
+							<input type="text" value="" class="form-control" id="txtNumeroDoc" name="txtNumeroDoc" placeholder="Ingrese Nro de Documento" required>
+						</div>
+					</div>
+					<div class="col-sm-12 col-md-12">
+						<div class="form-group">
+							<label for="lstPais">País</label>
+							<select id="lstPais" name="lstPais" data-live-search="true" class="selectpicker">
+								<option value="">- Sin especificar -</option>
+                                {% for Pais in paises %}
+								<option value="{{ Pais.COD_B }}">{{ Pais.COD_B ~ ' - ' ~ Pais.DESCRIPCION }}</option>
+                                {% endfor %}
+							</select>
+						</div>
+					</div>	
+					<div class="col-sm-12 col-md-12 {{bInvestigativo == 'SI'?'':'hidden'}}">
+						<div class="form-group">
+							<label for="lstTipoCons">Tipo de Consulta</label> 
+							<select id="lstTipoCons" name="lstTipoCons" class="selectpicker" required>
+								<option value="BC">Control fronterizo</option>
+           	                    {% if bInvestigativo == "SI" %}
+           	                    <option value="AD" selected>Investigación</option>
+           	                    {% endif %}
+							</select>
+						</div>
+					</div>
+					<div class="col-sm-12 col-md-12">
+						<div class="row">&nbsp;</div>
+						<div class="row">&nbsp;</div>
+					</div>
+					<div class="col-xs-12" align="center">
+						<div class="col-md-6">
+							<button class="btn btn-success col-xs-12" data-toggle="tooltip" id="consultar" title="Consultar" type="submit" data-placement="bottom">
+								<div class="hidden-xs hidden-sm">Consultar</div>
+								<div class="hidden-md hidden-lg">
+									<i class="fa fa-search" aria-hidden="true"></i>
+								</div>
+							</button>
+							<button id="sendForm" type="submit" class="hide"></button>
+						</div>
+						<div class="col-md-6">
+							<button class="btn btn-default col-xs-12" data-toggle="tooltip" title="Limpiar Par&aacute;metros de B&uacute;squeda" id="limpiar" name="limpiar" type="button" data-placement="bottom">
+								<div class="hidden-xs hidden-sm">Limpiar B&uacute;squeda</div>
+								<div class="hidden-md hidden-lg">
+									<i class="fa fa-undo" aria-hidden="true"></i>
+								</div>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>		
+</form>
+
+<script>
+
+	$(document).ready(function (){
+		$('.selectpicker').selectpicker();
+		if ($(window).width() < 600) {
+			$("#panelconsulta").attr("style","margin-bottom:2%;");
+	    }else{
+	    	$("#panelconsulta").attr("style","margin-left:25%;margin-bottom:2%;");
+	    }
+
+        $('#limpiar').click(function () {
+        	$("#lstTipoDoc").val("").selectpicker('refresh');
+            $("#txtNumeroDoc").val("");
+            $("#lstPais").val("").selectpicker('refresh');
+            $("#lstTipoCons").val("AD").selectpicker('refresh');
+        });	//	$('#limpiar').click(function () {
+        
+        {% if bInvestigativo == 'SI' %} 	
+	        if($("#lstTipoCons").val()=='AD'){
+	    		$("#lstPais").removeAttr("required");
+	    	}else{
+	    		$("#lstPais").attr("required","true");
+	    	}	
+		{% endif %}
+	});
+
+	{% if bInvestigativo == 'SI' %}    
+        
+	$(window).on('load', function(event) {
+		if($("#lstTipoCons").val()=='AD'){
+    		$("#lstPais").removeAttr("required");
+    	}else{
+    		$("#lstPais").attr("required","true");
+    	}	
+	});
+	
+	$("#lstTipoCons").change(function(){
+		if($(this).val()=='AD'){
+    		$("#lstPais").removeAttr("required");
+    	}else{
+    		$("#lstPais").attr("required","true");
+    	}
+	});
+	
+        
+	{% endif %}
+	
+	$(window).on( "orientationchange", function( event ) {
+		if ($(window).width() > 300) {
+			$("#panelconsulta").attr("style","margin-bottom:2%;");
+	    }else{
+	    	$("#panelconsulta").attr("style","margin-left:25%;margin-bottom:2%;");
+	    }
+	});
+
+</script>
+{% endblock %}

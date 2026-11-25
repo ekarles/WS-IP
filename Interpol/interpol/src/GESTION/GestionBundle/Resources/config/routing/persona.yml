@@ -1,0 +1,16 @@
+persona:
+    path:     /
+    defaults: { _controller: "GESTIONGestionBundle:Persona:index" }
+    
+persona_show:
+    path:     /personashow
+    defaults: { _controller: "GESTIONGestionBundle:Persona:show" }
+
+persona_showdetails:
+    path:     /personashowdetails
+    defaults: { _controller: "GESTIONGestionBundle:Persona:showdetails" }
+    
+persona_noticepdf:
+    path:     /personanoticepdf
+    defaults: { _controller: "GESTIONGestionBundle:Persona:noticepdf" }
+    methods:  [POST]

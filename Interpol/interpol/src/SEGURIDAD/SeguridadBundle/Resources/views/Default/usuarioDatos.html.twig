@@ -1,0 +1,48 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+{% block body -%}
+
+{% set is_admin = false %} 
+{% for perfil  in usuario.perfilid %}
+	{% if perfil.id == 1 %}
+		{% set is_admin = true %}
+	{% endif  %}
+{% endfor %}
+<div class="col-md-12 text-center">
+	<h2>Datos del usuario</h2>
+	<hr/>
+</div>
+<div class="col-md-12 text-left">
+	<h1>
+		<b>Usuario:</b> {{app.user}}<br>
+		<b>Apellido/s:</b> {{usuario.apellido|title}}<br>
+		<b>Nombre/s:</b> {{usuario.nombre|title}}<br>
+		<b>Tipo y Nro. de Documento:</b> {{usuario.tipodoc}} {{usuario.numerodoc}}<br>
+		{% if is_admin %}
+		<b>Fecha de Alta:</b> {{usuario.fechaalta|date('d/m/Y')}}<br>
+		{% endif %}
+	</h1>	
+	<div>
+		<br>
+		<h1>
+			<b>Dependencia:</b> ({{usuario.depenid is null ? '' : usuario.depenid.codigo}}) {{usuario.depenid is null ? '' : usuario.depenid.nombre}}<br>
+			<b>Instituci&oacute;n:</b> {{usuario.depenid is null ? '' : usuario.depenid.institucionid.nombre}}<br>
+		</h1>
+		<br>
+		{% if is_admin %}
+			<h1><b><u>Perfiles asignados:</u><b></h1> 
+			{% for perfil  in usuario.perfilid %}
+			    <h1>{{ perfil.id ~ ' - ' ~ perfil.descripcion }}:</h1>			
+					{% for permiso in perfil.permisoid %}
+					    {{ permiso.id ~ ' - ' ~ permiso.permiso}}
+					    {% if loop.index < perfil.permisoid|length %}, {% endif %}					    
+					{% endfor %}	
+				<br><br>	
+			{% endfor %}
+		{% endif %}	
+	</div>
+
+</div>
+<script>
+</script>
+
+{% endblock %}

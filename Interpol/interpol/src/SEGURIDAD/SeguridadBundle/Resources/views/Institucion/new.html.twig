@@ -1,0 +1,54 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %} 
+
+{% block body -%}
+	<div class="row text-center">
+		<h1>Nueva Institucion</h1>
+	</div>
+	{{ form_start(form) }}
+	<div class="col-xs-12 col-md-12" style="margin-bottom: 2%;">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div class="container">
+					<button type="submit" class="btn btn-success pull-right">Guardar</button>
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('admin_institucion') }}">
+		                Volver
+		            </a>
+	            </div>
+			</div>
+			<div class="panel-body">
+				<div class="col-sm-12 col-md-12">
+                   	<div class="row">
+                   		<div class="col-md-6">
+		                    {{ form_label(form.nombre) }}
+		                    {{ form_widget(form.nombre) }}
+		                    {{ form_errors(form.nombre) }}
+		                </div>
+		                <div class="col-md-6">
+		                    {{ form_label(form.usuariogenerico) }}
+		                    {{ form_widget(form.usuariogenerico) }}
+		                    {{ form_errors(form.usuariogenerico) }}
+		                </div>
+                   		<div class="col-md-6">
+		                    {{ form_label(form.passgenerico) }}
+		                    {{ form_widget(form.passgenerico) }}
+		                    {{ form_errors(form.passgenerico) }}
+		                </div>
+		            </div>
+		            <br>         
+				</div>
+			</div>
+			<div class="panel-footer">
+	            <div class="container">
+	                <button type="submit" class="btn btn-success pull-right">Guardar</button>
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('admin_institucion') }}">
+		                Volver
+		            </a>
+	            </div>
+	        </div>
+		</div>
+	</div>
+	<script>
+	</script>
+	{{ form_end(form) }}
+
+{% endblock %}

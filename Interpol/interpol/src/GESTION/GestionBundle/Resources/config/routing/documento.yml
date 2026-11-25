@@ -1,0 +1,12 @@
+documento:
+    path:     /
+    defaults: { _controller: "GESTIONGestionBundle:Documento:index" }
+    
+documento_show:
+    path:     /documentoshow
+    defaults: { _controller: "GESTIONGestionBundle:Documento:show" }
+
+documento_showdetails:
+    path:     /documentoshowdetails
+    defaults: { _controller: "GESTIONGestionBundle:Documento:showdetails" }
+    

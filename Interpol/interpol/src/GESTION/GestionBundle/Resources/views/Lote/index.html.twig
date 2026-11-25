@@ -1,0 +1,331 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+
+{% block body -%}
+	{% block javascripts %}
+		<script src="{{ asset('bundles/pfa/language-encoding.min.js') }}"></script>
+	{% endblock %}
+	<style>
+		.pf-wrap {
+			max-width: 760px;
+			margin: 15px auto 30px;
+			padding: 0 15px;
+		}
+		.pf-topbar {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+			background: #fff;
+			border-radius: 10px;
+			box-shadow: 0 1px 4px rgba(20, 30, 70, 0.12);
+			padding: 12px 20px;
+			margin-bottom: 16px;
+		}
+		.pf-topbar img {
+			width: 230px;
+			max-width: 55%;
+		}
+		.pf-title {
+			margin: 0;
+			color: #2d3c90;
+			font-size: 22px;
+			font-weight: 600;
+		}
+		.pf-toplink {
+			flex: 1 0 100%;
+			display: flex;
+			justify-content: flex-end;
+		}
+		.pf-card {
+			background: #fff;
+			border-radius: 12px;
+			box-shadow: 0 1px 4px rgba(20, 30, 70, 0.12);
+			margin-bottom: 16px;
+			overflow: visible;
+		}
+		.pf-card-h {
+			border-radius: 12px 12px 0 0;
+			padding: 11px 18px;
+			background: #f4f6fb;
+			border-bottom: 1px solid #e3e7f1;
+			color: #2d3c90;
+			font-size: 15px;
+			font-weight: 700;
+		}
+		.pf-card-h .glyphicon {
+			margin-right: 8px;
+			opacity: 0.8;
+		}
+		.pf-card-b {
+			padding: 16px 18px 6px;
+		}
+		.pf-fields {
+			display: flex;
+			flex-wrap: wrap;
+			margin: 0 -8px;
+		}
+		.pf-field {
+			flex: 1 1 100%;
+			padding: 0 8px;
+			margin-bottom: 14px;
+		}
+		.pf-field label {
+			display: block;
+			margin-bottom: 5px;
+			color: #5d6678;
+			font-size: 13px;
+			font-weight: 600;
+		}
+		.pf-card .form-control {
+			height: 40px;
+			border-radius: 8px;
+			border: 1px solid #cdd4e4;
+			box-shadow: none;
+		}
+		.pf-card input[type="file"].form-control {
+			height: auto;
+			padding: 8px 10px;
+		}
+		.pf-card .form-control:focus {
+			border-color: #2d3c90;
+			box-shadow: 0 0 0 2px rgba(45, 60, 144, 0.15);
+		}
+		.pf-help {
+			display: block;
+			margin: 0 0 8px;
+			color: #7a8194;
+			font-size: 12px;
+		}
+		.pf-example:empty {
+			display: none;
+		}
+		.pf-code {
+			display: block;
+			padding: 8px 12px;
+			border-radius: 8px;
+			background: #f1f5fc;
+			color: #1f2a60;
+			font-size: 13px;
+			word-break: break-all;
+		}
+		.pf-actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+		}
+		.pf-actions .btn {
+			flex: 1 1 200px;
+			padding: 10px 0;
+			border-radius: 8px;
+			font-size: 16px;
+		}
+		.pf-actions .btn i {
+			margin-right: 6px;
+		}
+		.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(
+				.input-group-btn
+			) {
+			width: 100% !important;
+		}
+		@media (max-width: 767px) {
+			.pf-wrap {
+				margin-top: 8px;
+			}
+			.pf-topbar {
+				flex-direction: column;
+				text-align: center;
+			}
+			.pf-toplink {
+				justify-content: center;
+			}
+		}
+	</style>
+
+	{% set bInvestigativo = "NO" %}
+	{% for perfil in usuario.perfilid %}
+		{% for permiso in perfil.permisoid %}
+			{% if permiso.id == '101' %}
+				{% set bInvestigativo = "SI" %}
+			{% endif %}
+		{% endfor %}
+	{% endfor %}
+
+	<form method="POST" action="{{ path('lote_alta') }}" enctype="multipart/form-data" id="frm">
+		<div id="panelconsulta" class="pf-wrap">
+
+			<div class="pf-topbar">
+				<img src="{{ asset('bundles/pfa/img/ocnbuenosaires.png') }}"/>
+				<p class="pf-title">Interpol - Lotes</p>
+				<div class="pf-toplink">
+					<a class="btn btn-primary" data-toggle="tooltip" href="{{ path('lotesprocesados') }}" title="Ver Lotes Procesados" data-placement="bottom">
+						<span class="glyphicon glyphicon-list-alt"></span>
+						Ver Lotes Procesados
+					</a>
+				</div>
+			</div>
+
+			<div class="pf-card">
+				<div class="pf-card-h"><span class="glyphicon glyphicon-upload"></span>Datos del lote</div>
+				<div class="pf-card-b">
+					<div class="pf-fields">
+						<div class="pf-field">
+							<label for="lstTipoCons">Tipo consulta</label>
+							<select id="lstTipoCons" name="lstTipoCons" required="required" class="selectpicker">
+								<option value="" selected>Seleccione el tipo de consulta</option>
+								<option value="NOMINALS">PERSONAS</option>
+								<option value="SLTD">DOCUMENTOS</option>
+								<option value="SMV">VEHICULOS</option>
+							</select>
+						</div>
+						<div class="pf-field">
+							<label for="uploadFile">Seleccione el archivo</label>
+							<input id="uploadFile" name="uploadFile" type="file" required="required" class="file-upload form-control" accept="text/plain,.csv"/>
+							<small class="pf-help" style="margin-top: 5px;">Archivo de texto o .csv con codificación UTF-8.</small>
+						</div>
+						<div class="pf-field" {{ bInvestigativo != "SI" ? 'style="display:none;"' : '' }}>
+							<label for="lstModoCons">Modo consulta</label>
+							<select id="lstModoCons" name="lstModoCons" required="required" class="selectpicker">
+								<option value="BC">Control fronterizo</option>
+								{% if bInvestigativo == "SI" %}
+									<option value="AD" selected>Investigación</option>
+								{% endif %}
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{# Ejemplo de confección del archivo según el tipo de consulta (lo completa el script) #}
+			<div id="dvEjemploArch" class="pf-card pf-example"></div>
+
+			<div class="pf-actions">
+				<button class="btn btn-success" data-toggle="tooltip" id="consultar" title="Consultar" type="submit" data-placement="bottom">
+					<i class="fa fa-search" aria-hidden="true"></i>
+					Consultar
+				</button>
+				<button id="sendForm" type="submit" class="hide"></button>
+				<button class="btn btn-default" data-toggle="tooltip" title="Limpiar Parámetros de Búsqueda" id="limpiar" type="button" data-placement="bottom">
+					<i class="fa fa-undo" aria-hidden="true"></i>
+					Limpiar Búsqueda
+				</button>
+			</div>
+
+		</div>
+
+		<input type="hidden" id="txtFormato">
+
+		<iframe id="descarga" style="display:none;"></iframe>
+	</form>
+
+	<div class="modal fade" id="MensajeValidar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header modal-header-danger">
+					<h5 class="modal-title text-center" id="exampleModalLabel"><b>Atención</b></h5>
+				</div>
+				<div class="modal-body text-center" id="dvMensaje"><b>No se seleccionó un archivo.</b></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default res" data-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function () {
+			var encodingArchivo = "";
+
+			// Ejemplo de archivo .csv para cada tipo de consulta
+			var ejemplos = {
+				NOMINALS: {
+					columnas: ["APELLIDO", "NOMBRE", "FECHA.NACIMIENTO"],
+					img: "{{ asset('bundles/pfa/img/ejcsvpersona.png') }}",
+					csv: "{{ asset('bundles/pfa/doc/personas.csv') }}"
+				},
+				SLTD: {
+					columnas: ["NRO.DOCUMENTO", "TIPO.DOCUMENTO", "PAIS"],
+					img: "{{ asset('bundles/pfa/img/ejcsvdocumento.png') }}",
+					csv: "{{ asset('bundles/pfa/doc/documentos.csv') }}"
+				},
+				SMV: {
+					columnas: ["VIM", "DOMINIO", "NRO.MOTOR"],
+					img: "{{ asset('bundles/pfa/img/ejcsvvehiculo.png') }}",
+					csv: "{{ asset('bundles/pfa/doc/vehiculos.csv') }}"
+				}
+			};
+
+			document.getElementById("uploadFile").addEventListener("change", inputHandler);
+
+			function inputHandler(e) {
+				const file = e.target.files[0];
+				encodingArchivo = "";
+				oRes = languageEncoding(file).then(fileInfo => {
+					encodingArchivo = fileInfo.encoding;
+				});
+			}
+
+			function mostrarEjemplo(tipo) {
+				var e = ejemplos[tipo];
+
+				if (!e) {
+					$("#dvEjemploArch").html("");
+					return;
+				}
+
+				var sHtml = "<div class=\"pf-card-h\"><span class=\"glyphicon glyphicon-file\"></span>Ejemplo de confección de archivo .csv (" + tipo + ")</div>";
+				sHtml += "<div class=\"pf-card-b\">";
+				sHtml += "	<small class=\"pf-help\">Columnas del archivo, separadas por punto y coma (;):</small>";
+				sHtml += "	<code class=\"pf-code\">" + e.columnas.join(";") + "</code>";
+				sHtml += "	<div class=\"text-center\" style=\"margin: 14px 0;\">";
+				sHtml += "		<img src=\"" + e.img + "\" style=\"max-width: 100%;\"/>";
+				sHtml += "	</div>";
+				sHtml += "	<div class=\"text-right\" style=\"margin-bottom: 12px;\">";
+				sHtml += "		<a download href=\"" + e.csv + "\">Descargar Archivo de ejemplo <img src=\"{{ asset('bundles/pfa/img/download_csv.png') }}\" style=\"height: 22px;\"/></a>";
+				sHtml += "	</div>";
+				sHtml += "</div>";
+
+				$("#dvEjemploArch").html(sHtml);
+			}
+
+			$('#consultar').click(function (event) {
+				event.preventDefault();
+				if ($('#uploadFile').val() == '') {
+					$('#dvMensaje').html("<b>No se seleccionó un archivo.</b>");
+					$('#MensajeValidar').modal('show');
+				} else {
+					if (encodingArchivo != "UTF-8") {
+						if ($('#lstTipoCons').val() == "NOMINALS") {
+							var sHtml = "<a href=\"{{ asset('bundles/pfa/doc/charset.pdf') }}\" target=\"_blank\">";
+							sHtml += "<img height=\"25\" width=\"25\" src=\"{{ asset('bundles/pfa/img/link_icon.png') }}\"/>";
+							sHtml += "</a>";
+
+							$('#dvMensaje').html("<b>La codificación del archivo incorrecta, el archivo debe tener codificación UTF-8 para ser procesado correctamente.<br/><br/>Presione el siguiente link " + sHtml + " y siga las instrucciones para modificar su lote de manera CORRECTA.</b>");
+							$('#MensajeValidar').modal('show');
+							return -1;
+						}
+					}
+					$("#sendForm").click();
+				}
+			});
+
+			$('#limpiar').click(function () {
+				// Modo de consulta por defecto: Investigación (AD) para usuarios investigativos y Control fronterizo (BC) para el resto
+				$("#lstModoCons").val("{{ bInvestigativo == 'SI' ? 'AD' : 'BC' }}").selectpicker('refresh');
+				$("#lstTipoCons").val("").selectpicker('refresh');
+				$("#uploadFile").val('');
+				mostrarEjemplo("");
+			});
+
+			$("#dvEjemploArch").html("");
+
+			$('#lstTipoCons').change(function () {
+				mostrarEjemplo($('#lstTipoCons').val());
+			});
+
+			function exportar(url) {
+				document.getElementById('descarga').src = url;
+			}
+		});
+	</script>
+{% endblock %}

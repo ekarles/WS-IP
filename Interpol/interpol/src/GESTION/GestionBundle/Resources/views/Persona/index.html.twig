@@ -1,0 +1,250 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+
+{% block body -%}
+	<style>
+		/* ---------- Formulario de consulta de personas (mismo criterio visual que la ficha de persona) ---------- */
+		.pf-wrap {
+			max-width: 760px;
+			margin: 15px auto 30px;
+			padding: 0 15px;
+		}
+		.pf-topbar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			background: #fff;
+			border-radius: 10px;
+			box-shadow: 0 1px 4px rgba(20, 30, 70, 0.12);
+			padding: 12px 20px;
+			margin-bottom: 16px;
+		}
+		.pf-topbar img {
+			width: 230px;
+			max-width: 55%;
+		}
+		.pf-title {
+			margin: 0;
+			color: #2d3c90;
+			font-size: 22px;
+			font-weight: 600;
+		}
+		.pf-card {
+			background: #fff;
+			border-radius: 12px;
+			box-shadow: 0 1px 4px rgba(20, 30, 70, 0.12);
+			margin-bottom: 16px;
+			overflow: visible; /* visible para que la lista desplegable del selector no quede cortada */
+		}
+		.pf-card-h {
+			border-radius: 12px 12px 0 0;
+			padding: 11px 18px;
+			background: #f4f6fb;
+			border-bottom: 1px solid #e3e7f1;
+			color: #2d3c90;
+			font-size: 15px;
+			font-weight: 700;
+		}
+		.pf-card-h .glyphicon {
+			margin-right: 8px;
+			opacity: 0.8;
+		}
+		.pf-card-b {
+			padding: 16px 18px 6px;
+		}
+		.pf-fields {
+			display: flex;
+			flex-wrap: wrap;
+			margin: 0 -8px;
+		}
+		.pf-field {
+			flex: 1 1 200px;
+			padding: 0 8px;
+			margin-bottom: 14px;
+		}
+		.pf-field label {
+			display: block;
+			margin-bottom: 5px;
+			color: #5d6678;
+			font-size: 13px;
+			font-weight: 600;
+		}
+		.pf-card .form-control {
+			height: 40px;
+			border-radius: 8px;
+			border: 1px solid #cdd4e4;
+			box-shadow: none;
+		}
+		.pf-card .form-control:focus {
+			border-color: #2d3c90;
+			box-shadow: 0 0 0 2px rgba(45, 60, 144, 0.15);
+		}
+		.pf-help {
+			display: block;
+			margin-top: 5px;
+			color: #7a8194;
+			font-size: 12px;
+		}
+		.pf-req {
+			display: none;
+			color: #d9534f;
+		}
+		.pf-req.pf-req-on {
+			display: inline;
+		}
+		.pf-actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+		}
+		.pf-actions .btn {
+			flex: 1 1 200px;
+			padding: 10px 0;
+			border-radius: 8px;
+			font-size: 16px;
+		}
+		.pf-actions .btn i {
+			margin-right: 6px;
+		}
+		.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(
+				.input-group-btn
+			) {
+			width: 100% !important;
+		}
+		@media (max-width: 767px) {
+			.pf-wrap {
+				margin-top: 8px;
+			}
+			.pf-topbar {
+				flex-direction: column;
+				gap: 6px;
+				text-align: center;
+			}
+		}
+	</style>
+
+	{% set bInvestigativo = false %}
+	{% for perfil in usuario.perfilid %}
+		{% for permiso in perfil.permisoid %}
+			{% if permiso.id == '7' %}
+				{% set bInvestigativo = true %}
+			{% endif %}
+		{% endfor %}
+	{% endfor %}
+
+	<form method="POST" id="frm" action="{{ path('persona_show') }}">
+		<div id="panelconsulta" class="pf-wrap">
+
+			<div class="pf-topbar">
+				<img src="{{ asset('bundles/pfa/img/ocnbuenosaires.png') }}"/>
+				<p class="pf-title">Interpol - Personas</p>
+			</div>
+
+			{# Tipo de consulta: si el usuario no es investigativo queda oculto, pero se envía igual con el valor BC #}
+			<div class="pf-card {{ bInvestigativo ? '' : 'hidden' }}">
+				<div class="pf-card-h"><span class="glyphicon glyphicon-cog"></span>Tipo de consulta</div>
+				<div class="pf-card-b">
+					<div class="pf-field" style="padding: 0;">
+						<label for="lstTipoCons">Tipo de Consulta
+							<span class="text-danger">*</span>
+						</label>
+						<select id="lstTipoCons" name="lstTipoCons" class="selectpicker" required>
+							<option value="BC" selected>--Control fronterizo</option>
+							{% if bInvestigativo %}
+								<option value="AD">--Investigación</option>
+							{% endif %}
+						</select>
+						<small class="pf-help">Seleccione el tipo de consulta a realizar</small>
+					</div>
+				</div>
+			</div>
+
+			<div class="pf-card">
+				<div class="pf-card-h"><span class="glyphicon glyphicon-user"></span>Datos de la persona</div>
+				<div class="pf-card-b">
+					<div class="pf-fields">
+						<div class="pf-field">
+							<label for="txtApellido">Apellido</label>
+							<input type="text" id="txtApellido" name="txtApellido" placeholder="Ingrese Apellido" class="form-control"/>
+						</div>
+						<div class="pf-field">
+							<label for="txtNombre">Nombre
+								<span class="pf-req" id="reqNombre">*</span>
+							</label>
+							<input type="text" id="txtNombre" name="txtNombre" placeholder="Ingrese Nombre" class="form-control"/>
+						</div>
+						<div class="pf-field">
+							<label for="txtFechaNac">Fecha de Nacimiento
+								<span class="pf-req" id="reqFecha">*</span>
+							</label>
+							<input type="date" id="txtFechaNac" name="txtFechaNac" class="form-control"/>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="pf-actions">
+				<button class="btn btn-success" data-toggle="tooltip" id="consultar" title="Consultar" type="submit" data-placement="bottom">
+					<i class="fa fa-search" aria-hidden="true"></i>
+					Consultar
+				</button>
+				<button class="btn btn-default" data-toggle="tooltip" title="Limpiar Parámetros de Búsqueda" id="limpiar" type="button" onclick="limpiarForm()" data-placement="bottom">
+					<i class="fa fa-undo" aria-hidden="true"></i>
+					Limpiar Búsqueda
+				</button>
+			</div>
+
+		</div>
+	</form>
+
+	<script>
+		// Control fronterizo (BC): Nombre y Fecha de Nacimiento son obligatorios.
+		// Investigación (AD): son opcionales.
+		function actualizarRequeridos() {
+			var esBC = $("#lstTipoCons").val() === "BC";
+
+			$("#txtNombre, #txtFechaNac").prop("required", esBC);
+			$("#txtNombre").attr(
+				"placeholder",
+				esBC ? "Ingrese Nombre (requerido)" : "Ingrese Nombre (opcional)",
+			);
+			$("#reqNombre, #reqFecha").toggleClass("pf-req-on", esBC);
+		}
+
+		function limpiarForm() {
+			$("#txtNombre, #txtApellido, #txtFechaNac").val("");
+			$("#lstTipoCons").val("BC").selectpicker("refresh");
+			actualizarRequeridos();
+		}
+
+		$(document).ready(function () {
+			$(".selectpicker").selectpicker();
+
+			actualizarRequeridos();
+
+			$("#lstTipoCons").change(function () {
+				actualizarRequeridos();
+			});
+
+			// Validación antes de enviar
+			$("#consultar").click(function (e) {
+				if ($("#lstTipoCons").val() === "BC") {
+					if (!$("#txtNombre").val().trim()) {
+						alert(
+							"Para Control Fronterizo, el campo Nombre es obligatorio",
+						);
+						e.preventDefault();
+						return false;
+					}
+					if (!$("#txtFechaNac").val()) {
+						alert(
+							"Para Control Fronterizo, la Fecha de Nacimiento es obligatoria",
+						);
+						e.preventDefault();
+						return false;
+					}
+				}
+			});
+		});
+	</script>
+
+{% endblock %}

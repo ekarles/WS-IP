@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity repository-class="ADMIN\AdminBundle\Entity\LoteDocumentoRepository" name="ADMIN\AdminBundle\Entity\LoteDocumento" table="LoteDocumento">
+    <id name="id" type="integer" column="id">
+      <generator strategy="SEQUENCE"/>
+    </id>
+    <field name="apellido" type="string" column="Apellido" length="50" precision="0" scale="0" nullable="false"/>
+    <field name="otrosApellidos" type="string" column="OtrosApellidos" length="100" precision="0" scale="0" nullable="false"/>
+    <field name="nombre" type="string" column="Nombre" length="50" precision="0" scale="0" nullable="false"/>
+    <field name="otrosNombres" type="string" column="OtrosNombres" length="100" precision="0" scale="0" nullable="false"/>
+    <field name="fechaNacimiento" type="string" column="FechaNacimiento" length="10" precision="0" scale="0" nullable="false"/>
+    <field name="sexo" type="string" column="Sexo" length="1" precision="0" scale="0" nullable="false"/>
+    <field name="tipoDoc" type="string" column="TipoDoc" length="50" precision="0" scale="0" nullable="false"/>
+    <field name="numeroDoc" type="string" column="NumeroDoc" length="50" precision="0" scale="0" nullable="false"/>
+    <field name="idNacionalidad" type="string" column="IdNacionalidad" length="3" precision="0" scale="0" nullable="false"/>
+    <field name="idPaisEmisor" type="string" column="IdPaisEmisor" length="3" precision="0" scale="0" nullable="false"/>
+    <field name="tipoDenuncia" type="string" column="TipoDenuncia" length="50" precision="0" scale="0" nullable="false"/>
+    <field name="accion" type="string" column="Accion" length="1" precision="0" scale="0" nullable="false"/>
+    <field name="fechaRegistro" type="string" column="FechaRegistro" length="19" precision="0" scale="0" nullable="false"/>
+    <field name="idPersona" type="string" column="IdPersona" length="50" precision="0" scale="0" nullable="false"/>
+    <field name="motivo" type="string" column="Motivo" length="100" precision="0" scale="0" nullable="false"/>
+    <field name="fecha" type="string" column="Fecha" precision="0" scale="0" nullable="false"/>
+    <field name="estado" type="string" column="Estado" length="1" precision="0" scale="0" nullable="false"/>
+    <field name="descargado" type="string" column="Descargado" length="1" precision="0" scale="0" nullable="false"/>
+    <field name="fechaHoraDesc" type="string" column="FechaHoraDesc" precision="0" scale="0" nullable="false"/>
+    <field name="usuDesc" type="integer" column="UsuDesc" precision="0" scale="0" nullable="false"/>
+    <field name="mensajeRemoto" type="string" column="MensajeRemoto" precision="0" scale="0" nullable="false"/>
+  </entity>
+</doctrine-mapping>

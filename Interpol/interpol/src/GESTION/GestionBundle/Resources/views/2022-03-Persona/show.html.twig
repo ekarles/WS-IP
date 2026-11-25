@@ -1,0 +1,179 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+{% block body -%}
+{% set PermisoDetalle = app.session.get('PERMISODETALLE') %}
+<form method="POST" action="{{ path('persona_showdetails') }}">
+
+	<input type="hidden" id="txtEntity"   name="txtEntity"   value="" />
+	<input type="hidden" id="txtNombre"   name="txtNombre"   value="{{ app.request.get('txtNombre'  ) | default('') }}" />
+	<input type="hidden" id="txtApellido" name="txtApellido" value="{{ app.request.get('txtApellido') | default('') }}" />
+	<input type="hidden" id="txtFechaNac" name="txtFechaNac" value="{{ app.request.get('txtFechaNac') | default('') }}" />
+	<input type="hidden" id="lstTipoCons" name="lstTipoCons" value="{{ app.request.get('lstTipoCons') | default('') }}" />
+	<input type="hidden" id="idConsultaLoteDetalle"  name="idConsultaLoteDetalle"  value="{{ app.request.get('idConsultaLoteDetalle' ) | default('') }}" />
+
+	<div id="panelconsulta" class="col-xs-12" style="margin-bottom:2%;">
+	
+			<div class="panel panel-default">
+				<div class="panel-body" style="margin-left: 2%;">
+			    		<div class="row text-cemter">
+			    		<img width="300px" src="{{asset('bundles/pfa/img/ocnbuenosaires.png')}}" />
+				    	</div>
+						<div class="row">
+							<div>&nbsp;</div>
+						</div>
+						<div class="row">
+							<div><p style="color:#2d3c90; font-size:24px;">Interpol - Personas</p></div>
+						</div>
+				</div>
+			</div>
+	
+	<div class="panel panel-default">
+		<div class="panel-heading clearfix">
+			<div class="list-group">
+	      		<a href="#" onclick="window.history.back();" role="button" id="btnVolver" name="btnVolver" _ngcontent-soi-7="" class="btn btn-default pull-right">Volver</a>
+	      		<a href="#" role="button" id="btnReintentar" name="btnReintentar" _ngcontent-soi-7="" class="btn btn-default pull-right">Reintentar</a>	      
+	    	</div>
+	    </div>	
+	<div class="panel-body">
+	
+		<div class="col-sm-12 col-md-12" >
+		<div class="form-group">
+		
+	{% if (nominals.ERROR is defined and nominals.ERROR!='') %}
+        <div class="panel panel-danger">
+          <div class="panel-heading"><b>Atención se produjo el siguiente mensaje de error:</b></div>
+          <div class="panel-body"><h3>{{ nominals.ERROR }}</h3></div>
+        </div>
+	{% else %}
+	        <table class="display" id="tablas">
+                <thead>
+                    <tr>
+                    {% if PermisoDetalle.NOMINALSDETAILS == 1 %}
+                        <th>Opciones</th>
+                    {% endif %}
+                        <th>Nombre</th>      
+                        <th>Apellido</th>
+                        <th>Fecha Nacimiento</th>
+                        {% if app.request.get('optNominals') == 'NOMINALS' %}
+                        	<th title="A menor puntaje mayor correspondencia con los datos de b&uacute;squeda">Puntaje [Raz&oacute;n]</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                	{# Juan fijate si te gusta más ponerle el div con el mensaje en la propiedad empty del datatable #}
+                	{#{% if (nominals|length == 0 ) %}
+                		<tr>
+               			    <td class="row sorting_1"></td>
+                            <td class="row sorting_1"></td>
+                			<td class="row sorting_1">
+                				<div class="alert alert-success">
+								  <strong>OK: No se encontraron registros.</strong>
+								</div>
+                			</td>
+                            <td class="row sorting_1"></td>
+                            <td class="row sorting_1"></td>
+                		</tr>
+
+                	{% else %}#}
+                    {% for nominal in nominals %}
+                        <tr>
+                            {%  if (nominal.entityId|default('')!='') %}
+                                {% if PermisoDetalle.NOMINALSDETAILS == 1 %}
+		                        	<td>
+		                        	
+		                                <div id="obs{{nominal.entityId|default('')}}" style="display:none"></div>                                               
+		                                <a id="btnRes{{nominal.entityId|default('')}}" class="btn btn-info res" title="Ver Resultados" data-toggle="modal" onClick="confirmaDetalle('{{nominal.name|default('')}}', '{{nominal.forename|default('')}}', '{{nominal.date_of_birth|default('')}}', '{{nominal.entityId|default('')}}');">
+		                                    <i class="fa fa-search"></i>
+		                                </a>
+		                                <div id="res{{nominal.entityId|default('')}}" style="display:none"></div>                        	
+		                        	</td>
+	                        	{% endif %}
+	                            <td class="row text-left">{{ nominal.name          |default('')}}</td>
+	                            <td class="row text-left">{{ nominal.forename      |default('')}}</td>
+	                            <td class="row text-center">{{ nominal.date_of_birth |default('')}}</td>
+	                            {% if app.request.get('optNominals') == 'NOMINALS' %}
+	                            	<td class="row text-left"><strong>{{ nominal.query_score.value |default('') }}</strong>{{ ' [' ~ nominal.query_score.reason |default('') ~ ']' }}</td>
+	                            {% endif %}
+                            {% else %}
+                            <td class="row text-left"></td>
+                            <td class="row text-left"></td>
+                            <td class="row text-left"></td>
+                            <td class="row text-left"></td>
+                            <td class="row text-left"></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+		</div>
+    	</div>
+		
+		<div class="modal fade" id="MensajeConfirmacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header modal-header-danger">
+						<h5 class="modal-title text-center" id="exampleModalLabel"><b>Confirmación</b></h5>
+					</div>
+					<div class="modal-body text-center" id="dvMensaje"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default res"
+							data-dismiss="modal">Cancelar</button>
+						<button type="button" class="btn btn-danger res" data-dismiss="modal" onClick="mostrarDetalle();">Aceptar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+   	</div>
+	</div>
+	</div>
+
+</form>
+<script languaje="javascript">
+    $(document).ready(function () {
+        table = $('#tablas').DataTable({
+                    "scrollY": "600px",
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": false,
+                    "info": false,
+                    responsive: true,
+                    "filter": true,
+                    "order": [[0, "asc"]],
+                    "oLanguage": {
+						"sSearch":         "Buscar:",
+						"sEmptyTable": 	   '<div class="alert alert-success"><strong>OK: No se encontraron registros.</strong></div>',			
+						"sProcessing":     "Procesando...",
+						"sLengthMenu":     "Mostrar _MENU_ registros",
+						"sZeroRecords":    "No se encontraron resultados.",
+						"sInfo":           "Mostrando registros del: _START_ al _END_ (de un total de _TOTAL_ registros)",
+						"sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+						"sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+						"sInfoPostFix":    "",
+						"sUrl":            "",
+						"sInfoThousands":  ",",
+						"sLoadingRecords": "Cargando..."
+					}
+                });
+    });
+
+    function confirmaDetalle( pApellido, pNombre, pFechaNac, pEntity ){
+		$("#txtEntity").val( pEntity );
+    	$('#dvMensaje').html( "¿Est&aacute; seguro de que quiere consultar los datos de <b>" + pApellido + ", " + pNombre + "</b>, fecha de nacimiento: <b>"+pFechaNac+"</b>?<br/><br/><b>ESTA ACCI&Oacute;N PUEDE GENERAR ALARMAS</b>." );
+    	$('#MensajeConfirmacion').modal( 'show' );
+    }	//	function mostrarDivDetalle(){
+
+	function mostrarDetalle( ){
+		if( $( "#txtEntity" ).val() == ""){
+			alert("Para ver el detalle debe seleccionar un renglón haciendo click en la lupa del mismo.");
+			return false;
+		}	//	if( $( "#txtEntity" ).val() == ""){
+		$( "form" ).submit();
+	}	//	function mostrarDetalle( ){
+
+    $( "#btnReintentar" ).click(function() { 
+    	location.reload();
+    });	
+
+</script>
+{% endblock %}

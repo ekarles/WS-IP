@@ -1,0 +1,1348 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+{% block body -%}
+	<style>
+		/* ---------- Ficha de persona (tarjetas) ---------- */
+		.pd-wrap {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 15px;
+		}
+		.pd-topbar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			background: #fff;
+			border-radius: 10px;
+			box-shadow: 0 1px 4px rgba(20, 30, 70, 0.12);
+			padding: 12px 20px;
+			margin: 15px 0;
+		}
+		.pd-topbar img {
+			width: 230px;
+			max-width: 55%;
+		}
+		.pd-title {
+			margin: 0;
+			color: #2d3c90;
+			font-size: 22px;
+			font-weight: 600;
+		}
+		.pd-alert {
+			background: #fdecea;
+			border-left: 5px solid #c0392b;
+			border-radius: 8px;
+			padding: 12px 18px;
+			margin-bottom: 16px;
+			color: #5a2b27;
+		}
+		.pd-alert h4 {
+			margin: 0 0 6px;
+			color: #a12b20;
+			font-weight: 700;
+		}
+		.pd-alert p {
+			margin: 0 0 3px;
+			font-size: 14px;
+		}
+		.pd-hero {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 24px;
+			background: #fff;
+			border-radius: 12px;
+			box-shadow: 0 1px 4px rgba(20, 30, 70, 0.12);
+			padding: 22px;
+			margin-bottom: 20px;
+		}
+		.pd-photo {
+			flex: 0 0 220px;
+			text-align: center;
+		}
+		.pd-photo .thumbnail {
+			margin-bottom: 8px;
+			border-radius: 10px;
+			overflow: hidden;
+		}
+		.pd-photo img {
+			width: 100%;
+			height: auto;
+			max-height: 300px;
+			object-fit: cover;
+		}
+		.pd-photo-nav {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			color: #7a8194;
+			font-size: 13px;
+		}
+		.pd-info {
+			flex: 1 1 380px;
+			min-width: 0;
+		}
+		.pd-actions {
+			float: right;
+			margin: 0 0 8px 12px;
+		}
+		.pd-actions .btn {
+			margin-left: 6px;
+		}
+		.pd-name {
+			margin: 0;
+			color: #1f2a60;
+			font-size: 30px;
+			font-weight: 700;
+			line-height: 1.1;
+			text-transform: uppercase;
+			word-break: break-word;
+		}
+		.pd-forename {
+			margin: 2px 0 12px;
+			color: #444;
+			font-size: 20px;
+			text-transform: uppercase;
+		}
+		.pd-badge {
+			display: inline-block;
+			margin: 0 8px 6px 0;
+			padding: 5px 16px;
+			border-radius: 20px;
+			background: #555;
+			color: #fff;
+			font-size: 14px;
+			font-weight: 700;
+			letter-spacing: 0.5px;
+		}
+		.pd-chip {
+			display: inline-block;
+			margin: 0 6px 6px 0;
+			padding: 3px 11px;
+			border-radius: 14px;
+			background: #fff3cd;
+			border: 1px solid #f0d98c;
+			color: #7a5b00;
+			font-size: 12px;
+			font-weight: 700;
+		}
+		.pd-facts {
+			display: flex;
+			flex-wrap: wrap;
+			margin-top: 10px;
+		}
+		.pd-fact {
+			flex: 1 1 200px;
+			padding: 6px 12px 6px 0;
+		}
+		.pd-fact .pd-k {
+			display: block;
+		}
+		.pd-fact .pd-v {
+			display: block;
+			text-align: left;
+		}
+		.pd-grid {
+			display: flex;
+			flex-wrap: wrap;
+			margin: 0 -8px;
+		}
+		.pd-card {
+			flex: 1 1 calc(50% - 16px);
+			min-width: 320px;
+			margin: 0 8px 16px;
+			background: #fff;
+			border-radius: 12px;
+			box-shadow: 0 1px 4px rgba(20, 30, 70, 0.12);
+			overflow: hidden;
+		}
+		.pd-card.pd-full {
+			flex-basis: 100%;
+		}
+		.pd-card-h {
+			padding: 11px 18px;
+			background: #f4f6fb;
+			border-bottom: 1px solid #e3e7f1;
+			color: #2d3c90;
+			font-size: 15px;
+			font-weight: 700;
+		}
+		.pd-card-h .glyphicon {
+			margin-right: 8px;
+			opacity: 0.8;
+		}
+		.pd-card-danger .pd-card-h {
+			background: #fdecea;
+			border-bottom-color: #f3c7c2;
+			color: #a12b20;
+		}
+		.pd-card-b {
+			padding: 6px 18px 10px;
+		}
+		.pd-row {
+			display: flex;
+			justify-content: space-between;
+			gap: 14px;
+			padding: 7px 0;
+			border-bottom: 1px solid #f0f2f7;
+		}
+		.pd-row:last-child {
+			border-bottom: 0;
+		}
+		.pd-k {
+			color: #7a8194;
+			font-size: 13px;
+		}
+		.pd-v {
+			color: #222;
+			font-weight: 600;
+			text-align: right;
+			word-break: break-word;
+		}
+		.pd-foot {
+			margin: 4px 0 24px;
+		}
+		.pd-error {
+			background: #fff;
+			border-radius: 12px;
+			border-left: 5px solid #c0392b;
+			box-shadow: 0 1px 4px rgba(20, 30, 70, 0.12);
+			padding: 18px 22px;
+			margin-bottom: 20px;
+		}
+		.pd-error h4 {
+			margin-top: 0;
+			color: #a12b20;
+			font-weight: 700;
+		}
+		@media (max-width: 768px) {
+			.pd-photo {
+				flex-basis: 100%;
+			}
+			.pd-actions {
+				float: none;
+				margin: 0 0 10px;
+			}
+			.pd-name {
+				font-size: 24px;
+			}
+			.pd-card {
+				min-width: 100%;
+			}
+		}
+
+		/* Tabla contenedora (sirve para repetir el pie en cada hoja al imprimir): en pantalla no altera el diseño */
+		.pd-pt,
+		.pd-pt > tbody,
+		.pd-pt > tbody > tr,
+		.pd-pt > tbody > tr > td {
+			display: block;
+			padding: 0;
+			border: 0;
+		}
+		.pd-pt > tfoot {
+			display: none;
+		}
+		/* ---------- Impresión ---------- */
+		#pieImpresion {
+			display: none;
+		}
+	</style>
+	{# Estilos de impresión: se aplican solo al imprimir. El script de ajuste (ajustarImpresion) los activa un instante
+	   para medir el alto y agrandar la letra hasta llenar la hoja A4; todos los tamaños están en rem. #}
+	<style id="pdPrintCss" media="print">
+		/* El CSS de impresión de Bootstrap fuerza "background: transparent" y "color: #000" con !important en todos los
+																																   elementos; por eso los colores de esta hoja llevan !important. */
+		@page {
+			size: A4 portrait;
+			margin: 7mm;
+		}
+		* {
+			-webkit-print-color-adjust: exact !important;
+			print-color-adjust: exact !important;
+		}
+		html {
+			font-size: 12px;
+		}
+		html,
+		body {
+			background: #fff !important;
+		}
+		body {
+			width: 196mm;
+			margin: 0 !important;
+			line-height: 1.2 !important;
+		}
+		nav.navbar,
+		.sidebar,
+		#dvFlashMsg,
+		.footer-zone,
+		.animationload,
+		.animationload2,
+		.modal,
+		.modal-backdrop,
+		.btn,
+		.pd-actions,
+		.pd-foot,
+		.pd-photo-nav {
+			display: none !important;
+		}
+		#page-wrapper {
+			margin: 0 !important;
+			padding: 0 !important;
+			border: 0 !important;
+		}
+		.container-fluid {
+			padding: 0 !important;
+		}
+
+		/* Tabla contenedora: el pie (tfoot) se repite al final de cada hoja */
+		.pd-pt {
+			display: table !important;
+			width: 100%;
+			height: 281mm;
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+		.pd-pt > tbody {
+			display: table-row-group !important;
+		}
+		.pd-pt > tfoot {
+			display: table-footer-group !important;
+		}
+		.pd-pt tr {
+			display: table-row !important;
+			page-break-inside: auto !important;
+		}
+		.pd-pt td {
+			display: table-cell !important;
+			padding: 0;
+			vertical-align: top;
+		}
+		.pd-pt > tfoot td {
+			vertical-align: bottom;
+		}
+
+		.pd-wrap {
+			max-width: none;
+			padding: 0;
+		}
+		.pd-topbar {
+			box-shadow: none;
+			border: 0;
+			border-bottom: 1px solid #999;
+			border-radius: 0;
+			padding: 0 0 0.25rem;
+			margin: 0 0 0.4rem;
+			background: transparent !important;
+		}
+		.pd-topbar img {
+			width: 9rem;
+		}
+		.pd-title {
+			font-size: 1.33rem;
+			color: #2d3c90 !important;
+		}
+		.pd-alert {
+			padding: 0.25rem 0.65rem;
+			margin-bottom: 0.4rem;
+			border-left: 4px solid #c0392b;
+			border-radius: 3px;
+			background: #fdecea !important;
+		}
+		.pd-alert h4 {
+			margin: 0 0 0.1rem;
+			font-size: 1rem;
+			color: #a12b20 !important;
+		}
+		.pd-alert p {
+			margin: 0;
+			font-size: 0.78rem;
+			line-height: 1.15;
+			color: #5a2b27 !important;
+		}
+		.pd-hero {
+			display: flex;
+			flex-wrap: nowrap;
+			gap: 0.8rem;
+			padding: 0.4rem 0.65rem;
+			margin-bottom: 0.5rem;
+			box-shadow: none;
+			border: 1px solid #b9c4dc;
+			border-radius: 4px;
+			background: #f1f5fc !important;
+		}
+		.pd-photo {
+			flex: 0 0 9.5rem;
+		}
+		.pd-photo .thumbnail {
+			margin: 0;
+			padding: 1px;
+			border-radius: 3px;
+			background: #fff !important;
+		}
+		.pd-photo img {
+			max-height: 12.5rem;
+		}
+		.pd-info {
+			flex: 1 1 auto;
+		}
+		.pd-name {
+			font-size: 1.67rem;
+			color: #1f2a60 !important;
+		}
+		.pd-forename {
+			margin: 0 0 0.25rem;
+			font-size: 1.22rem;
+			color: #333 !important;
+		}
+		.pd-badge {
+			padding: 0.08rem 0.65rem;
+			margin: 0 0.3rem 0.15rem 0;
+			font-size: 0.89rem;
+		}
+		.pd-chip {
+			padding: 0 0.5rem;
+			margin: 0 0.25rem 0.15rem 0;
+			font-size: 0.78rem;
+			background: #fff3cd !important;
+			color: #7a5b00 !important;
+		}
+		.pd-facts {
+			margin-top: 0.15rem;
+		}
+		.pd-fact {
+			flex: 1 1 11rem;
+			padding: 0.08rem 0.65rem 0.08rem 0;
+		}
+		.pd-fact .pd-k {
+			font-size: 0.78rem;
+		}
+		.pd-fact .pd-v {
+			font-size: 0.94rem;
+		}
+		.pd-grid {
+			display: block;
+			margin: 0;
+			-webkit-column-count: 2;
+			column-count: 2;
+			-webkit-column-gap: 0.5rem;
+			column-gap: 0.5rem;
+		}
+		.pd-card {
+			display: block;
+			min-width: 0;
+			margin: 0 0 0.4rem;
+			box-shadow: none;
+			border: 1px solid #c3cde0;
+			border-radius: 3px;
+			background: #fff !important;
+			break-inside: avoid;
+			page-break-inside: avoid;
+			-webkit-column-break-inside: avoid;
+		}
+		/* Un tono suave y claro distinto por sección */
+		.pd-card:nth-child(8n + 1) {
+			background: #e3efff !important;
+		}
+		.pd-card:nth-child(8n + 2) {
+			background: #e2f6e8 !important;
+		}
+		.pd-card:nth-child(8n + 3) {
+			background: #fff1d6 !important;
+		}
+		.pd-card:nth-child(8n + 4) {
+			background: #efe6fa !important;
+		}
+		.pd-card:nth-child(8n + 5) {
+			background: #dcf3f1 !important;
+		}
+		.pd-card:nth-child(8n + 6) {
+			background: #fde6ee !important;
+		}
+		.pd-card:nth-child(8n + 7) {
+			background: #eef3d3 !important;
+		}
+		.pd-card:nth-child(8n + 8) {
+			background: #e8ebf0 !important;
+		}
+		.pd-card.pd-card-danger {
+			background: #fdecea !important;
+			border-color: #efb9b3;
+		}
+		.pd-card-h {
+			padding: 0.15rem 0.5rem;
+			font-size: 0.94rem;
+			background: rgba(0, 0, 0, 0.07) !important;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+			color: #243a8a !important;
+		}
+		.pd-card-danger .pd-card-h {
+			color: #a12b20 !important;
+		}
+		.pd-card-h .glyphicon {
+			display: none;
+		}
+		.pd-card-b {
+			padding: 0.08rem 0.5rem 0.15rem;
+		}
+		.pd-row {
+			display: block;
+			gap: 0;
+			padding: 0.1rem 0;
+			border-bottom: 1px dotted rgba(0, 0, 0, 0.25);
+		}
+		.pd-k {
+			display: inline;
+			font-size: 0.78rem;
+			color: #555 !important;
+		}
+		.pd-k:after {
+			content: ": ";
+		}
+		.pd-v {
+			display: inline;
+			font-size: 0.89rem;
+			text-align: left;
+		}
+		#pieImpresion {
+			display: block;
+			margin: 0.3rem 0 0;
+			padding-top: 0.2rem;
+			border-top: 1px solid #999;
+			font-size: 0.89rem;
+		}
+	</style>
+	<form method="POST" action="{{ path('persona_showdetails') }}">
+		{% if app.request.get('txtCombinada') is defined and app.request.get('txtCombinada') == 'SI' %}
+			<input type="hidden" id="txtCombinadaPer" name="txtCombinada" value="SI"/>
+		{% endif %}
+		<input type="hidden" id="txtEntity" name="txtEntity" value="{{ app.request.get('txtEntity')|default('') }}"/>
+		<input type="hidden" id="txtNombre" name="txtNombre" value="{{ app.request.get('txtNombre')|default('') }}"/>
+		<input type="hidden" id="txtApellido" name="txtApellido" value="{{ app.request.get('txtApellido')|default('') }}"/>
+		<input type="hidden" id="txtFechaNac" name="txtFechaNac" value="{{ app.request.get('txtFechaNac')|default('') }}"/>
+		<input type="hidden" id="lstTipoCons" name="lstTipoCons" value="{{ app.request.get('lstTipoCons')|default('') }}"/>
+
+		<table class="pd-pt">
+			<tbody>
+				<tr>
+					<td>
+						<div id="panelTitulo" class="pd-wrap">
+							<div class="pd-topbar">
+								<img src="{{ asset('bundles/pfa/img/ocnbuenosaires.png') }}"/>
+								<p class="pd-title">Interpol - Personas</p>
+							</div>
+						</div>
+
+						<div id="panelconsulta" class="pd-wrap">
+							{% if (nominalDetails.ERROR is defined and nominalDetails.ERROR != '') %}
+								<div class="pd-error">
+									<h4>Atención se produjo el siguiente mensaje de error:</h4>
+									<h3>{{ nominalDetails.ERROR }}</h3>
+									<a href="#" onclick="window.history.back(); return false;" role="button" id="btnCerrar1" name="btnCerrar1" class="btn btn-default">Volver</a>
+								</div>
+
+							{% else %}
+
+								{# Tipo de notificación (o difusión) para la insignia de color #}
+								{% set notifType = '' %}
+								{% if nominalDetails["notification"] is defined %}
+									{% set notifType = nominalDetails["notification"]["type_id"]|default('') %}
+								{% elseif nominalDetails["diffusion"] is defined %}
+									{% set notifType = nominalDetails["diffusion"]["type_id"]|default('') %}
+								{% endif %}
+
+								{# Colores de cada tipo de notificación (RED, BLUE, etc.); las difusiones usan el color de su tipo #}
+								{% set paletaNotif = {
+					'RED': ['#d32f2f', '#ffffff'],
+					'ORANGE': ['#f57c00', '#ffffff'],
+					'BLUE': ['#1565c0', '#ffffff'],
+					'YELLOW': ['#fdd835', '#333333'],
+					'GREEN': ['#2e7d32', '#ffffff'],
+					'BLACK': ['#212121', '#ffffff'],
+					'PURPLE': ['#6a1b9a', '#ffffff'],
+					'LIGHT BLUE': ['#4fc3f7', '#06324a'],
+					'UN': ['#4fc3f7', '#06324a'],
+					'SILVER': ['#b0b7c0', '#222222'],
+					'DIFUSION': ['#ffffff', '#333333']
+				} %}
+								{% set claveNotif = notifType|upper|replace({' DIFF': '', 'YELOW': 'YELLOW'}) %}
+								{% set pc = paletaNotif[claveNotif] is defined ? paletaNotif[claveNotif] : ['#555555', '#ffffff'] %}
+
+								<div class="pd-alert">
+									<h4><span class="glyphicon glyphicon-info-sign"></span> Resultado Positivo!</h4>
+									<p>{{ encabezados.leyenda_A }}</p>
+									<p>{{ encabezados.leyenda_B }}</p>
+									<p>{{ encabezados.leyenda_C }}</p>
+									<p>{{ encabezados.leyenda_D }}</p>
+									<p>{{ encabezados.leyenda_E }}</p>
+									<p>{{ encabezados.leyenda_F }}</p>
+								</div>
+
+								<div class="pd-hero"{% if notifType != '' %} style="border-top: 4px solid {{ pc[0] }};"{% endif %}>
+									<div class="pd-photo">
+										<a class="thumbnail" href="javascript:mostrar(0)">
+											{% if arrayImg|length > 0 %}
+												<img id="imagen" src="{{ arrayImg[0]|default('') }}">
+											{% else %}
+												<img id="imagen" src="{{ asset('bundles/images/unknown.png') }}">
+											{% endif %}
+										</a>
+										<div class="pd-photo-nav">
+											<button type="button" class="btn btn-default btn-sm" disabled>
+												<span class="glyphicon glyphicon-chevron-left"></span>
+											</button>
+											<span id="nroFoto">{{ arrayImg|length == 0 ? '0' : '1' }} de {{ arrayImg|length }}</span>
+											<button type="button" class="btn btn-default btn-sm" disabled>
+												<span class="glyphicon glyphicon-chevron-right"></span>
+											</button>
+										</div>
+									</div>
+
+									<div class="pd-info">
+										<div class="pd-actions">
+											<a href="#" role="button" id="btnCerrar1" name="btnCerrar1" onclick="window.history.back(); return false;" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Volver</a>
+											<a href="#" role="button" id="btnImprimir" name="btnImprimir" class="btn btn-default" onclick="window.print(); return false;"><span class="glyphicon glyphicon-print"></span> Imprimir</a>
+											<a href="#" role="button" id="btnReintentar" name="btnReintentar" class="btn btn-default"><span class="glyphicon glyphicon-refresh"></span> Reintentar</a>
+											{# PDF original de la notificación: uno por cada archivo "notification" informado (puede haber más de uno por idioma) #}
+											{% set pdfFiles = nominalDetails["notification"]["file"]|default(nominalDetails["diffusion"]["file"]|default([])) %}
+											{% if pdfFiles["ref"] is defined or pdfFiles["path"] is defined %}{% set pdfFiles = [pdfFiles] %}{% endif %}
+											{% for pf in pdfFiles %}
+												{# la ruta del PDF puede venir en "ref" o en "path", según la versión del esquema #}
+												{% set rutaPdf = pf.ref|default(pf.path|default('')) %}
+												{% if rutaPdf != '' and 'notification' in pf.type_id|default('notification')|lower %}
+													<a href="#" role="button" class="btn btn-default" data-ref="{{ rutaPdf }}" onclick="descargarNoticiaPdf(this); return false;" title="Abre el PDF original de la notificación en una ventana nueva"><span class="glyphicon glyphicon-download-alt"></span> PDF original{{ pdfFiles|length > 1 and pf.language_id is defined ? ' (idioma ' ~ pf.language_id ~ ')' : '' }}</a>
+												{% endif %}
+											{% endfor %}
+										</div>
+
+										<h2 class="pd-name">{{ nominalDetails["name"]|default('NO DATA') }}</h2>
+										<div class="pd-forename">{{ nominalDetails["forename"]|default('NO DATA') }}</div>
+
+										<div>
+											{% if notifType != '' %}
+												<span class="pd-badge" style="background-color: {{ pc[0] }} !important; color: {{ pc[1] }} !important; border: 1px solid rgba(0, 0, 0, .35);">
+													Notificación:
+													{% if notifType in colores|keys %}
+														{{ colores[notifType] ~ " / " ~ notifType }}
+													{% else %}
+														{{ notifType }}
+													{% endif %}
+												</span>
+											{% endif %}
+										</div>
+
+										{# Precauciones como etiquetas #}
+										{% if nominalDetails["caution"] is defined %}
+											{% set cauts = nominalDetails["caution"] %}
+											{% if cauts["caution_id"] is defined %}{% set cauts = [cauts] %}{% endif %}
+											<div>
+												{% for itemt in cauts %}
+													<span class="pd-chip"><span class="glyphicon glyphicon-warning-sign"></span> {{ itemt.caution_id|default('NO DATA') ~ (caution[itemt.caution_id|default('')] is defined ? " - " ~ caution[itemt.caution_id|default('')] : '') }}</span>
+												{% endfor %}
+											</div>
+										{% endif %}
+
+										<div class="pd-facts">
+											{% if nominalDetails["sex_id"] is defined %}
+												<div class="pd-fact"><span class="pd-k">{{ titulos["sex_id"] }}</span><span class="pd-v">{{ nominalDetails["sex_id"]|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["date_of_birth"] is defined %}
+												<div class="pd-fact"><span class="pd-k">{{ titulos["date_of_birth"] }}</span><span class="pd-v">{{ nominalDetails["date_of_birth"]|slice(6, 2) ~ "/" ~ nominalDetails["date_of_birth"]|slice(4, 2) ~ "/" ~ nominalDetails["date_of_birth"]|slice(0, 4)|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["place_of_birth"] is defined %}
+												<div class="pd-fact"><span class="pd-k">{{ titulos["place_of_birth"] }}</span><span class="pd-v">{{ nominalDetails["place_of_birth"]|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["country_of_birth_id"] is defined %}
+												<div class="pd-fact"><span class="pd-k">{{ titulos["country_of_birth_id"] }}</span><span class="pd-v">{{ nominalDetails["country_of_birth_id"] ~ " - " ~ paises[nominalDetails["country_of_birth_id"]]["DESCRIPCION"]|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["document"]["type_id"] is defined %}
+												<div class="pd-fact"><span class="pd-k">{{ titulos["type"] }}</span><span class="pd-v">{{ nominalDetails["document"]["type_id"]|default('NO DATA') ~ (documentosCod[nominalDetails["document"]["type_id"]|default('')] is defined ? " - " ~ documentosCod[nominalDetails["document"]["type_id"]|default('')] : '') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["document"]["nr"] is defined %}
+												<div class="pd-fact"><span class="pd-k">{{ titulos["nr"] }}</span><span class="pd-v">{{ nominalDetails["document"]["nr"]|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["nickname"] is defined %}
+												{% if nominalDetails["nickname"] is iterable %}
+													{% for clave, valor in nominalDetails["nickname"] %}
+														<div class="pd-fact"><span class="pd-k">{{ titulos["nickname"] }}</span><span class="pd-v">{{ valor|default('NO DATA') }}</span></div>
+													{% endfor %}
+												{% else %}
+													<div class="pd-fact"><span class="pd-k">{{ titulos["nickname"] }}</span><span class="pd-v">{{ nominalDetails["nickname"]|default('NO DATA') }}</span></div>
+												{% endif %}
+											{% endif %}
+											{% if nominalDetails["db_last_updated_on"] is defined %}
+												<div class="pd-fact"><span class="pd-k">Actualizado</span><span class="pd-v">{{ nominalDetails["db_last_updated_on"]|slice(6, 2) ~ "/" ~ nominalDetails["db_last_updated_on"]|slice(4, 2) ~ "/" ~ nominalDetails["db_last_updated_on"]|slice(0, 4)|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["db_review_date"] is defined %}
+												<div class="pd-fact"><span class="pd-k">Visto</span><span class="pd-v">{{ nominalDetails["db_review_date"]|slice(6, 2) ~ "/" ~ nominalDetails["db_review_date"]|slice(4, 2) ~ "/" ~ nominalDetails["db_review_date"]|slice(0, 4)|default('NO DATA') }}</span></div>
+											{% endif %}
+										</div>
+									</div>
+								</div>
+
+								<div class="pd-grid">
+
+									{# ---------- Notificación ---------- #}
+									{% if nominalDetails["notification"] is defined %}
+										<div class="pd-card">
+											<div class="pd-card-h"><span class="glyphicon glyphicon-bell"></span>Notificación</div>
+											<div class="pd-card-b">
+												{# Delitos de la notificación (uno solo o varios), traducidos con el diccionario: van primero porque es lo que más se busca #}
+												{% set offsN = nominalDetails["notification"]["offence"]|default([]) %}
+												{% if offsN["offence_id"] is defined %}{% set offsN = [offsN] %}{% endif %}
+												{% for off in offsN %}
+													<div class="pd-row"><span class="pd-k">{{ offsN|length > 1 ? 'Delito ' ~ loop.index : 'Delito' }}</span><span class="pd-v">{{ off.offence_id|default('NO DATA') ~ (Offences_Code[off.offence_id|default('')] is defined ? " - " ~ Offences_Code[off.offence_id|default('')] : '') }}</span></div>
+												{% endfor %}
+												{# Propósito asociado: puede venir un solo código o una lista de códigos; se traduce con el diccionario #}
+												{% set propsN = nominalDetails["notification"]["associated_nominal_purpose_id"]|default([]) %}
+												{% if propsN is not iterable %}{% set propsN = [propsN] %}{% endif %}
+												{% for p in propsN %}
+													<div class="pd-row"><span class="pd-k">{{ (titulos['associated_nominal_purpose_id']|default('Propósito asociado')) ~ (propsN|length > 1 ? ' ' ~ loop.index : '') }}</span><span class="pd-v">{{ p ~ (propositos[p] is defined ? " - " ~ propositos[p] : '') }}</span></div>
+												{% endfor %}
+												{% for key, item in nominalDetails["notification"]|default('') if key != 'offence' and key != 'associated_nominal_purpose_id' %}
+													{% if item is iterable %}
+														{% for keyI, itemI in item %}
+															{% if itemI is not iterable and itemI|length > 0 %}
+																{% if 'date' in keyI %}
+																	<div class="pd-row"><span class="pd-k">{{ titulos[keyI]|default(keyI) }}</span><span class="pd-v">{{ itemI|slice(6, 2) ~ "/" ~ itemI|slice(4, 2) ~ "/" ~ itemI|slice(0, 4)|default('NO DATA') }}</span></div>
+																{% else %}
+																	<div class="pd-row"><span class="pd-k">{{ titulos[keyI]|default(keyI) }}</span><span class="pd-v">{{ (colores[itemI] is defined ? colores[itemI] ~ ' / ' : '') ~ itemI|default('NO DATA') }}</span></div>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													{% else %}
+														{% if item|length == 0 %}{# campo vacío: no se muestra #}
+														{% elseif key in ['pending_publication', 'no_time_limit'] %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ item == 1 ? 'Sí' : 'No' }}</span></div>
+														{% elseif key == 'associated_nominal_purpose_id' %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ item ~ (propositos[item] is defined ? " - " ~ propositos[item] : '') }}</span></div>
+														{% elseif key == 'status_id' %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ item ~ (estados[item] is defined ? " - " ~ estados[item] : '') }}</span></div>
+														{% elseif key == 'publication_date' %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ item|slice(8, 2) ~ "/" ~ item|slice(5, 2) ~ "/" ~ item|slice(0, 4) }}</span></div>
+														{% elseif key == 'date' %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ item|slice(6, 2) ~ "/" ~ item|slice(4, 2) ~ "/" ~ item|slice(0, 4)|default('NO DATA') }}</span></div>
+														{% else %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ (colores[item] is defined ? colores[item] ~ ' / ' : '') ~ item|default('NO DATA') }}</span></div>
+														{% endif %}
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+
+									{# ---------- Pedido de arresto ---------- #}
+									{% if nominalDetails["arrest_warrant"] is defined %}
+										<div class="pd-card pd-card-danger">
+											<div class="pd-card-h"><span class="glyphicon glyphicon-warning-sign"></span>Pedido de arresto</div>
+											<div class="pd-card-b">
+												{% for key, item in nominalDetails["arrest_warrant"]|default('') %}
+													{% if item is iterable %}
+														{% for k, i in item|default('') %}
+															{% if i is iterable %}
+																{% for clave, valor in i|default('') %}
+																	<div class="pd-row"><span class="pd-k">{{ titulos[clave]|default(clave) }}</span><span class="pd-v">{{ valor|default('NO DATA') }}</span></div>
+																{% endfor %}
+															{% else %}
+																{% if "country" in k %}
+																	<div class="pd-row"><span class="pd-k">{{ titulos[k]|default(k) }}</span><span class="pd-v">{{ i ~ " - " ~ paises[i]["DESCRIPCION"]|default('NO DATA') }}</span></div>
+																{% elseif "_on" in k or "date" in k %}
+																	<div class="pd-row"><span class="pd-k">{{ titulos[k]|default(k) }}</span><span class="pd-v">{{ i|slice(6, 2) ~ "/" ~ i|slice(4, 2) ~ "/" ~ i|slice(0, 4)|default('NO DATA') }}</span></div>
+																{% else %}
+																	<div class="pd-row"><span class="pd-k">{{ titulos[k]|default(k) }}</span><span class="pd-v">{{ i|default('NO DATA') }}</span></div>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													{% else %}
+														{% if key == "country_of_issue_id" %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ paises[item]["DESCRIPCION"]|default('NO DATA') }}</span></div>
+														{% elseif "_on" in key or "date" in key %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ item|slice(6, 2) ~ "/" ~ item|slice(4, 2) ~ "/" ~ item|slice(0, 4)|default('NO DATA') }}</span></div>
+														{% else %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ item|default('NO DATA') }}</span></div>
+														{% endif %}
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+
+									{# ---------- Documento ---------- #}
+									{% if nominalDetails["document"] is defined %}
+										<div class="pd-card">
+											<div class="pd-card-h"><span class="glyphicon glyphicon-credit-card"></span>Documento</div>
+											<div class="pd-card-b">
+												{% for key, item in nominalDetails["document"]|default('') %}
+													{% if item is iterable %}
+														{% for k, i in item %}
+															{% if i is iterable %}
+																{% for clave, valor in i %}
+																	{% if 'country' in clave %}
+																		<div class="pd-row"><span class="pd-k">{{ titulos[clave]|default(clave) }}</span><span class="pd-v">{{ valor ~ ' - ' ~ paises[valor]["DESCRIPCION"]|default('NO DATA') }}</span></div>
+																	{% elseif 'date' in clave %}
+																		<div class="pd-row"><span class="pd-k">{{ titulos[clave]|default(clave) }}</span><span class="pd-v">{{ valor|slice(6, 2) ~ "/" ~ valor|slice(4, 2) ~ "/" ~ valor|slice(0, 4)|default('NO DATA') }}</span></div>
+																	{% else %}
+																		<div class="pd-row"><span class="pd-k">{{ titulos[clave]|default(clave) }}</span><span class="pd-v">{{ valor|default('NO DATA') }}</span></div>
+																	{% endif %}
+																{% endfor %}
+															{% else %}
+																{% if 'country' in k %}
+																	<div class="pd-row"><span class="pd-k">{{ titulos[k]|default(k) }}</span><span class="pd-v">{{ paises[i]["DESCRIPCION"]|default('NO DATA') }}</span></div>
+																{% elseif 'date' in k %}
+																	<div class="pd-row"><span class="pd-k">{{ titulos[k]|default(k) }}</span><span class="pd-v">{{ i|slice(6, 2) ~ "/" ~ i|slice(4, 2) ~ "/" ~ i|slice(0, 4)|default('NO DATA') }}</span></div>
+																{% else %}
+																	<div class="pd-row"><span class="pd-k">{{ titulos[k]|default(k) }}</span><span class="pd-v">{{ i|default('NO DATA') }}</span></div>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													{% else %}
+														{% if 'country' in key %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ paises[item]["DESCRIPCION"]|default('NO DATA') }}</span></div>
+														{% elseif key == 'type_id' and documentosCod[item] is defined %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ item ~ " - " ~ documentosCod[item] }}</span></div>
+														{% elseif 'date' in key %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ item|slice(6, 2) ~ "/" ~ item|slice(4, 2) ~ "/" ~ item|slice(0, 4)|default('NO DATA') }}</span></div>
+														{% else %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ item|default('NO DATA') }}</span></div>
+														{% endif %}
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+
+									{# ---------- Evento ---------- #}
+									{% if nominalDetails["event"] is defined %}
+										{% set ev = nominalDetails["event"] %}
+										{% if ev[0] is defined %}{% set ev = ev[0] %}{% endif %}
+										<div class="pd-card">
+											<div class="pd-card-h"><span class="glyphicon glyphicon-calendar"></span>Evento</div>
+											<div class="pd-card-b">
+												{% if ev["@attributes"]["item_id"] is defined %}
+													<div class="pd-row"><span class="pd-k">Id</span><span class="pd-v">{{ ev["@attributes"]["item_id"] }}</span></div>
+												{% endif %}
+												{% if ev["date"] is defined %}
+													<div class="pd-row"><span class="pd-k">Fecha</span><span class="pd-v">{{ ev["date"]|slice(6, 2) ~ "/" ~ ev["date"]|slice(4, 2) ~ "/" ~ ev["date"]|slice(0, 4) }}</span></div>
+												{% endif %}
+												{% if ev["location_country_id"] is defined %}
+													<div class="pd-row"><span class="pd-k">País del evento</span><span class="pd-v">{{ ev["location_country_id"] ~ " - " ~ paises[ev["location_country_id"]]["DESCRIPCION"]|default('NO DATA') }}</span></div>
+												{% endif %}
+												{% if ev["office_reference"] is defined %}
+													<div class="pd-row"><span class="pd-k">Referencia de la oficina</span><span class="pd-v">{{ ev["office_reference"] }}</span></div>
+												{% endif %}
+											</div>
+										</div>
+									{% endif %}
+
+									{# ---------- Datos personales ---------- #}
+									<div class="pd-card">
+										<div class="pd-card-h"><span class="glyphicon glyphicon-user"></span>Datos Personales</div>
+										<div class="pd-card-b">
+											{% if nominalDetails["name"] is defined %}
+												<div class="pd-row"><span class="pd-k">Apellido</span><span class="pd-v">{{ nominalDetails["name"]|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["forename"] is defined %}
+												<div class="pd-row"><span class="pd-k">Nombre</span><span class="pd-v">{{ nominalDetails["forename"]|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["name_at_birth"] is defined %}
+												<div class="pd-row"><span class="pd-k">Nombre de Nacimiento</span><span class="pd-v">{{ nominalDetails["name_at_birth"]|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["nickname"] is defined %}
+												{% if nominalDetails["nickname"] is iterable %}
+													{% for key, item in nominalDetails["nickname"]|default('') %}
+														<div class="pd-row"><span class="pd-k">Alias</span><span class="pd-v">{{ item|default('NO DATA') }}</span></div>
+													{% endfor %}
+												{% else %}
+													<div class="pd-row"><span class="pd-k">{{ titulos["nickname"] }}</span><span class="pd-v">{{ nominalDetails["nickname"]|default('NO DATA') }}</span></div>
+												{% endif %}
+											{% endif %}
+											{% if nominalDetails["sex_id"] is defined %}
+												<div class="pd-row"><span class="pd-k">Sexo</span><span class="pd-v">{{ nominalDetails["sex_id"]|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["date_of_birth"] is defined %}
+												<div class="pd-row"><span class="pd-k">Fecha de Nacimiento</span><span class="pd-v">{{ nominalDetails["date_of_birth"]|slice(6, 2) ~ "/" ~ nominalDetails["date_of_birth"]|slice(4, 2) ~ "/" ~ nominalDetails["date_of_birth"]|slice(0, 4)|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["fingerprint_available"] is defined %}
+												<div class="pd-row"><span class="pd-k">Huella digital disponible</span><span class="pd-v">{{ nominalDetails["fingerprint_available"]|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["db_last_updated_on"] is defined %}
+												<div class="pd-row"><span class="pd-k">Actualizado</span><span class="pd-v">{{ nominalDetails["db_last_updated_on"]|slice(6, 2) ~ "/" ~ nominalDetails["db_last_updated_on"]|slice(4, 2) ~ "/" ~ nominalDetails["db_last_updated_on"]|slice(0, 4)|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["db_review_date"] is defined %}
+												<div class="pd-row"><span class="pd-k">Fecha de revisión</span><span class="pd-v">{{ nominalDetails["db_review_date"]|slice(6, 2) ~ "/" ~ nominalDetails["db_review_date"]|slice(4, 2) ~ "/" ~ nominalDetails["db_review_date"]|slice(0, 4)|default('NO DATA') }}</span></div>
+											{% endif %}
+											{# {% if nominalDetails["@attributes"]["qualification_id"] is defined %}
+												<div class="pd-row"><span class="pd-k">Tipo de Alias</span><span class="pd-v">{{ nominalDetails["@attributes"]["qualification_id"] ~ (Alias_Qualification[nominalDetails["@attributes"]["qualification_id"]] is defined ? " - " ~ Alias_Qualification[nominalDetails["@attributes"]["qualification_id"]] : '') }}</span></div>
+											{% endif %} #}
+											{% if nominalDetails["status_id"] is defined %}
+												<div class="pd-row"><span class="pd-k">Id estado</span><span class="pd-v">{{ nominalDetails["status_id"]|default('NO DATA') }}</span></div>
+											{% endif %}
+										</div>
+									</div>
+
+									{# ---------- Apariencia ---------- #}
+									<div class="pd-card">
+										<div class="pd-card-h"><span class="glyphicon glyphicon-eye-open"></span>Apariencia</div>
+										<div class="pd-card-b">
+											{% if nominalDetails["height_min"] is defined %}
+												<div class="pd-row"><span class="pd-k">Altura mínima</span><span class="pd-v">{{ nominalDetails["height_min"]|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["weight_min"] is defined %}
+												<div class="pd-row"><span class="pd-k">Peso mínimo</span><span class="pd-v">{{ nominalDetails["weight_min"]|default('NO DATA') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["hair_id"] is defined %}
+												<div class="pd-row"><span class="pd-k">Color de cabello</span><span class="pd-v">{{ nominalDetails["hair_id"] ~ (cabello[nominalDetails["hair_id"]] is defined ? " - " ~ cabello[nominalDetails["hair_id"]] : '') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["eyes_id"] is defined %}
+												<div class="pd-row"><span class="pd-k">Color de ojos</span><span class="pd-v">{{ nominalDetails["eyes_id"] ~ (ojos[nominalDetails["eyes_id"]] is defined ? " - " ~ ojos[nominalDetails["eyes_id"]] : '') }}</span></div>
+											{% endif %}
+											{% if nominalDetails["build_id"] is defined %}
+												<div class="pd-row"><span class="pd-k">Complexión</span><span class="pd-v">{{ nominalDetails["build_id"] ~ (complexion[nominalDetails["build_id"]] is defined ? " - " ~ complexion[nominalDetails["build_id"]] : '') }}</span></div>
+											{% endif %}
+										</div>
+									</div>
+
+									{# ---------- Nacionalidades ---------- #}
+									{% if nominalDetails["nationalities"] is defined %}
+										{% set nacs = nominalDetails["nationalities"]["citizen_of"]|default([]) %}
+										{% if nacs["country_id"] is defined %}{% set nacs = [nacs] %}{% endif %}
+										<div class="pd-card">
+											<div class="pd-card-h"><span class="glyphicon glyphicon-globe"></span>Nacionalidades</div>
+											<div class="pd-card-b">
+												{% for nac in nacs %}
+													<div class="pd-row"><span class="pd-k">País{% if nac.confirmed|default(0) %} (confirmada){% endif %}</span><span class="pd-v">{{ nac.country_id|default('') ~ " - " ~ paises[nac.country_id]["DESCRIPCION"]|default('NO DATA') }}</span></div>
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+
+									{# ---------- Lugares visitados ---------- #}
+									{% if nominalDetails["visit_place"] is defined %}
+										{% set vps = nominalDetails["visit_place"] %}
+										{% if vps["country_id"] is defined %}{% set vps = [vps] %}{% endif %}
+										<div class="pd-card">
+											<div class="pd-card-h"><span class="glyphicon glyphicon-map-marker"></span>Lugares visitados</div>
+											<div class="pd-card-b">
+												{% for vp in vps %}
+													<div class="pd-row"><span class="pd-k">País</span><span class="pd-v">{{ vp.country_id|default('') ~ " - " ~ paises[vp.country_id]["DESCRIPCION"]|default('NO DATA') }}</span></div>
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+
+									{# ---------- Información adicional ---------- #}
+									{% if nominalDetails["add_info"] is defined %}
+										{% set ais = nominalDetails["add_info"] %}
+										{% if ais["value"] is defined %}{% set ais = [ais] %}{% endif %}
+										<div class="pd-card">
+											<div class="pd-card-h"><span class="glyphicon glyphicon-info-sign"></span>Información adicional</div>
+											<div class="pd-card-b">
+												{% for ai in ais %}
+													<div class="pd-row"><span class="pd-k">{{ ai.type_id|default('') }}</span><span class="pd-v">{{ ai.value|default('NO DATA') }}</span></div>
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+
+									{# ---------- Alias ---------- #}
+									{% if nominalDetails["alias"] is defined %}
+										{% set aliases = nominalDetails["alias"] %}
+										{% if aliases["qualification_id"] is defined or aliases["name"] is defined %}{% set aliases = [aliases] %}{% endif %}
+										<div class="pd-card">
+											<div class="pd-card-h"><span class="glyphicon glyphicon-tags"></span>Alias</div>
+											<div class="pd-card-b">
+												{% for al in aliases %}
+													{# Nombre del alias y su calificación (EP = Persona real, NC = Apodo, etc.) #}
+													{% if al.name is defined or al.forename is defined %}
+														<div class="pd-row">
+															<span class="pd-k">Nombre del alias</span>
+															<span class="pd-v">
+																{{ al.name|default('') }}{% if al.forename is defined %}, {{ al.forename }}{% endif %}
+															</span>
+														</div>
+													{% endif %}
+													{% if al.qualification_id is defined %}
+														<div class="pd-row">
+															<span class="pd-k">Tipo de alias</span>
+															<span class="pd-v">
+																{{ al.qualification_id }}{% if Alias_Qualification[al.qualification_id] is defined %} - {{ Alias_Qualification[al.qualification_id] }}{% endif %}
+															</span>
+														</div>
+													{% endif %}
+													{% if al.date_of_birth is defined %}
+														<div class="pd-row">
+															<span class="pd-k">Fecha de nacimiento</span>
+															<span class="pd-v">{{ al.date_of_birth|slice(6, 2) ~ "/" ~ al.date_of_birth|slice(4, 2) ~ "/" ~ al.date_of_birth|slice(0, 4) }}</span>
+														</div>
+													{% endif %}
+													{% if al.place_of_birth is defined %}
+														<div class="pd-row">
+															<span class="pd-k">Lugar de nacimiento</span>
+															<span class="pd-v">{{ al.place_of_birth }}</span>
+														</div>
+													{% endif %}
+													{% if al.country_of_birth_id is defined %}
+														<div class="pd-row">
+															<span class="pd-k">País de nacimiento</span>
+															<span class="pd-v">{{ al.country_of_birth_id }}{% if paises[al.country_of_birth_id] is defined %} - {{ paises[al.country_of_birth_id]["DESCRIPCION"] }}{% endif %}</span>
+														</div>
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+
+									{# ---------- Padre ---------- #}
+									{% if nominalDetails["father"] is defined %}
+										<div class="pd-card">
+											<div class="pd-card-h"><span class="glyphicon glyphicon-user"></span>Padre</div>
+											<div class="pd-card-b">
+												{% for keyf, itemf in nominalDetails["father"]|default('') %}
+													<div class="pd-row"><span class="pd-k">{{ keyf == 'forename' ? 'Nombre' : 'Apellido' }}</span><span class="pd-v">{{ itemf|default('NO DATA') }}</span></div>
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+
+									{# ---------- Madre ---------- #}
+									{% if nominalDetails["mother"] is defined %}
+										<div class="pd-card">
+											<div class="pd-card-h"><span class="glyphicon glyphicon-user"></span>Madre</div>
+											<div class="pd-card-b">
+												{% for keym, itemm in nominalDetails["mother"]|default('') %}
+													<div class="pd-row"><span class="pd-k">{{ keym == 'forename' ? 'Nombre' : 'Apellido' }}</span><span class="pd-v">{{ itemm|default('NO DATA') }}</span></div>
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+
+									{# ---------- Historia criminal ---------- #}
+									{% if nominalDetails["criminal_history"] is defined %}
+										<div class="pd-card pd-card-danger">
+											<div class="pd-card-h"><span class="glyphicon glyphicon-exclamation-sign"></span>Historia Criminal</div>
+											<div class="pd-card-b">
+												{% for keyc, itemc in nominalDetails["criminal_history"]|default('') %}
+													{% if itemc is iterable %}
+														{% for keyd, itemd in itemc|default('') %}
+															<div class="pd-row"><span class="pd-k">{{ titulos[keyd]|default(keyd) }}</span><span class="pd-v">{{ itemd ~ ' - ' ~ Offences_Code[itemd]|default('NO DATA') }}</span></div>
+														{% endfor %}
+													{% else %}
+														<div class="pd-row"><span class="pd-k">{{ titulos[keyc]|default(keyc) }}</span><span class="pd-v">{{ itemc ~ ' - ' ~ Offences_Code[itemc]|default('NO DATA') }}</span></div>
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+
+									{# ---------- Icis ---------- #}
+									{% if nominalDetails["icis"] is defined and nominalDetails["icis"] is not empty %}
+										<div class="pd-card">
+											<div class="pd-card-h"><span class="glyphicon glyphicon-th-list"></span>Icis</div>
+											<div class="pd-card-b">
+												{% for key, itemi in nominalDetails["icis"]|default('') %}
+													<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ itemi|default('NO DATA') }}</span></div>
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+
+									{# ---------- Archivo ---------- #}
+									{% if nominalDetails["file"] is defined %}
+										<div class="pd-card">
+											<div class="pd-card-h"><span class="glyphicon glyphicon-paperclip"></span>Archivo</div>
+											<div class="pd-card-b">
+												{% for key, item in nominalDetails["file"]|default('') %}
+													{% if item is iterable %}
+														{% for k, i in item|default('') %}
+															{% if i is iterable %}
+																{% for clave, valor in i %}
+																	<div class="pd-row"><span class="pd-k">{{ titulos[clave]|default(clave) }}</span><span class="pd-v">{{ valor|default('NO DATA') }}</span></div>
+																{% endfor %}
+															{% else %}
+																<div class="pd-row"><span class="pd-k">{{ titulos[k]|default(k) }}</span><span class="pd-v">{{ i|default('NO DATA') }}</span></div>
+															{% endif %}
+														{% endfor %}
+													{% else %}
+														<div class="pd-row"><span class="pd-k">{{ titulos[key]|default(key) }}</span><span class="pd-v">{{ item|default('NO DATA') }}</span></div>
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+									{% endif %}
+
+								</div>
+
+								<div class="pd-foot">
+									<button type="button" id="btnCerrar3" name="btnCerrar3" class="btn btn-default" onclick="window.history.back();"><span class="glyphicon glyphicon-arrow-left"></span> Volver</button>
+								</div>
+							{% endif %}	<!-- if (nominalDetails.ERROR is defined) -->
+
+							<div class="modal fade" id="MensajeConfirmacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header modal-header-danger">
+											<h5 class="modal-title text-center" id="exampleModalLabel"><b>Confirmación</b></h5>
+										</div>
+										<div class="modal-body text-center" id="dvMensaje"></div>
+										<div class="modal-footer">
+											<button
+												type="button"
+												class="btn btn-default res"
+												data-dismiss="modal"
+											>Cancelar</button>
+											<button type="button" class="btn btn-danger res" data-dismiss="modal" onClick="mostrarDetalle();">Aceptar</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td>
+						{# Pie de impresión: siempre al pie de cada hoja impresa #}
+						<div id="pieImpresion">
+							Consulta realizada por <strong>{{ datosImpresion.usuario|default('') }}</strong>{% if datosImpresion.dependencia|default('') != '' %} - {{ datosImpresion.dependencia }}{% endif %} - {{ datosImpresion.fecha|default('') }}
+						</div>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
+	<div class="bootbox modal fade bootbox-alert in" tabindex="-1" role="dialog" id="showImages">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="text-align:center;color: #a94442;background-color: #f2dede;border-color: #ebccd1;">
+					<h4 class="modal-title">Fotos Disponibles</h4>
+				</div>
+				<div class="modal-body">
+					<div class="bootbox-body">
+						<a href="javascript:void(0)" class="thumbnail"><img id="imgMostrar" src="{{ asset('bundles/images/unknown.png') }}"></a>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<table _ngcontent-xyt-6="" width="100%">
+						<tbody _ngcontent-xyt-6=""><tr _ngcontent-xyt-6="">
+								<tr>
+									<td width="20%">
+										<button class="btn btn-default center-block" disabled>
+											<span class="glyphicon glyphicon-chevron-left"></span>
+										</button>
+									</td>
+									<td width="60%">
+										<p class="text-center" style="padding-top:10px;" id="nroFotoMostrar">{{ arrayImg|length == 0 ? '0' : '1' }} de {{ arrayImg|length }}</p>
+									</td>
+									<td width="20%">
+										<button class="btn btn-default center-block" disabled>
+											<span class="glyphicon glyphicon-chevron-right"></span>
+										</button>
+									</td>
+								</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script languaje="javascript">
+	var arrayImg = new Array();
+	var cont = 0;
+	var idx=0;
+
+	{% for img in arrayImg %}
+		arrayImg.push('{{img}}');
+		cont++;
+	{% endfor %}
+
+    $(document).ready(function () {
+        {% if arrayImg|length > 1 %}
+        	addIdxImg(cont);
+        {% endif %}
+
+		$("#showImages").on('hidden.bs.modal', function () {
+			checkIconos();
+		});
+
+		$("#showImages").on('show.bs.modal', function () {
+			checkIconos();
+		});
+
+    });
+
+    $( "#btnReintentar" ).click(function() {
+		confirmaDetalle( $("#txtNombre").val(), $("#txtApellido").val(), $("#txtFechaNac").val(), $("#txtEntity").val() );
+    });
+
+    $( "#btnCerrar" ).click(function() {
+    	cerrar();
+    });
+
+    $( "#btnCerrar2" ).click(function() {
+    	cerrar();
+    });
+
+	function checkIconos(){
+		if(idx==(cont-1)){
+			$(".glyphicon-chevron-right").parent().attr("disabled","");
+		}
+		if(idx==0){
+			$(".glyphicon-chevron-left").parent().attr("disabled","");
+		}
+	}
+
+    function confirmaDetalle( pApellido, pNombre, pFechaNac, pEntity ){
+		$("#txtEntity").val( pEntity );
+    	$('#dvMensaje').html( "¿Est&aacute; seguro de que quiere consultar los datos de <b>" + pApellido + ", " + pNombre + "</b>, fecha de nacimiento: <b>"+pFechaNac+"</b>?<br/><br/><b>ESTA ACCI&Oacute;N PUEDE GENERAR ALARMAS</b>." );
+		$('#btDetalle').attr('onclick', '');
+		$('#btDetalle').click(function() {
+			mostrarDetalle();
+		});
+    	$('#MensajeConfirmacion').modal( 'show' );
+    }	//	function mostrarDivDetalle(){
+
+	function mostrarDetalle( ){
+		if( $( "#txtEntity" ).val() == ""){
+			alert("Para ver el detalle volver a seleccionar un renglón haciendo click en la lupa del mismo.");
+			return false;
+		}	//	if( $( "#txtEntity" ).val() == ""){
+		$( "form" ).submit();
+	}	//	function mostrarDetalle( ){
+
+    function cerrar(){
+    	{% if app.request.get('txtCombinada') is defined and app.request.get('txtCombinada')=='SI' %}
+    		$('form').attr('action', '{{ path('combinada') }}');
+		{% else %}
+			$('form').attr('action', '{{ path('persona') }}');
+		{% endif %}
+
+    	$( "form" ).submit();
+    }
+
+    function addIdxImg(cant){
+    	$(".glyphicon-chevron-right").parent().removeAttr("disabled");
+    	$(".glyphicon-chevron-right").parent().unbind();
+    	$(".glyphicon-chevron-left").parent().unbind();
+
+    	$(".glyphicon-chevron-right").parent().click(function(e){
+
+			e.preventDefault();
+    		idx++;
+
+    		if(idx==1){
+    			$(".glyphicon-chevron-left").parent().removeAttr("disabled");
+    		}
+    		if(idx==(cant-1)){
+    			$(this).attr("disabled","");
+    		}
+    		$("#imagen").attr('src',arrayImg[idx]);
+    		$("#imgMostrar").attr('src',arrayImg[idx]);
+    		$("#imagen").parent().attr('href','javascript:mostrar('+idx+')');
+    		$("#nroFoto").html((idx+1)+" de " + cant);
+    		$("#nroFotoMostrar").html((idx+1)+" de " + cant);
+    	});
+
+    	$(".glyphicon-chevron-left").parent().click(function(e){
+    		e.preventDefault();
+    		idx--;
+    		if(idx==0){
+    			$(this).attr("disabled","");
+    		}
+    		if(idx<(cant-1)){
+    			$(".glyphicon-chevron-right").parent().removeAttr("disabled");
+    		}
+    		$("#imagen").attr('src',arrayImg[idx]);
+    		$("#imgMostrar").attr('src',arrayImg[idx]);
+    		$("#imagen").parent().attr('href','javascript:mostrar('+idx+')');
+    		$("#nroFoto").html((idx+1)+" de " + cant);
+    		$("#nroFotoMostrar").html((idx+1)+" de " + cant);
+    	});
+    }
+
+    //  Impresión: activa un instante los estilos de impresión, mide el alto de la ficha y agranda la letra
+    //  (los tamaños de impresión están en rem) hasta aprovechar el alto de la hoja A4.
+    //  Si el contenido no entra en una sola hoja se imprime con el tamaño base y sigue en la hoja siguiente.
+    function ajustarImpresion(){
+        var estilo = document.getElementById('pdPrintCss');
+        var pie = document.getElementById('pieImpresion');
+        var titulo = document.getElementById('panelTitulo');
+        var consulta = document.getElementById('panelconsulta');
+        if (!estilo || !pie || !titulo || !consulta) {
+            return;
+        }
+
+        var raiz = document.documentElement;
+        var altoHoja = (297 - 14) / 25.4 * 96 * 0.98;   // A4 menos márgenes de 7 mm, con un pequeño margen de seguridad
+        var altoActual = function () {
+            //  alto del contenido + alto del pie (que va al final de la hoja)
+            return (consulta.getBoundingClientRect().bottom - titulo.getBoundingClientRect().top) + pie.offsetHeight;
+        };
+
+        estilo.media = 'all';
+        try {
+            raiz.style.fontSize = '';
+            if (altoActual() < altoHoja) {
+                var min = 1, max = 1.6;
+                for (var i = 0; i < 8; i++) {
+                    var medio = (min + max) / 2;
+                    raiz.style.fontSize = (12 * medio) + 'px';
+                    if (altoActual() <= altoHoja) {
+                        min = medio;
+                    } else {
+                        max = medio;
+                    }
+                }
+                raiz.style.fontSize = (12 * min) + 'px';
+            }
+        } finally {
+            estilo.media = 'print';
+        }
+    }
+
+    function restaurarImpresion(){
+        document.documentElement.style.fontSize = '';
+        var estilo = document.getElementById('pdPrintCss');
+        if (estilo) {
+            estilo.media = 'print';
+        }
+    }
+
+    window.addEventListener('beforeprint', ajustarImpresion);
+    window.addEventListener('afterprint', restaurarImpresion);
+
+    //  PDF original de la notificación: se pide por POST en una ventana nueva (la página ya está dentro de un formulario,
+    //  por eso se arma uno temporal). El navegador lo muestra en su visor y desde ahí se puede descargar.
+    function descargarNoticiaPdf(boton){
+    	var campos = [
+    		['pathToNotice', $(boton).attr('data-ref')],
+    		['lstTipoCons', $('#lstTipoCons').val()]
+    	];
+
+    	var f = document.createElement('form');
+    	f.method = 'POST';
+    	f.action = "{{ path('persona_noticepdf') }}";
+    	f.target = '_blank';
+
+    	for (var i = 0; i < campos.length; i++) {
+    		var input = document.createElement('input');
+    		input.type = 'hidden';
+    		input.name = campos[i][0];
+    		input.value = campos[i][1] || '';
+    		f.appendChild(input);
+    	}
+
+    	document.body.appendChild(f);
+    	f.submit();
+    	document.body.removeChild(f);
+    }
+
+    function mostrar(idx){
+    	if(idx >= 0){
+    		$("#imgMostrar").attr('src',arrayImg[idx]);
+    	}
+    	$("#showImages").modal();
+    }
+
+    </script>
+{% endblock %}

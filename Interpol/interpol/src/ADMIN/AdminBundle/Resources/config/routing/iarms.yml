@@ -1,0 +1,6 @@
+iarms:
+    path: /
+    defaults:    { _controller: "ADMINAdminBundle:iArms:index" }
+admin_iarms:
+    path: /{page}
+    defaults:    { _controller: "ADMINAdminBundle:iArms:index",page:1 }

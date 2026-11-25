@@ -1,0 +1,91 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %} 
+
+{% block body -%}
+	<div class="row text-center">
+		<h1>Borrar Dependencia</h1>
+	</div>
+	{{ form_start(delete_form) }}
+	<div class="col-xs-12 col-md-12" style="margin-bottom: 2%;">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<b>Confirma que desea borrar Dependencia</b><i class="fa fa-question"></i>
+					<div _ngcontent-ktt-12="" class="pull-right">
+					<button type="submit" class="btn btn-danger pull-right" >Borrar</button>
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('admin_dependencia') }}">
+		                Volver
+		            </a>
+                    </div>
+			</div>
+			<div class="panel-body">
+				<div class="col-sm-12 col-md-12">
+                   	<div class="row">
+                   		<div class="col-md-6" >
+			                <div class="col-md-3 alert alert-secondary" role="alert">Id</div>
+			                <div class="col-md-9 alert alert-secondary" role="alert">{{ entity.id }}</div>
+			            </div>
+			            <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Codigo</div>
+			                <div class="col-md-9 alert alert-secondary">{{ entity.codigo}}</div>
+			            </div>
+			            <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Nombre</div>
+			                <div class="col-md-9 alert alert-secondary">{{ entity.nombre }}</div>
+			            </div>			            
+			            <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Contacto</div>
+			                <div class="col-md-9 alert alert-secondary">{{ entity.contacto }}</div>
+			            </div>
+			            <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Direccion</div>
+			                <div class="col-md-9 alert alert-secondary">{{ entity.direccion }}</div>
+			            </div>			            
+			            <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Latitud</div>
+			                <div class="col-md-9 alert alert-secondary">{{ entity.latitud }}</div>
+			            </div>
+			            <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Longitud</div>
+			                <div class="col-md-9 alert alert-secondary">{{ entity.longitud }}</div>
+			            </div>			            
+			            <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Maximo Usuarios</div>
+			                <div class="col-md-9 alert alert-secondary">{{ entity.maximousuarios }}</div>
+			            </div>			            
+			            <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Min. Aviso</div>
+			                <div class="col-md-9 alert alert-secondary">{{ entity.minaviso }}</div>
+			            </div>
+				        <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Observaciones</div>
+			                <div class="col-md-9 alert alert-secondary">{{ entity.observaciones }}</div>
+			            </div>		            
+				        <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Orden</div>
+			                <div class="col-md-9 alert alert-secondary">{{ entity.orden }}</div>
+			            </div>					            
+				        <div class="col-md-6">
+			                <div class="col-md-3 alert alert-secondary">Tipo</div>
+			                <div class="col-md-9 alert alert-secondary">{{ entity.tipo }}</div>
+			            </div>					            			            
+						<div class="col-md-12">
+			                <div class="col-md-1 alert alert-secondary">Mail</div>
+			                <div class="col-md-11 alert alert-secondary">{{ entity.mail }}</div>
+			            </div>
+			        </div>    	
+				</div>
+			</div>
+			<div class="panel-footer">
+	            <div class="container">
+	                <button type="submit" class="btn btn-danger pull-right" >Borrar</button>
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('admin_dependencia') }}">
+		                Volver
+		            </a>
+	            </div>
+	        </div>
+		</div>
+	</div>
+	<script>
+	</script>
+	{{ form_end(delete_form) }}
+
+{% endblock %}

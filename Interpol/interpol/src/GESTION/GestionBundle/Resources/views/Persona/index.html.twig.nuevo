@@ -1,0 +1,170 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+{% block body -%}
+{% set PermisoDetalle = app.session %}
+
+
+<form method="POST" id="frm" action="{{ path('persona_show') }}">
+    <div id="panelconsulta" class="col-xs-12 col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-body" style="margin-left: 2%;">
+                <div class="container" width="100%">
+                    <div class="row text-center">
+                        <img width="300px" src="{{ asset('bundles/pfa/img/ocnbuenosaires.png') }}" />
+                    </div>
+                    <div class="row">
+                        <div>&nbsp;</div>
+                    </div>
+                    <div class="row">
+                        <div><p style="color:#00457D; font-size:24px;">Interpol - Personas</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <!-- Campos de Personas -->
+                <div class="col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <label>Apellido</label>
+                        <input type="text" id="txtApellido" name="txtApellido" placeholder="Ingrese Apellido" class="form-control"/>
+                    </div>
+                </div>
+                
+                <div class="col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" id="txtNombre" name="txtNombre" placeholder="Ingrese Nombre" class="form-control"/>
+                    </div>
+                </div>
+                
+                <div class="col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <label>Fecha de Nacimiento</label>
+                        <input type="date" id="txtFechaNac" name="txtFechaNac" class="form-control"/>
+                    </div>
+                </div>
+                
+                <!-- Nuevos Campos de Documentos -->
+                <div class="col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <label for="tipoDocumento">Tipo de Documento</label> 
+                        <select id="lstTipoDoc" name="lstTipoDoc" data-live-search="true" class="selectpicker">
+                            <option value="">- Seleccione Tipo de Documento -</option>
+                            <option value="P">P - Pasaporte</option>
+                            <option value="DNI">DNI - Documento Nacional de Identidad</option>
+                            <option value="CI">CI - Cédula de Identidad</option>
+                            <option value="LC">LC - Libreta Cívica</option>
+                            <option value="LE">LE - Libreta de Enrolamiento</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="txtNumeroDoc">Nro. de Documento</label> 
+                        <input type="text" class="form-control" id="txtNumeroDoc" name="txtNumeroDoc" placeholder="Ingrese Nro de Documento">
+                    </div>
+                </div>
+                
+                <div class="col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <label for="lstPais">País</label>
+                        <select id="lstPais" name="lstPais" data-live-search="true" class="selectpicker">
+                            <option value="">- Sin especificar -</option>
+                            <option value="ARG">ARG - Argentina</option>
+                            <option value="BRA">BRA - Brasil</option>
+                            <option value="CHL">CHL - Chile</option>
+                            <option value="URY">URY - Uruguay</option>
+                            <option value="PRY">PRY - Paraguay</option>
+                            <option value="BOL">BOL - Bolivia</option>
+                            <option value="USA">USA - Estados Unidos</option>
+                            <option value="ESP">ESP - España</option>
+                            <option value="MEX">MEX - México</option>
+                            <option value="COL">COL - Colombia</option>
+                            <option value="PER">PER - Perú</option>
+                            <option value="VEN">VEN - Venezuela</option>
+                            <option value="FRA">FRA - Francia</option>
+                            <option value="ITA">ITA - Italia</option>
+                            <option value="DEU">DEU - Alemania</option>
+                            <option value="GBR">GBR - Reino Unido</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Tipo de Consulta -->
+                {% set bInvestigativo = usuario.perfilid|reduce((carry, perfil) => carry or (perfil.permisoid|reduce((c, permiso) => c or (permiso.id == '7'), false)), false) %}
+                <div class="col-sm-12 col-md-12 {{ bInvestigativo ? '' : 'hidden' }}">
+                    <div class="form-group">
+                        <label>Tipo de Consulta</label>
+                        <select id="lstTipoCons" name="lstTipoCons" required class="selectpicker">
+                            <option value="BC" selected>Control fronterizo</option>
+                            {% if bInvestigativo %}
+                            <option value="AD">Investigación</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xs-12 text-center">
+                <div class="row col-sm-12 col-md-12">
+                    <div>&nbsp;</div>
+                    <div>&nbsp;</div>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <button class="btn btn-success col-xs-12" data-toggle="tooltip" id="consultar" title="Consultar" type="submit" data-placement="bottom">
+                        <span class="hidden-xs hidden-sm">Consultar</span>
+                        <span class="hidden-md hidden-lg"><i class="fa fa-search" aria-hidden="true"></i></span>
+                    </button>
+                    <button id="sendForm" type="submit" class="hide"></button>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <button class="btn btn-default col-xs-12" data-toggle="tooltip" title="Limpiar Parámetros de Búsqueda" id="limpiar" type="button" onclick="limpiarForm()" data-placement="bottom">
+                        <span class="hidden-xs hidden-sm">Limpiar Búsqueda</span>
+                        <span class="hidden-md hidden-lg"><i class="fa fa-undo" aria-hidden="true"></i></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker();
+        $("#panelconsulta").css("margin", $(window).width() < 600 ? "0 0 2% 0" : "0 25% 2% 25%");
+    });
+
+    {% if bInvestigativo %}
+    $(window).on('load', function() {
+        const tipoConsulta = $("#lstTipoCons").val();
+        $("#txtNombre, #txtFechaNac").prop("required", tipoConsulta === "BC");
+    });
+    {% endif %}
+
+    function limpiarForm() {
+        $("#txtNombre, #txtApellido, #txtFechaNac").val("");
+        $("#lstTipoDoc").val("").selectpicker('refresh');
+        $("#txtNumeroDoc").val("");
+        $("#lstPais").val("").selectpicker('refresh');
+        $("#lstTipoCons").val("BC").selectpicker('refresh');
+    }
+
+    $('#consultar').click(function () {
+        const tipoConsulta = $("#lstTipoCons").val();
+        $("#txtNombre, #txtFechaNac").prop("required", tipoConsulta === "BC");
+    });
+</script>
+
+<!-- Estilos adicionales -->
+<style>
+    .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+        width: 100% !important;
+    }
+    .dropdown-menu > li > a {
+        white-space: normal !important;
+    }
+</style>
+
+{% endblock %}

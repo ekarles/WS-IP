@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Permiso" table="PERMISO">
+    <id name="permisoid" type="integer" column="PERMISOID">
+      <generator strategy="SEQUENCE"/>
+    </id>
+    <field name="codigo" type="string" column="CODIGO" length="255" nullable="true"/>
+    <field name="permiso" type="string" column="PERMISO" length="255" nullable="true"/>
+    <many-to-many field="usuarioid" target-entity="Usuario" inversed-by="permisoid">
+      <join-table name="usuariopermisos">
+        <join-columns>
+          <join-column name="PERMISOID" referenced-column-name="PERMISOID"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="USUARIOID" referenced-column-name="USUARIOID"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+    <many-to-many field="perfilid" target-entity="Perfil" mapped-by="permisoid"/>
+  </entity>
+</doctrine-mapping>

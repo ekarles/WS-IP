@@ -1,0 +1,397 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+
+{% block body -%}
+	<style>
+		/* ---------- Formulario de consulta combinada (mismo criterio visual que la ficha y los formularios de personas, documentos y vehículos) ---------- */
+		.pf-wrap {
+			max-width: 760px;
+			margin: 15px auto 30px;
+			padding: 0 15px;
+		}
+		.pf-topbar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			background: #fff;
+			border-radius: 10px;
+			box-shadow: 0 1px 4px rgba(20, 30, 70, 0.12);
+			padding: 12px 20px;
+			margin-bottom: 16px;
+		}
+		.pf-topbar img {
+			width: 230px;
+			max-width: 55%;
+		}
+		.pf-title {
+			margin: 0;
+			color: #2d3c90;
+			font-size: 22px;
+			font-weight: 600;
+		}
+		.pf-card {
+			background: #fff;
+			border-radius: 12px;
+			box-shadow: 0 1px 4px rgba(20, 30, 70, 0.12);
+			margin-bottom: 16px;
+			overflow: visible; /* visible para que la lista desplegable del selector no quede cortada */
+		}
+		.pf-card-h {
+			border-radius: 12px 12px 0 0;
+			padding: 11px 18px;
+			background: #f4f6fb;
+			border-bottom: 1px solid #e3e7f1;
+			color: #2d3c90;
+			font-size: 15px;
+			font-weight: 700;
+		}
+		.pf-card-h .glyphicon {
+			margin-right: 8px;
+			opacity: 0.8;
+		}
+		.pf-card-b {
+			padding: 16px 18px 6px;
+		}
+		.pf-fields {
+			display: flex;
+			flex-wrap: wrap;
+			margin: 0 -8px;
+		}
+		.pf-field {
+			flex: 1 1 200px;
+			padding: 0 8px;
+			margin-bottom: 14px;
+		}
+		.pf-field.pf-field-full {
+			flex-basis: 100%;
+		}
+		.pf-field label {
+			display: block;
+			margin-bottom: 5px;
+			color: #5d6678;
+			font-size: 13px;
+			font-weight: 600;
+		}
+		.pf-card .form-control {
+			height: 40px;
+			border-radius: 8px;
+			border: 1px solid #cdd4e4;
+			box-shadow: none;
+		}
+		.pf-card .form-control:focus {
+			border-color: #2d3c90;
+			box-shadow: 0 0 0 2px rgba(45, 60, 144, 0.15);
+		}
+		.pf-actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+		}
+		.pf-actions .btn {
+			flex: 1 1 200px;
+			padding: 10px 0;
+			border-radius: 8px;
+			font-size: 16px;
+		}
+		.pf-actions .btn i {
+			margin-right: 6px;
+		}
+		.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(
+				.input-group-btn
+			) {
+			width: 100% !important;
+		}
+		@media (max-width: 767px) {
+			.pf-wrap {
+				margin-top: 8px;
+			}
+			.pf-topbar {
+				flex-direction: column;
+				gap: 6px;
+				text-align: center;
+			}
+		}
+	</style>
+
+	<form id="frm" method="POST" action="{{ path('combinada_show') }}">
+		{% set bInvestigativo = "NO" %}
+		{% for perfil in usuario.perfilid %}
+			{% for permiso in perfil.permisoid %}
+				{% if permiso.id == '7' %}
+					{% set bInvestigativo = "SI" %}
+				{% endif %}
+			{% endfor %}
+		{% endfor %}
+
+		<div id="panelconsulta" class="pf-wrap">
+
+			<div class="pf-topbar">
+				<img src="{{ asset('bundles/pfa/img/ocnbuenosaires.png') }}"/>
+				<p class="pf-title">Interpol - Combinada</p>
+			</div>
+
+			<!-- Personas -->
+			<div class="pf-card">
+				<div class="pf-card-h"><span class="glyphicon glyphicon-user"></span>Consulta de personas</div>
+				<div class="pf-card-b">
+					<div class="pf-fields">
+						<div class="pf-field">
+							<label for="txtApellido">Apellido</label>
+							<input type="text" id="txtApellido" name="txtApellido" value="" placeholder="Ingrese Apellido" class="form-control"/>
+						</div>
+						<div class="pf-field">
+							<label for="txtNombre">Nombre</label>
+							<input type="text" id="txtNombre" name="txtNombre" value="" placeholder="Ingrese Nombre" data-live-search="true" class="form-control" required/>
+						</div>
+						<div class="pf-field">
+							<label for="txtFechaNac">Fecha de Nacimiento</label>
+							<input type="date" id="txtFechaNac" name="txtFechaNac" value="" class="form-control" required/>
+						</div>
+						<div class="pf-field pf-field-full {{ bInvestigativo == 'SI' ? '' : 'hidden' }}">
+							<label for="lstTipoConsPer">Tipo de Consulta</label>
+							<select id="lstTipoConsPer" name="lstTipoConsPer" required="required" class="selectpicker">
+								<option value="BC">Control fronterizo</option>
+								{% if bInvestigativo == "SI" %}
+									<option value="AD" selected>Investigación</option>
+								{% endif %}
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Documentos -->
+			<div class="pf-card">
+				<div class="pf-card-h"><span class="glyphicon glyphicon-credit-card"></span>Consulta de documentos</div>
+				<div class="pf-card-b">
+					<div class="pf-fields">
+						<div class="pf-field pf-field-full">
+							<label for="lstTipoDoc">Tipo de Documento</label>
+							<select id="lstTipoDoc" name="lstTipoDoc" data-live-search="true" class="selectpicker">
+								{% for Documento in documentos %}
+									<option value="{{ Documento.COD }}" {{ Documento.COD == 'P' ? 'selected' : '' }}>{{ Documento.COD ~ ' - ' ~ Documento.DESCRIPCION }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="pf-field">
+							<label for="txtNumeroDoc">Nro. de Documento</label>
+							<input type="text" value="" class="form-control" id="txtNumeroDoc" name="txtNumeroDoc" placeholder="Ingrese Nro de Documento">
+						</div>
+						<div class="pf-field">
+							<label for="lstPais">País</label>
+							<select id="lstPais" name="lstPais" data-live-search="true" class="selectpicker">
+								<option value="">- Sin especificar -</option>
+								{% for Pais in paises %}
+									<option value="{{ Pais.COD_B }}">{{ Pais.COD_B ~ ' - ' ~ Pais.DESCRIPCION }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="pf-field pf-field-full {{ bInvestigativo == 'SI' ? '' : 'hidden' }}">
+							<label for="lstTipoConsDoc">Tipo de Consulta</label>
+							<select id="lstTipoConsDoc" name="lstTipoConsDoc" class="selectpicker">
+								<option value="BC">Control fronterizo</option>
+								{% if bInvestigativo == "SI" %}
+									<option value="AD" selected>Investigación</option>
+								{% endif %}
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Vehículos -->
+			<div class="pf-card">
+				<div class="pf-card-h"><span class="glyphicon glyphicon-road"></span>Consulta de vehículos</div>
+				<div class="pf-card-b">
+					<div class="pf-fields">
+						<div class="pf-field">
+							<label for="txtVin">VIN (Nro. Chasis)</label>
+							<input type="text" value="" class="form-control interpol" name="txtVin" id="txtVin" placeholder="Ingrese VIN">
+						</div>
+						<div class="pf-field">
+							<label for="txtDominio">Dominio</label>
+							<input type="text" value="" class="form-control interpol" name="txtDominio" id="txtDominio" placeholder="Ingrese Dominio">
+						</div>
+						<div class="pf-field">
+							<label for="txtNroMotor">Nro. Motor</label>
+							<input type="text" value="" class="form-control" name="txtNroMotor" id="txtNroMotor" placeholder="Ingrese Número de Motor">
+						</div>
+						<div class="pf-field pf-field-full {{ bInvestigativo == 'SI' ? '' : 'hidden' }}">
+							<label for="lstTipoConsVeh">Tipo de Consulta</label>
+							<select name="lstTipoConsVeh" class="selectpicker form-control" id="lstTipoConsVeh">
+								<option value="BC">Control Fronterizo</option>
+								{% if bInvestigativo == "SI" %}
+									<option value="AD" selected>Investigación</option>
+								{% endif %}
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="pf-actions">
+				<button class="btn btn-success" data-toggle="tooltip" id="consultar" title="Consultar" type="submit" data-placement="bottom">
+					<i class="fa fa-search" aria-hidden="true"></i>
+					Consultar
+				</button>
+				<button id="sendForm" type="submit" class="hide"></button>
+				<button class="btn btn-default" data-toggle="tooltip" title="Limpiar Parámetros de Búsqueda" id="limpiar" type="button" data-placement="bottom">
+					<i class="fa fa-undo" aria-hidden="true"></i>
+					Limpiar Búsqueda
+				</button>
+			</div>
+
+		</div>
+	</form>
+
+	<div class="modal fade" id="MensajeValidar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header modal-header-danger">
+					<h5 class="modal-title text-center" id="exampleModalLabel"><b>Atención</b></h5>
+				</div>
+				<div class="modal-body text-center" id="dvMensaje"><b>Debe completar algún campo de los siguientes: Apellido, Nro. de Documento o VIN</b></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default res" data-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$(window).load(function () {
+			$("#lstTipoConsPer").change(function (event) {
+				if ($(this).val() == "AD") {
+					$("#txtNombre").removeAttr("required");
+					$("#txtFechaNac").removeAttr("required");
+				} else {
+					$("#txtNombre").attr("required");
+					$("#txtFechaNac").attr("required");
+				}
+			});
+
+			$("#lstTipoConsDoc").change(function (event) {
+				if ($(this).val() == "AD") {
+					$("#lstPais").removeAttr("required");
+				} else {
+					if ($("#txtNumeroDoc").val() != "") {
+						$("#lstPais").attr("required", "true");
+					}
+				}
+			});
+
+			$("#txtNumeroDoc").change(function () {
+				if ($(this).val() != "") {
+					$("#lstTipoDoc").attr("required", "true");
+
+					if ($("#lstTipoConsPer").val() == "AD") {
+						$("#lstPais").removeAttr("required");
+					} else {
+						$("#lstPais").attr("required", "true");
+					}
+				} else {
+					$("#lstTipoDoc").removeAttr("required");
+					$("#lstPais").removeAttr("required");
+				}
+			});
+
+			if ($("#txtApellido").val() != "") {
+				if ($("#lstTipoConsPer").val() == "AD") {
+					$("#txtNombre").removeAttr("required");
+					$("#txtFechaNac").removeAttr("required");
+				} else {
+					$("#txtNombre").attr("required", "true");
+					$("#txtFechaNac").attr("required", "true");
+				}
+			}
+
+			if ($("#lstTipoConsDoc").val() == "AD") {
+				$("#lstPais").removeAttr("required");
+			} else {
+				if ($("#txtNumeroDoc").val() != "") {
+					$("#lstPais").attr("required", "true");
+				}
+			}
+
+			if ($("#txtNumeroDoc").val() != "") {
+				$("#lstTipoDoc").attr("required", "true");
+			} else {
+				$("#lstTipoDoc").removeAttr("required");
+				$("#lstPais").removeAttr("required");
+			}
+		});
+
+		$("#limpiar").click(function () {
+			// Tipo de consulta por defecto: Investigación (AD) para usuarios investigativos y Control fronterizo (BC) para el resto
+			var tipoCons = "{{ bInvestigativo == 'SI' ? 'AD' : 'BC' }}";
+
+			$("#txtNombre").val("").removeAttr("required");
+			$("#txtApellido").val("").removeAttr("required");
+			$("#txtFechaNac").val("").removeAttr("required");
+			$("#lstTipoConsPer")
+				.val(tipoCons)
+				.selectpicker("refresh")
+				.removeAttr("required");
+			$("#lstTipoDoc").val("").selectpicker("refresh").removeAttr("required");
+			$("#txtNumeroDoc").val("").removeAttr("required");
+			$("#lstPais").val("").selectpicker("refresh").removeAttr("required");
+			$("#lstTipoConsDoc")
+				.val(tipoCons)
+				.selectpicker("refresh")
+				.removeAttr("required");
+			$("#txtVin").val("").removeAttr("required");
+			$("#txtDominio").val("").removeAttr("required");
+			$("#txtNroMotor").val("").removeAttr("required");
+			$("#txtNroChasis").val("").removeAttr("required");
+			$("#lstTipoConsVeh")
+				.val(tipoCons)
+				.selectpicker("refresh")
+				.removeAttr("required");
+		}); //	$('#limpiar').click(function () {
+
+		$("#consultar").click(function (event) {
+			event.preventDefault();
+			if (
+				$("#txtApellido").val() == "" &&
+				$("#txtNumeroDoc").val() == "" &&
+				$("#txtVin").val() == ""
+			) {
+				$("#MensajeValidar").modal("show");
+			} else {
+				$("#sendForm").click();
+			}
+		});
+
+		$("#txtApellido").change(function () {
+			if ($("#txtApellido").val() != "") {
+				if ($("#lstTipoConsPer").val() == "AD") {
+					$("#txtNombre").removeAttr("required");
+					$("#txtFechaNac").removeAttr("required");
+				} else {
+					$("#txtNombre").attr("required", "true");
+					$("#txtFechaNac").attr("required", "true");
+				}
+			} else {
+				$("#txtApellido").removeAttr("required");
+				$("#txtNombre").removeAttr("required");
+				$("#txtFechaNac").removeAttr("required");
+			}
+		});
+
+		$("#txtNumeroDoc").change(function () {
+			if ($("#txtNumeroDoc").val() != "") {
+				$("#lstTipoDoc").attr("required", "true");
+			} else {
+				$("#lstTipoDoc").removeAttr("required");
+				$("#lstPais").removeAttr("required");
+			}
+		});
+
+		$("#txtVin").change(function () {
+			if ($("#txtVin").val() != "") {
+				$("#txtVin").attr("required", "true");
+			} else {
+				$("#txtVin").removeAttr("required");
+			}
+		});
+	</script>
+{% endblock %}

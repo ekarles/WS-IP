@@ -1,0 +1,51 @@
+gestion_personaobservada:
+    path:     /
+    defaults: { _controller: "ADMINAdminBundle:PersonaObservada:index" }
+
+gestion_personaobservada_show:
+    path:     /{id}/show
+    defaults: { _controller: "ADMINAdminBundle:PersonaObservada:show" }
+
+gestion_personaobservada_new:
+    path:     /new
+    defaults: { _controller: "ADMINAdminBundle:PersonaObservada:new" }
+
+gestion_personaobservada_create:
+    path:     /create
+    defaults: { _controller: "ADMINAdminBundle:PersonaObservada:create" }
+    requirements: { _method: post }
+
+gestion_personaobservada_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "ADMINAdminBundle:PersonaObservada:edit" }
+
+gestion_personaobservada_update:
+    path:     /{id}/update
+    defaults: { _controller: "ADMINAdminBundle:PersonaObservada:update" }
+    requirements: { _method: post|put }
+
+gestion_personaobservada_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "ADMINAdminBundle:PersonaObservada:delete" }
+    requirements: { _method: post|delete }
+
+gestion_personaobservada_reactivar:
+    path:     /{id}/reactivar
+    defaults: { _controller: "ADMINAdminBundle:PersonaObservada:reactivar" }
+    requirements: { _method: post|get }    
+
+gestion_personaobservada_consultas:
+    path:     /{id}/consultas
+    defaults: { _controller: "ADMINAdminBundle:PersonaObservada:consultas" }
+    
+gestion_personaobservada_auditoria:
+    path:     /{id}/auditoria
+    defaults: { _controller: "ADMINAdminBundle:PersonaObservada:auditoria" }
+    
+gestion_personaobservada_personaObsDependencia:
+    path:     /{id}/personaObsDependencia
+    defaults: { _controller: "ADMINAdminBundle:PersonaObservada:personaObsDependencia" }
+
+gestion_personaobservada_auditoria:
+    path:     /{id}/consultas
+    defaults: { _controller: "ADMINAdminBundle:PersonaObservada:auditoria" }

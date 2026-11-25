@@ -1,0 +1,45 @@
+interpol_admin_default:
+    resource: "@ADMINAdminBundle/Resources/config/routing/default.yml"
+    prefix:   /default
+interpol_lotedocumento:
+    resource: "@ADMINAdminBundle/Resources/config/routing/lotedocumento.yml"
+    prefix:   /gestion/lotedocumento
+interpol_auditoria_wisdm:
+    resource: "@ADMINAdminBundle/Resources/config/routing/auditoriawisdm.yml"
+    prefix:   /gestion/auditoriawisdm
+interpol_wisdm:
+    resource: "@ADMINAdminBundle/Resources/config/routing/wisdm.yml"
+    prefix:   /gestion/wisdm
+interpol_lotesprocesados:
+    resource: "@ADMINAdminBundle/Resources/config/routing/lotesprocesados.yml"
+    prefix:   /lotesprocesados
+interpol_alarmas:
+    resource: "@ADMINAdminBundle/Resources/config/routing/alarma.yml"
+    prefix:   /gestion/alarmas
+interpol_panel:
+    resource: "@ADMINAdminBundle/Resources/config/routing/panel.yml"
+    prefix:   /gestion/panel          
+interpol_tipodelito:
+    resource: "@ADMINAdminBundle/Resources/config/routing/tipodelito.yml"
+    prefix:   /admin/tipodelito
+interpol_mapa:
+    resource: "@ADMINAdminBundle/Resources/config/routing/mapa.yml"
+    prefix:   /admin/mapa
+interpol_personaobservada:
+    resource: "@ADMINAdminBundle/Resources/config/routing/personaobservada.yml"
+    prefix:   /adminext/avisomovimiento
+interpol_consultapersonaobservada:
+    resource: "@ADMINAdminBundle/Resources/config/routing/consultapersonaobservada.yml"
+    prefix:   /adminext/consultapersonaobservada  
+interpol_cnrtpersona:
+    resource: "@ADMINAdminBundle/Resources/config/routing/cnrtpersona.yml"
+    prefix:   /gestion/cnrtpersona
+interpol_admin_proceso:
+    resource: "@ADMINAdminBundle/Resources/config/routing/proceso.yml"
+    prefix:   /admindesa/proceso
+interpol_auditoria_general:
+    resource: "@ADMINAdminBundle/Resources/config/routing/auditoriageneral.yml"
+    prefix:   /gestion/auditoriageneral
+interpol_estadisticas:
+    resource: "@ADMINAdminBundle/Resources/config/routing/estadisticas.yml"
+    prefix:   /gestion/estadisticas

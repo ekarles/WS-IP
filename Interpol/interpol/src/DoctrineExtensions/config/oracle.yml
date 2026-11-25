@@ -1,0 +1,17 @@
+doctrine:
+    orm:
+        dql:
+            datetime_functions:
+                day: DoctrineExtensions\Query\Oracle\Day
+                month: DoctrineExtensions\Query\Oracle\Month
+                year: DoctrineExtensions\Query\Oracle\Year
+                to_char: DoctrineExtensions\Query\Oracle\ToChar
+                trunc: DoctrineExtensions\Query\Oracle\Trunc
+            numeric_functions:
+                min: DoctrineExtensions\Query\Oracle\Min
+                max: DoctrineExtensions\Query\Oracle\Max
+                avg: DoctrineExtensions\Query\Oracle\Avg
+            string_functions:
+                nvl: DoctrineExtensions\Query\Oracle\Nvl
+                listagg: DoctrineExtensions\Query\Oracle\Listagg
+                to_date: DoctrineExtensions\Query\Oracle\ToDate

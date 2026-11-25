@@ -1,0 +1,6 @@
+panel:
+    path:     /
+    defaults: { _controller: "ADMINAdminBundle:Panel:index" }
+panel_ultimas_consultas_list:
+    path:     /ultimasConsultasList
+    defaults: { _controller: "ADMINAdminBundle:Panel:ultimasConsultasList" }

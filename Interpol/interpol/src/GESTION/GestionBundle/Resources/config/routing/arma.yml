@@ -1,0 +1,12 @@
+arma:
+    path:     /
+    defaults: { _controller: "GESTIONGestionBundle:Arma:index" }
+    
+arma_show:
+    path:     /armashow
+    defaults: { _controller: "GESTIONGestionBundle:Arma:show" }
+
+arma_showdetails:
+    path:     /armashowdetails
+    defaults: { _controller: "GESTIONGestionBundle:Arma:showdetails" }
+    

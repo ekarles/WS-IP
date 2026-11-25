@@ -1,0 +1,39 @@
+{% block body -%}
+	<div width="100%">
+   		{% if errores|length > 0 %}
+   		<div width="80%">
+			<span style="color:#e30022">
+	    		<h3>En las &uacute;ltimas 24 Hs los siguientes registros del servicio WISDM no han podido ser enviados:</h3>
+	    	</span>
+   		</div>
+		<div>
+             <table>
+                 <thead>
+                    <tr style='text-align:center' bgcolor="#C9E8F8">
+                       	<th>Fecha</th>
+                       	<th>Numero Doc.</th>
+                       	<th>Respuesta</th>
+	                   	<th>Apellido / Nombres</th>
+                    </tr>
+                 </thead>
+                 <tbody>
+                   	{% for Documento in errores %}
+                       <tr bgcolor="{{ loop.index is divisible by 2 ? '#e6e6e6' : '#ffffff' }}">
+                    		<td style='text-align:left'>{{ Documento.FECHA }}</td>
+                    		<td>{{ Documento.NUMERODOC }}</td>
+                    		<td>{{ Documento.MENSAJEREMOTO }}</td>
+	                       	<td style='text-align:left'>{{ Documento.APELLIDO ~ ' ' ~ Documento.OTROSAPELLIDOS ~ ' ' ~ Documento.NOMBRE ~ ' ' ~ Documento.OTROSNOMBRES ~ '' }}</td>
+                       </tr>
+                   	{% endfor %}
+	             </tbody>
+	        </table>	
+   		</div>
+   		{% else %}
+   		<div width="80%">
+			<span style="color:#00ce00">
+	    		<h3>En las &uacute;ltimas 24 Hs no han ocurrido errores y todos los registros del servicio WISDM han podido ser enviados correctamente.</h3>
+	    	</span>
+   		</div>
+   		{% endif %}
+    </div>
+{% endblock %}

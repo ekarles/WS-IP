@@ -1,0 +1,196 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+{% block body -%}
+<form id="frm" method="POST" action="{{ path('cnrt_auditoria',{'id':cnrtPersona.id}) }}">
+	<div class="container" width="100%">
+		<div class="row text-center">
+			<h1>Interpol - Auditoría de <strong>CNRT INTERPOL</strong></h1>
+			<span><strong>{{cnrtPersona}}</strong></span>
+			<br><br>
+		</div>
+		<div id="panelconsulta" class="col-xs-12 col-md-12"
+			style="margin-bottom: 2%;">
+			<div class="panel panel-warning">
+				<div class="panel-heading">
+					<b>BUSCADOR</b> <i class="fa fa-search"></i>
+					<div _ngcontent-ktt-12="" class="pull-right">
+                        <a onclick='window.location="{{path('admin_cnrtpersona')}}"' role="button" id="btnVolver" name="btnVolver" _ngcontent-soi-7="" class="btn btn-default pull-right">Volver</a>
+                        <a class="btn btn-default res mb-2" href="javascript:exportar()" id="exportarCsv" style="margin-right:10px;" title="Exportar CSV">
+	                       	<i class="fas fa-file-excel" style="color:green;"> Exportar CSV</i>
+	                   	</a>
+                    </div>	
+				</div>
+				<div class="panel-body">
+				    <input type="hidden" id="accion" name="accion" value="{{app.request.get( "accion")}}" class="form-control">
+					<input type="hidden" id="busqueda" name="busqueda" value="{{app.request.get( 'busqueda')}}" class="form-control">
+					<div class="row" style="margin-bottom:5px;">
+						<div class="col-sm-4 mb-2">
+							<label>Fecha desde</label> <input type="date" id="txtFechaDesde"
+								name="txtFechaDesde" value="{{app.request.get( "txtFechaDesde")}}" 
+								class="form-control">
+						</div>
+						<div class="col-sm-4 mb-2">
+							<label>Fecha hasta</label> <input type="date" id="txtFechaHasta"
+								name="txtFechaHasta" value="{{app.request.get( "txtFechaHasta")}}" 
+								class="form-control">
+						</div>
+						<div class="col-sm-4 mb-3">
+							<label>Usuario</label> <input type="text" id="txtUsuario"
+								name="txtUsuario" value="{{app.request.get( 'txtUsuario')}}"
+								class="form-control">
+						</div>
+					</div>
+					<div class="row col-sm-12 col-md-12">
+						<div>&nbsp;</div>
+						<div>&nbsp;</div>
+					</div>
+					<div class="col-sm-4 col-md-4">
+						<button class="btn btn-success col-xs-12" data-toggle="tooltip"
+							id="consultar" title="" type="button" data-placement="bottom"
+							data-original-title="Consultar">
+							<div class="hidden-xs hidden-sm">Consultar</div>
+							<div class="hidden-md hidden-lg">
+								<i class="fa fa-search" aria-hidden="true"></i>
+							</div>
+						</button>
+						<button id="sendForm" type="submit" class="hide"></button>
+					</div>
+					<div class="row col-sm-4 col-md-4">
+						<div>&nbsp;</div>
+						<div>&nbsp;</div>
+					</div>
+					<div class="col-sm-4 col-md-4">
+						<button class="btn btn-default col-xs-12" data-toggle="tooltip"
+							title="" id="limpiar" type="button" onclik="limpiarForm"
+							data-placement="bottom"
+							data-original-title="Limpiar Parámetros de Búsqueda">
+							<div class="hidden-xs hidden-sm">Limpiar Búsqueda</div>
+							<div class="hidden-md hidden-lg">
+								<i class="fa fa-undo" aria-hidden="true"></i>
+							</div>
+						</button>
+					</div>
+					<div class="row col-sm-12 col-md-12">
+						<div>&nbsp;</div>
+						<div>&nbsp;</div>
+					</div>
+					<div class="col-sm-1. col-md-12">
+						<table id="tablaAuditoriaCnrtPersona" class="table-bordered table-striped mb-0">
+                            <thead>
+                                <tr style='text-align:center' bgcolor="#e9e9e9">
+                                	<th style='text-align:center'>Id</th>
+					                <th style='text-align:center'>Fecha y Hora</th>
+					                <th style='text-align:center'>Usuario</th>
+					                <th style='text-align:center'>Acci&oacute;n</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entity in entities %}
+                                    <tr>
+                                    	<td style='text-align:center'>{{ entity.id }}</td>
+                                        <td style='text-align:center'>{{ entity.fecAlta|date('d/m/Y H:i:s')|default('NO DATA') }}</td>
+                                        <td style='text-align:center;'>
+                                        	<a title="Ver Usuario" href="{{path('usuario_show',{'id':entity.usuAlta.id})}}">
+	                                            <span style="color:#0069c2">{{ entity.usuAlta }}</span>
+	                                        </a>
+	                                    </td>
+                                        <td style='text-align:center'>{{ entity.accion|default('NO DATA') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="row-fluid" align="center">        
+		                    {{ pagerfanta (entities,'twitter_bootstrap_translated', { 'prev_message' : 'Anterior', 'next_message': 'Siguiente',
+		                    				"routeParams": {
+		                    				'id':cnrtPersona.id,
+		                    				'txtFechaDesde':app.request.get('txtFechaDesde'),
+		                    				'txtFechaHasta':app.request.get('txtFechaHasta'),
+		                    				'txtUsuario':app.request.get('txtUsuario') 
+		                    				}
+						           		}) 
+		                    }}
+		                </div>                        
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+<script>
+	$(document).ready(function () {
+        
+		if ($(window).width() < 600) {
+			$("#panelconsulta").attr("style","margin-bottom:2%;");
+		}else{
+			$("#panelconsulta").attr("style","margin-left:0%;margin-bottom:2%;");
+		}
+		
+		
+		$("#consultar").click(function(){
+			console.log("TEST");
+			$("#accion").val("busqueda");
+			$("#frm").attr('action',"{{ path('cnrt_auditoria',{'id':cnrtPersona.id}) }}");
+			$("#sendForm").click();
+		});
+
+		{% if app.request.get( "busqueda")=='SI' or app.request.get( "page")!='' %}
+			$(window).scrollTop($('#panelconsulta').offset().top);
+		{% endif %}
+		
+		$('#limpiar').click(function () {
+		    $("#txtUsuario").val("");
+		    $("#txtFechaDesde").val("");
+		    $("#txtFechaHasta").val("");
+		});
+		
+	    $('.pagination a').attr('class', 'btn btn-default');
+        $('.pagination li').css('float', 'left');
+        $('.pagination .active span').attr('class', 'btn btn-info');
+        $('.pagination .prev span').attr('class', 'btn btn-default disabled');
+        $('.pagination .next span').attr('class', 'btn btn-default disabled');
+		
+        $('#tablaAuditoriaCnrtPersona').DataTable({
+        	"scrollY": "600px",
+        	"scrollX": true,
+            "filter": true,
+            "paging": false,
+            "info": false,
+            "order": [[ 0, 'desc' ]],
+            "scrollCollapse": true,
+            "responsive": true,	
+            "oLanguage": {
+				"sSearch": 		   "Buscar en registros visibles:",
+				"sEmptyTable": 	   '<div class="alert alert-seccondary"><i class="fa fa-info-circle" style="font-size: 20px"></i> <span style="font-size: 20px;"> No se encontraron resultados con los parámetros de búsqueda ingresados.</span></div>',			
+				"sProcessing":     "Procesando...",
+				"sLengthMenu":     "Mostrar _MENU_ registros",
+				"sZeroRecords":    "No se encontraron resultados",
+				"sInfo":           "Mostrando registros del: _START_ al _END_ (de un total de _TOTAL_ registros)",
+				"sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+				"sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+				"sInfoPostFix":    "",
+				"sUrl":            "",
+				"sInfoThousands":  ",",
+				"sLoadingRecords": "Cargando...",
+				"columnDefs": [ {
+	            	"targets": 2,
+	            	"orderable": false
+	            	} ],
+				"oPaginate": {
+                    "sFirst":    "Pri",
+                    "sLast":     "Ult",
+                    "sNext":     "Sig",
+                    "sPrevious": "Ant"
+                	}
+			}
+        });
+	});
+
+	function exportar(){	
+		$("#accion").val("csv");
+		$("#frm").attr('target',"_blank");
+		$("#sendForm").click();
+		$("#accion").val("");
+		$("#frm").removeAttr('target');
+	}
+</script>
+    {% endblock %}

@@ -1,0 +1,235 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+
+{% block body -%}
+	<style>
+		/* ---------- Formulario de consulta de documentos (mismo criterio visual que la ficha y el formulario de personas) ---------- */
+		.pf-wrap {
+			max-width: 760px;
+			margin: 15px auto 30px;
+			padding: 0 15px;
+		}
+		.pf-topbar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			background: #fff;
+			border-radius: 10px;
+			box-shadow: 0 1px 4px rgba(20, 30, 70, 0.12);
+			padding: 12px 20px;
+			margin-bottom: 16px;
+		}
+		.pf-topbar img {
+			width: 230px;
+			max-width: 55%;
+		}
+		.pf-title {
+			margin: 0;
+			color: #2d3c90;
+			font-size: 22px;
+			font-weight: 600;
+		}
+		.pf-card {
+			background: #fff;
+			border-radius: 12px;
+			box-shadow: 0 1px 4px rgba(20, 30, 70, 0.12);
+			margin-bottom: 16px;
+			overflow: visible;
+		}
+		.pf-card-h {
+			border-radius: 12px 12px 0 0;
+			padding: 11px 18px;
+			background: #f4f6fb;
+			border-bottom: 1px solid #e3e7f1;
+			color: #2d3c90;
+			font-size: 15px;
+			font-weight: 700;
+		}
+		.pf-card-h .glyphicon {
+			margin-right: 8px;
+			opacity: 0.8;
+		}
+		.pf-card-b {
+			padding: 16px 18px 6px;
+		}
+		.pf-fields {
+			display: flex;
+			flex-wrap: wrap;
+			margin: 0 -8px;
+		}
+		.pf-field {
+			flex: 1 1 200px;
+			padding: 0 8px;
+			margin-bottom: 14px;
+		}
+		.pf-field.pf-field-full {
+			flex-basis: 100%;
+		}
+		.pf-field label {
+			display: block;
+			margin-bottom: 5px;
+			color: #5d6678;
+			font-size: 13px;
+			font-weight: 600;
+		}
+		.pf-card .form-control {
+			height: 40px;
+			border-radius: 8px;
+			border: 1px solid #cdd4e4;
+			box-shadow: none;
+		}
+		.pf-card .form-control:focus {
+			border-color: #2d3c90;
+			box-shadow: 0 0 0 2px rgba(45, 60, 144, 0.15);
+		}
+		.pf-help {
+			display: block;
+			margin-top: 5px;
+			color: #7a8194;
+			font-size: 12px;
+		}
+		.pf-req {
+			display: none;
+			color: #d9534f;
+		}
+		.pf-req.pf-req-on {
+			display: inline;
+		}
+		.pf-actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+		}
+		.pf-actions .btn {
+			flex: 1 1 200px;
+			padding: 10px 0;
+			border-radius: 8px;
+			font-size: 16px;
+		}
+		.pf-actions .btn i {
+			margin-right: 6px;
+		}
+		.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(
+				.input-group-btn
+			) {
+			width: 100% !important;
+		}
+		@media (max-width: 767px) {
+			.pf-wrap {
+				margin-top: 8px;
+			}
+			.pf-topbar {
+				flex-direction: column;
+				gap: 6px;
+				text-align: center;
+			}
+		}
+	</style>
+
+	{% set bInvestigativo = "NO" %}
+	{% for perfil in usuario.perfilid %}
+		{% for permiso in perfil.permisoid %}
+			{% if permiso.id == '7' %}
+				{% set bInvestigativo = "SI" %}
+			{% endif %}
+		{% endfor %}
+	{% endfor %}
+
+	<form method="POST" action="{{ path('documento_show') }}">
+		<div id="panelconsulta" class="pf-wrap">
+
+			<div class="pf-topbar">
+				<img src="{{ asset('bundles/pfa/img/ocnbuenosaires.png') }}"/>
+				<p class="pf-title">Interpol - Documentos</p>
+			</div>
+
+			{# Tipo de consulta: si el usuario no es investigativo queda oculto, pero se envía igual con el valor BC #}
+			<div class="pf-card {{ bInvestigativo == 'SI' ? '' : 'hidden' }}">
+				<div class="pf-card-h"><span class="glyphicon glyphicon-cog"></span>Tipo de consulta</div>
+				<div class="pf-card-b">
+					<div class="pf-field" style="padding: 0;">
+						<label for="lstTipoCons">Tipo de Consulta</label>
+						<select id="lstTipoCons" name="lstTipoCons" class="selectpicker" required>
+							<option value="BC">Control fronterizo</option>
+							{% if bInvestigativo == "SI" %}
+								<option value="AD" selected>Investigación</option>
+							{% endif %}
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="pf-card">
+				<div class="pf-card-h"><span class="glyphicon glyphicon-credit-card"></span>Datos del documento</div>
+				<div class="pf-card-b">
+					<div class="pf-fields">
+						<div class="pf-field pf-field-full">
+							<label for="lstTipoDoc">Tipo de Documento</label>
+							<select id="lstTipoDoc" name="lstTipoDoc" data-live-search="true" class="selectpicker" required>
+								{% for Documento in documentos %}
+									<option value="{{ Documento.COD }}" {{ Documento.COD == 'P' ? 'selected' : '' }}>{{ Documento.COD ~ ' - ' ~ Documento.DESCRIPCION }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="pf-field">
+							<label for="txtNumeroDoc">Nro. de Documento</label>
+							<input type="text" value="" class="form-control" id="txtNumeroDoc" name="txtNumeroDoc" placeholder="Ingrese Nro de Documento" required>
+						</div>
+						<div class="pf-field">
+							<label for="lstPais">País
+								<span class="pf-req" id="reqPais">*</span>
+							</label>
+							<select id="lstPais" name="lstPais" data-live-search="true" class="selectpicker">
+								<option value="">- Sin especificar -</option>
+								{% for Pais in paises %}
+									<option value="{{ Pais.COD_B }}">{{ Pais.COD_B ~ ' - ' ~ Pais.DESCRIPCION }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="pf-actions">
+				<button class="btn btn-success" data-toggle="tooltip" id="consultar" title="Consultar" type="submit" data-placement="bottom">
+					<i class="fa fa-search" aria-hidden="true"></i>
+					Consultar
+				</button>
+				<button id="sendForm" type="submit" class="hide"></button>
+				<button class="btn btn-default" data-toggle="tooltip" title="Limpiar Parámetros de Búsqueda" id="limpiar" name="limpiar" type="button" data-placement="bottom">
+					<i class="fa fa-undo" aria-hidden="true"></i>
+					Limpiar Búsqueda
+				</button>
+			</div>
+
+		</div>
+	</form>
+
+	<script>
+		// Para usuarios investigativos: en Investigación (AD) el País es opcional; en Control fronterizo (BC) es obligatorio.
+		function actualizarRequeridos() {
+			{% if bInvestigativo == 'SI' %}
+			var esBC = $("#lstTipoCons").val() !== 'AD';
+			$("#lstPais").prop("required", esBC);
+			$("#reqPais").toggleClass("pf-req-on", esBC);
+			{% endif %}
+		}
+
+		$(document).ready(function () {
+			$('.selectpicker').selectpicker();
+
+			actualizarRequeridos();
+
+			$('#limpiar').click(function () {
+				$("#lstTipoDoc").val("").selectpicker('refresh');
+				$("#txtNumeroDoc").val("");
+				$("#lstPais").val("").selectpicker('refresh');
+				$("#lstTipoCons").val("{{ bInvestigativo == 'SI' ? 'AD' : 'BC' }}").selectpicker('refresh');
+				actualizarRequeridos();
+			});
+
+			$("#lstTipoCons").change(function () {
+				actualizarRequeridos();
+			});
+		});
+	</script>
+{% endblock %}

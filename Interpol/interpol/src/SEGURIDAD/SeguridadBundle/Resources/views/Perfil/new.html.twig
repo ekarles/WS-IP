@@ -1,0 +1,71 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %} 
+{% block body -%}
+	<div class="row text-center">
+		<h1>Nuevo Perfil</h1>
+	</div>
+	{{ form_start(form) }}
+	<div class="col-xs-12 col-md-12" style="margin-bottom: 2%;">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div class="container">
+					<button type="submit" class="btn btn-success pull-right">Guardar</button>
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('admin_perfil') }}">
+		                Volver
+		            </a>
+	            </div>
+			</div>
+			<div class="panel-body">
+				<div class="col-sm-12 col-md-12">
+                   	<div class="row">
+                   		<div class="col-md-6">
+		                    {{ form_label(form.nombre) }}
+		                    {{ form_widget(form.nombre) }}
+		                    {{ form_errors(form.nombre) }}
+		                </div>
+                   		<div class="col-md-6">
+		                    {{ form_label(form.descripcion) }}
+		                    {{ form_widget(form.descripcion) }}
+		                    {{ form_errors(form.descripcion) }}
+		                </div>
+                   		<div class="col-md-6">
+		                    {{ form_label(form.borrado) }}
+		                    {{ form_widget(form.borrado) }}
+		                    {{ form_errors(form.borrado) }}
+		                </div>
+		                <div class="col-md-6">
+		                    {{ form_label(form.permisoid) }}
+		                    {{ form_widget(form.permisoid) }}
+		                    {{ form_errors(form.permisoid) }}
+		                </div>
+		                {% if is_granted('ROLE_SUPER_ADMIN') %}
+		                <div class="col-md-6">
+		                    {{ form_label(form.admin) }}
+		                    {{ form_widget(form.admin) }}
+		                    {{ form_errors(form.admin) }}
+		                </div>
+		                {% endif %}
+		                {% if is_granted('ROLE_SUPER_ADMIN') %}
+		                <div class="col-md-6">
+		                    {{ form_label(form.admin_ext) }}
+		                    {{ form_widget(form.admin_ext) }}
+		                    {{ form_errors(form.admin_ext) }}
+		                </div>
+		                {% endif %}
+		            </div>
+		            <br>        
+				</div>
+			</div>
+			<div class="panel-footer">
+	            <div class="container">
+	                <button type="submit" class="btn btn-success pull-right">Guardar</button>
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="{{ path('admin_perfil') }}">
+		                Volver
+		            </a>
+	            </div>
+	        </div>
+		</div>
+	</div>
+	<script>
+	</script>
+	{{ form_end(form) }}
+{% endblock %}

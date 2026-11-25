@@ -1,0 +1,579 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %} {% block body -%}
+<div _ngcontent-pjt-5="" class="accessPanel" style="display: flex; flex-flow: column wrap;text-align:center;">
+    <div _ngcontent-pjt-5="" class="form-group" style="align-self: center; flex: 1 1 auto; order: 1; margin-top: 20px; width: 100%">
+		{% set permisosArray = [] %}
+		{% for s in SubMenu %}
+			{% set permisosArray = permisosArray|merge([s["PERMISOID"]]) %}
+		{% endfor %}
+		<div id="inicioAccessPanel">
+                        {% if  601 in permisosArray or 602 in permisosArray or 603 in permisosArray or 605 in permisosArray or 606 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container administrador">
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/gear_edit.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Administrador</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Permite gestionar
+								usuarios, permisos, dependencias, instituciones, etc.</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {% if 605 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container" onclick="window.location='{{path('admin_mapa')}}';">
+					<div _ngcontent-pjt-8="" class="ca-container">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/iconoMapa.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Mapas</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Permite visualizar
+								geograficamente la utilización de los diferentes sistemas</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {% if 11 in permisosArray %}                        
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container" onclick="window.location='{{path('panel')}}';">
+					<div _ngcontent-pjt-8="" class="ca-container">
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/control-panel.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Panel de Control</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Permite monitorear el
+								estado de las consultas y alarmas</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {% if 1 in permisosArray or 2 in permisosArray or 3 in permisosArray or 4 in permisosArray or 5 in permisosArray or 6 in permisosArray or 
+                              7 in permisosArray or 8 in permisosArray or 9 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container consultas">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/globe-search.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Consultas</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Permite consultar
+								información correspondiente a individuos, documentación, etc.</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {%  if 12 in permisosArray %}    
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('alarmas')}}';">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon">
+                                                    <img _ngcontent-pjt-8="" class="media-object" src="{{asset('bundles/images/alert.png')}}">
+                                                    {% if app.session.get('ALARMASULTIMAS24HS') is defined and app.session.get('ALARMASULTIMAS24HS') != '0' %}
+                                                        <div class="notificacion-cont">
+                                                            <div class="notificacion-val">
+                                                                {{app.session.get('ALARMASULTIMAS24HS')}}   
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                </span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Alarmas</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Permite gestionar las
+								diferentes alarmas generadas</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {%  if 122 in permisosArray or 123 in permisosArray %}    
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('gestion_personaobservada')}}';">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon">
+                                                    <img _ngcontent-pjt-8="" class="media-object" src="{{asset('bundles/images/persona_obs.png')}}">
+                                                    {% if app.session.get('MOVIMIENTOSPENDIENTES') is defined and app.session.get('MOVIMIENTOSPENDIENTES') != '0' %}
+                                                        <div class="notificacion-cont-2">
+                                                            <div class="notificacion-val">
+                                                                {{app.session.get('MOVIMIENTOSPENDIENTES')}}   
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                </span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Avisos de Movimiento</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Permite gestionar los
+								avisos de movimientos de las personas ingresadas</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {%  if 43 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container" onclick="window.location='{{path('estadisticas')}}';">
+					<div _ngcontent-pjt-8="" class="ca-container">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/chart.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Estadísticas</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Permite visualizar
+								estadísticas históricas</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {%  if 41 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container" onclick="window.location='{{path('en_construccion')}}';">
+					<div _ngcontent-pjt-8="" class="ca-container">
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/Recent-Documents.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Reprocesar Offline</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Visualizacion y
+								reprocesamiento de lotes amarillos</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {%  if 44 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container" onclick="window.location='{{path('en_construccion')}}';">
+					<div _ngcontent-pjt-8="" class="ca-container">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/dependencia-chart.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Dependencias</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Panel de monitoreo de
+								dependencias</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {%  if 81 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('auditoriageneral')}}';">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/auditoria.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Auditor&iacute;a</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Auditoría de consultas
+								realizadas</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {%  if 500 in permisosArray or 501 in permisosArray or 5012 in permisosArray or 125 in permisosArray or 127 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container lotes">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/lotes-gear.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Consultas por Lotes</h2>
+                                                        {% if 500 in permisosArray or 5012 in permisosArray %}
+							<h3 _ngcontent-pjt-8="" class="ca-sub">WISDM e historial de consultas por lotes</h3>
+                                                        {% else %}
+                                                        <h3 _ngcontent-pjt-8="" class="ca-sub">Historial de consultas por lotes</h3>    
+                                                        {% endif %}
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}                        
+		</div>
+		<div id="administrador" style="display:none;">
+                        {% if 601 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('usuario')}}';">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/users.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Usuarios</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Permite consultar, agregar
+								y editar Usuarios</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {% if 602 in permisosArray %}                        
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('admin_perfil')}}';">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/perfiles.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Perfiles</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Alta, baja y modificaci&oacute;n de Perfiles</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {% if 603 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('admin_dependencia')}}';">				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/dependencia.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Dependencias</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Actualizador de Dependencias</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {% if 604 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('admin_institucion')}}';">				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/gobierno.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Instituciones</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Actualizador de Instituciones</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {% if 605 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('admin_mapa')}}';">				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/map-marker.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Mapas</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Actualizador de Mapas</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {% if 606 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('admin_Tipodelito')}}';">				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/criminal.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Tipos de Delito</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Actualizador de Tipos
+									de Delito</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container administradorBack">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/sign-left.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Volver</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Regresar al men&uacute; principal</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+		</div>	
+		<div id="consultas" style="display:none;">
+                        {% if 1 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('persona')}}';">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/buscaPersona.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Consulta Personas</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Permite consultar
+								información correspondiente a individuos</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {% if 3 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('documento')}}';">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/buscaDocumento.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Consulta Documentos</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Permite consultar
+								información correspondiente a documentos</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {% if 8 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('vehiculo')}}';">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/search-car.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Consulta Veh&iacute;culos</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Permite consultar
+								información correspondiente a veh&iacute;culos</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {% if 61 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('combinada')}}';">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/busqueda.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Consulta Combinada</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Permite consultar
+								información correspondiente a individuos, documentación, etc.</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}
+                        {% if 5 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('lote')}}';">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/lotes.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Consulta Por Lotes</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Permite realizar consultas
+								m&uacute;ltiples desde un archivo</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                        {% endif %}                        
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container consultasBack">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/sign-left.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Volver</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Regresar al men&uacute; principal</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+		</div>	
+    </div>
+    <div id="lotes" style="display:none;">
+                {% if 500 in permisosArray %}
+		<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+			<div _ngcontent-pjt-8="" class="opcion-container">
+				<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('lotedocumento_show')}}';">			
+					<span _ngcontent-pjt-8="" class="ca-icon"><img
+						_ngcontent-pjt-8="" class="media-object"
+						src="{{asset('bundles/images/pasaporte-azul.png')}}"></span>
+					<div _ngcontent-pjt-8="" class="ca-content">
+						<h2 _ngcontent-pjt-8="" class="ca-main">Lotes WISDM</h2>
+						<h3 _ngcontent-pjt-8="" class="ca-sub">Permite consultar y reenviar los
+								documentos recibidos y enviados de WISDM</h3>
+					</div>
+				</div>
+			</div>
+		</dashboard-option>
+                {% endif %}
+                {% if 501 in permisosArray %}
+		<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+			<div _ngcontent-pjt-8="" class="opcion-container">
+				<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('lotesprocesados')}}';">			
+					<span _ngcontent-pjt-8="" class="ca-icon"><img
+						_ngcontent-pjt-8="" class="media-object"
+						src="{{asset('bundles/images/lotes-history.png')}}"></span>
+					<div _ngcontent-pjt-8="" class="ca-content">
+						<h2 _ngcontent-pjt-8="" class="ca-main">Lotes Procesados</h2>
+						<h3 _ngcontent-pjt-8="" class="ca-sub">Permite consultar y 
+								reprocesar lotes de personas, veh&iacute;culos
+								y documentos</h3>
+					</div>
+				</div>
+			</div>
+		</dashboard-option>
+                {% endif %}
+                {% if 5012 in permisosArray %}
+		<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+			<div _ngcontent-pjt-8="" class="opcion-container">
+				<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('wisdm_showCargaMasiva')}}';">			
+					<span _ngcontent-pjt-8="" class="ca-icon"><img
+						_ngcontent-pjt-8="" class="media-object"
+						src="{{asset('bundles/images/lotes-passport.png')}}"></span>
+					<div _ngcontent-pjt-8="" class="ca-content">
+						<h2 _ngcontent-pjt-8="" class="ca-main">Lotes WISDM Carga Masiva</h2>
+						<h3 _ngcontent-pjt-8="" class="ca-sub">Permite reenviar de forma masiva los
+								documentos recibidos y enviados de WISDM</h3>
+					</div>
+				</div>
+			</div>
+		</dashboard-option>
+                {% endif %}
+                {%  if 5013 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('auditoriawisdm')}}';">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/auditoria.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							<h2 _ngcontent-pjt-8="" class="ca-main">Auditor&iacute;a WISDM</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Auditoría de documentos enviados al
+								sistema WISDM</h3>
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                {% endif %}
+                {%  if 125 in permisosArray or 127 in permisosArray %}
+			<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+				<div _ngcontent-pjt-8="" class="opcion-container">
+					<div _ngcontent-pjt-8="" class="ca-container" onclick="window.location='{{path('admin_cnrtpersona')}}';">
+				
+						<span _ngcontent-pjt-8="" class="ca-icon"><img
+							_ngcontent-pjt-8="" class="media-object"
+							src="{{asset('bundles/images/micro.png')}}"></span>
+						<div _ngcontent-pjt-8="" class="ca-content">
+							{%  if 125 in permisosArray %}
+							<h2 _ngcontent-pjt-8="" class="ca-main">Administraci&oacute;n CNRT</h2>
+							<h3 _ngcontent-pjt-8="" class="ca-sub">Auditor&iacute;a de consultas autom&aacute;ticas
+							 realizadas a Interpol con datos obtenidos desde la C.N.R.T.</h3>
+							{% else %}
+							 	<h2 _ngcontent-pjt-8="" class="ca-main">Positivos CNRT</h2>
+								<h3 _ngcontent-pjt-8="" class="ca-sub">Verificaci&oacute;n de positivos
+								 en Interpol con datos obtenidos desde la C.N.R.T.</h3>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</dashboard-option>
+                {% endif %}
+                                        
+		<dashboard-option _ngcontent-pjt-5="" _nghost-pjt-8="">
+			<div _ngcontent-pjt-8="" class="opcion-container">
+				<div _ngcontent-pjt-8="" class="ca-container lotesBack">
+			
+					<span _ngcontent-pjt-8="" class="ca-icon"><img
+						_ngcontent-pjt-8="" class="media-object"
+						src="{{asset('bundles/images/sign-left.png')}}"></span>
+					<div _ngcontent-pjt-8="" class="ca-content">
+						<h2 _ngcontent-pjt-8="" class="ca-main">Volver</h2>
+						<h3 _ngcontent-pjt-8="" class="ca-sub">Regresar al men&uacute; principal</h3>
+					</div>
+				</div>
+			</div>
+		</dashboard-option>
+	</div>
+</div>
+
+<script>
+    
+    $(window).resize(function () {
+        showAccessPanel();
+    });
+
+    $(window).load(function () {    
+        showAccessPanel();
+    });
+    
+    function showAccessPanel(){
+        if ($(window).width() >= 812) {
+            $(".accessPanel").show();
+        }else{
+            $(".accessPanel").hide();
+        }
+    }
+
+    $(".administrador").click(function(){
+            $("#inicioAccessPanel").hide();
+            $("#administrador").show();
+    });
+
+    $(".administradorBack").click(function(){
+            $("#inicioAccessPanel").show();
+            $("#administrador").hide();
+    });
+    $(".consultas").click(function(){
+            $("#inicioAccessPanel").hide();
+            $("#consultas").show();
+    });
+
+    $(".consultasBack").click(function(){
+            $("#inicioAccessPanel").show();
+            $("#consultas").hide();
+    });
+    $(".lotes").click(function(){
+            $("#inicioAccessPanel").hide();
+            $("#lotes").show();
+    });
+
+    $(".lotesBack").click(function(){
+            $("#inicioAccessPanel").show();
+            $("#lotes").hide();
+    });
+</script>
+
+{% endblock %}

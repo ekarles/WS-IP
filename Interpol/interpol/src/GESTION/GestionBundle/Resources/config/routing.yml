@@ -1,0 +1,42 @@
+_homepage:
+    path:     /
+    defaults: { _controller: GESTIONGestionBundle:Default:index }
+_inicio:
+    path:     /inicio
+    defaults: { _controller: GESTIONGestionBundle:Default:inicio }
+_error:
+    path:     /error
+    defaults: { _controller: GESTIONGestionBundle:Default:error }
+    
+logout:
+    path: /logout
+    
+usuario_datos:
+    path: /usuarioDatos
+    defaults: { _controller: SEGURIDADSeguridadBundle:Default:usuarioDatos }    
+    
+interpol_persona:
+    resource: "@GESTIONGestionBundle/Resources/config/routing/persona.yml"
+    prefix:   /persona 
+    
+interpol_documento:
+    resource: "@GESTIONGestionBundle/Resources/config/routing/documento.yml"
+    prefix:   /documento
+
+interpol_vehiculo:
+    resource: "@GESTIONGestionBundle/Resources/config/routing/vehiculo.yml"
+    prefix:   /vehiculo
+
+interpol_lote:
+    resource: "@GESTIONGestionBundle/Resources/config/routing/lote.yml"
+    prefix:   /lote
+    
+interpol_combinada:
+    resource: "@GESTIONGestionBundle/Resources/config/routing/combinada.yml"
+    prefix:   /combinada
+interpol_movimientospersonas:
+    resource: "@GESTIONGestionBundle/Resources/config/routing/movimientospersonas.yml"
+    prefix:   /movimientospersonas
+interpol_arma:
+    resource: "@GESTIONGestionBundle/Resources/config/routing/arma.yml"
+    prefix:   /arma

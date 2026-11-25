@@ -1,0 +1,1131 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %}
+{% block body -%}
+{% set oper = false %}
+{% for perfil in app.user.perfilid %}
+	{% for permiso in perfil.permisoid %}
+		{% if permiso.id == 127 %}
+			{% set oper = true %}
+		{% endif %}
+	{% endfor %}
+{% endfor %}
+<form method="GET" action="{{path('admin_cnrtpersona')}}" enctype="multipart/form-data" id="frm">
+    	<div class="container" width="100%">
+    		<div class="row text-center">
+				<div class="panel-heading">
+					{% if oper %}
+					<h1>Interpol - Positivos CNRT</h1>
+					{% else %}
+		    		<h1>Interpol - Administraci&oacute;n CNRT</h1>
+		    		{% endif %}
+		    	</div>
+        	</div>        	
+    		<div id="panelconsulta" class="col-xs-12 col-md-12" style="margin-bottom:2%;" height="150px;">
+    			<div class="panel panel-default">
+    				<div class="panel-body">
+                    	<div class="row">
+	                    	<div class="col-sm-4">
+	                    		<label>Id Pasajero</label>
+	                    		<input type="text" name="txtIdPasajero" id="txtIdPasajero" value="{{ app.request.get( 'txtIdPasajero' ) }}" class="form-control">
+	                    	</div>
+	                    	<div class="col-sm-4">
+	                    		<label>Nro. Documento</label>
+	                    		<input type="text" name="txtNroDocumento" id="txtNroDocumento" value="{{ app.request.get( 'txtNroDocumento' ) }}" class="form-control">
+	                    	</div>
+	                        <div class="col-sm-4">
+	                    		<label>Apellido</label>
+	                    		<input type="text" name="txtApellido" id="txtApellido" value="{{ app.request.get( 'txtApellido' ) }}" class="form-control">
+	                    	</div>
+	                    	<div class="col-sm-4">
+	                    		<label>Nombre</label>
+	                    		<input type="text" id="txtNombre" name="txtNombre" value="{{ app.request.get('txtNombre') }}" class="form-control">
+	                    	</div>
+	                    	<div class="col-sm-4">
+	                    		<label>Fecha desde</label>
+	                    		<input type="date" id="dtfechaDesde" name="dtfechaDesde" value="{{ app.request.get('dtfechaDesde') }}" class="form-control">
+	                    	</div>
+	                    	<div class="col-sm-4">
+	                    		<label>Fecha hasta</label>
+	                    		<input type="date" id="dtfechaHasta" name="dtfechaHasta" value="{{ app.request.get( 'dtfechaHasta') }}" class="form-control">
+	                    	</div>
+	                    {% if not oper %}
+	                    	<div class="col-sm-4">
+	                    		<label>Estado</label>
+           	                	<select id="lstEstados" name="lstEstados" required="required" class="selectpicker" value="{{ app.request.get( 'lstEstados' ) }}">
+                            	{% for result in Estados %}
+									<option value="{{ result['CODIGO'] }}" {{ ( app.request.get( 'lstEstados' )==result['CODIGO']?'selected':'') }}>{{ result['DESCRIPCION'] }}</option>           	                
+                                {% endfor %}           	                
+           	                  		<option value="" {{ ( app.request.get( 'lstEstados' )==''?'selected':'') }}>Seleccione una opción</option>
+           	                	</select>
+	                    	</div>&nbsp;
+	                    	<div class="col-sm-4">
+	                    		<label>Resultado</label>
+	           	                <select id="lstResultado" name="lstResultado" required="required" class="selectpicker" value="{{ app.request.get( 'lstResultado' ) }}">
+										<option value="0" {{ ( app.request.get( 'lstResultado' )=="0"?'selected':'') }} >0 - SIN NOVEDAD</option>
+										<option value="1" {{ ( app.request.get( 'lstResultado' )=="1"?'selected':'') }}>1 - POSITIVO</option>           	                
+	           	                  		<option value="" {{ ( app.request.get( 'lstResultado' )==''?'selected':'') }}>Seleccione una opción</option>
+	           	                </select>
+	                    	</div>
+						{% endif %}
+						</div>
+                    	<div class="row col-sm-12 col-md-12">
+    						<div>&nbsp;</div>
+    						<div>&nbsp;</div>
+    					</div>
+        				<div class="col-sm-4 col-md-4">
+        					<button class="btn btn-success col-xs-12" data-toggle="tooltip" id="consultar" type="submit" data-placement="bottom" data-original-title="Consultar">
+        						<div class="hidden-xs hidden-sm">Consultar</div>
+        						<div class="hidden-md hidden-lg">
+        							<i class="fa fa-search" aria-hidden="true"></i>
+        						</div>
+        					</button>
+        					<button id="sendForm" type="submit" class="hide"></button>
+        				</div>
+                    	<div class="row col-sm-4 col-md-4">
+    						<div>&nbsp;</div>
+    						<div>&nbsp;</div>
+    					</div>
+    					<div class="col-sm-4 col-md-4">
+        					<button class="btn btn-default col-xs-12" data-toggle="tooltip" id="limpiar" name="limpiar" type="button" data-placement="bottom" data-original-title="Limpiar Parámetros de Búsqueda">
+        						<div class="hidden-xs hidden-sm">Limpiar Búsqueda</div>
+        						<div class="hidden-md hidden-lg">
+        							<i class="fa fa-undo" aria-hidden="true"></i>
+        						</div>
+        					</button>
+        				</div>
+        			    <div class="row">
+    						<div>&nbsp;</div>
+    						<div>&nbsp;</div>
+    					</div>
+			    		<br/>
+						<div class="row text-center">
+							<h4><strong>Total: {{ TotalRegistros }} registros</strong></h4>
+						</div>
+
+        				<div class="col-sm-12 col-md-12 table-wrapper-scroll-y my-custom-scrollbar" >
+                            <table id="tablaCNRT" class="table-bordered table-striped mb-0">
+                                <thead>
+                                    <tr style='text-align:center' bgcolor="#e9e9e9">
+                                    	<th>Acciones</th>
+                                    	<th>Id. Pasajero</th>
+                                    	<th>Nro. Documento</th>
+                                    	<th>Apellido/Nombre</th>
+                                        <th>Sexo</th>
+                                        <th>Fecha Consulta</th>
+                                        {% if not oper %}
+                                        <th>Estado</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                	{% set j = 1 %}
+                                    {% for result in results %}
+                                        <tr>
+                                        	<td style="text-align:center;" width="15%">
+                                        		{% if  result.RESULTADO == "1" %}
+	                                            	<a id="btnDetalle{{j|default('')}}" class="btn btn-danger res" title="Detalle (id:{{ result.ID|default('NO ID') }})" data-toggle="modal" onClick="mostrarDetalle( '{{ result.ID|default("") }}', false )">
+	                                                <i class="fa fa-eye"></i></a>
+	                                                <a id="btnExportarPdf{{j|default('')}}" class="btn btn-secondary res" title="Exportar a PDF (id:{{ result.ID|default('NO ID') }})" onClick="exportarPdf( '{{ result.ID|default("") }}', '{{ result.IdPasajero|default("") }}', false )">
+	                                                <i id="iconExportarPdf{{ result.ID|default('NO ID') }}" class="fa fa-print"></i></a>
+                                                {% else %}
+	                                            	<a id="btnDetalle{{j|default('')}}" class="btn btn-info res" title="Detalle (id:{{ result.ID|default('NO ID') }})" data-toggle="modal" onClick="mostrarDetalle( '{{ result.ID|default("") }}', false )">
+	                                                <i class="fa fa-eye"></i></a>
+                                                {% endif %}
+                                                {% if  result.ESTADO != "1" and result.RESULTADO != "1" %}
+                                            		<a id="btnReprocesar{{ result.ID|default('NO ID') }}" class="btn btn-primary res" title="Reprocesar persona CNRT (id:{{ result.ID|default('NO ID') }})" data-toggle="modal" onClick="mostrarDetalle( '{{ result.ID|default("") }}', true )">
+	                                                <i class="fa fa-cog"></i></a>
+	                                            {% endif %}
+	                                            {% if is_granted('ROLE_ADMIN') and not oper %}
+	                                            	<a id="btnAuditoria{{j|default('')}}" href= "{{path('cnrt_auditoria',{'id':result.ID})}}" class="btn btn-warning res" title="Auditor&iacute;a (id:{{ result.ID|default('NO ID') }})" data-toggle="modal">
+	                                                <i class="fa fa-database"></i></a>
+	                                            {% endif %}
+                                        	</td>
+                                        	<td style="text-align:center;">{{ result.IdPasajero|default('ERROR') }} <input type="hidden" id="txtIDCNRT" value="{{ result.ID|default('ERROR') }}" /> </td>
+                                            <td style="text-align:center;">{{ result.numeroDocumento|default('') }}</td>
+                                            <td style="text-align:center;">{{ result.apellido|default('') ~ " " ~ result.nombre|default('')  }}</td>
+                                            <td style="text-align:center;">{{ result.SEXO|default('') }}</td>
+                                            <td style="text-align:center;">{{ result.fechaConsulta|date('d/m/Y H:i:s')|default('') }}</td>
+                                            {% if not oper %}
+                                            <td style="text-align:center;">{{ result.ESTADO|default('') ~ " - " ~ "" }}{{ Estados[result.ESTADO]["DESCRIPCION"] }}</td>
+                                            {% endif %}
+                                        </tr>
+                                        {% set j = j + 1 %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+	                        <div class="row-fluid" align="center">        
+			                    {{ pagerfanta (results,'twitter_bootstrap_translated', { 'prev_message' : 'Anterior', 'next_message': 'Siguiente',"routeParams": {'txtNroDocumento': app.request.get( "txtNroDocumento"),'dtfechaDesde': app.request.get( "dtfechaDesde"),'dtfechaHasta': app.request.get( "dtfechaHasta"),'txtApellido': app.request.get( "txtApellido"),'txtNombre': app.request.get( "txtNombre") }} ) }}
+			                </div>                        
+						</div>
+                	</div>
+                </div>
+            </div>
+        	<input type="hidden" id="cnrtData"\>
+        	<input type="hidden" id="personaData"\>
+        	<input type="hidden" id="errorCnrt" value="false"\>
+            <div class="modal" id="popupView" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    			<div class="modal-dialog" role="document">
+    				<div class="modal-content">
+    					<div class="modal-header modal-header-info">
+    						<h5 class="modal-title text-center" id="exampleModalLabel"><strong>Datos de auditor&iacute;a CNRT</strong></h5>
+    					</div>
+    					<div class="modal-body text-left" id="dvDatos">
+                			<div class="panel panel-default">
+                				<div class="panel-body">
+                					<div id="dvTable" class="col-sm-12">
+                					</div>
+                                </div>
+                            </div>
+    					</div>
+    					<div class="modal-footer">
+    						<button type="button" class="btn btn-danger  res" data-dismiss="modal">Cerrar</button>
+    					</div>
+    				</div>
+    			</div>
+    		</div>
+    		
+    		<div class="modal" id="popDetalle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    			<div class="modal-dialog" role="document">
+    				<div class="modal-content">
+    					<div class="modal-header modal-header-info">
+    						<h5 class="modal-title text-center" id="exampleModalLabel"><strong>Datos de auditor&iacute;a CNRT</strong></h5>
+    					</div>
+    					<div class="modal-body text-left" id="dvDatos">
+                			<div class="panel panel-default">
+                				<div class="panel-body">
+                					<div id="dvTable" class="col-sm-12">
+                                           <div class="list-group">
+                                               <div class="modal-header modal-header-info">
+						    						Información de consulta
+						    					</div>
+						    					<input type="hidden" id="idCNRT" />
+                                               <a class="col-sm-6 list-group-item list-group-item-info">Id CNRT</a>
+                                               <a class="col-sm-6 list-group-item" id="aidcnrt">.</a>
+                                               <a class="col-sm-6 list-group-item list-group-item-info">Fecha Consulta</a>
+                                               <a class="col-sm-6 list-group-item" id="aFechaConsulta">.</a>                                        
+                                           </div>
+
+                                           <div class="list-group">
+                                               <div class="modal-header modal-header-info">
+						    						Pasaje
+						    					</div>
+						    					<input type="hidden" id="idCNRT" />
+                                               <a class="col-sm-6 list-group-item list-group-item-info">Id pasajero</a>
+                                               <a class="col-sm-6 list-group-item" id="idPasajero">.</a>
+                                               <a class="col-sm-6 list-group-item list-group-item-info">Fecha Viaje</a>
+                                               <a class="col-sm-6 list-group-item" id="aFechaInicio">.</a>                                        
+                                           </div>
+                                           <div class="list-group">
+                                               <div class="modal-header modal-header-info">
+						    						Pasajero
+						    					</div>
+                                               <a class="col-sm-6 list-group-item list-group-item-info">Número de documento</a>
+                                               <a class="col-sm-6 list-group-item" id="aDocumento">.</a>
+                                               <a class="col-sm-6 list-group-item list-group-item-info">Apellido / Nombre</a>
+                                               <a class="col-sm-6 list-group-item" id="aApellido">.</a>
+                                               <a class="col-sm-6 list-group-item list-group-item-info">Fecha Nacimiento</a>
+                                               <a class="col-sm-6 list-group-item" id="aFechaNac">.</a>                                        
+                                           </div>
+                                           <div class="list-group">
+                                               <div class="modal-header modal-header-info">
+						    						Interpol
+						    					</div>
+                                               <a class="col-sm-6 list-group-item list-group-item-info">Estado</a>
+                                               <a class="col-sm-6 list-group-item" id="aEstado">.</a>
+                                               <a class="col-sm-6 list-group-item list-group-item-info">Resultado</a>
+                                               <a class="col-sm-6 list-group-item" id="aResultado">.</a>
+                                               	
+                                               <a class="col-sm-6 list-group-item list-group-item-info" style="height:80px">Respuesta Interpol</a>
+                                               <a class="col-sm-6 list-group-item" id="aRespuesta" style="height:80px">
+                                                   <button type="button" class="btn btn-primary" id="liveToastBtn1" onclick="detalleInterpol(); $('#popupDetails').modal( 'toggle' );">Detalle Interpol</button>
+                                                   <button type="button" class="btn btn-primary" id="liveToastBtn2" onclick="detalleCNRT(); $('#popupDetailsCNRT').modal( 'toggle' );">Detalle CNRT</button>
+                                               </a>
+                                           </div>
+                					</div>
+                                </div>
+                            </div>
+    					</div>
+    					<div class="modal-footer">
+    						<div class="panel-body">
+    							<div class="row">
+	    							<div class="col col-sm-4 text-left"><img id="imgCargando" width="25px" src="{{asset('bundles/pfa/img/loading.gif')}}" /></div>
+	    							<div class="col col-sm-4 text-right"><button type="button" class="btn btn-primary res" id="btnReprocesar" onClick="reprocesarInterpol();" title="Reprocesar persona CNRT"><i id="iconReprocesar" class="fa fa-cog"></i><span id="txtReprocesar"> Reprocesar</span></button></div>
+	    							<div class="col col-sm-4 text-right"><button type="button" class="btn btn-danger res" data-dismiss="modal" id="btnCerrarDetalle">Cerrar</button></div>
+    							</div>
+    						</div>
+    					</div>
+    				</div>
+    			</div>
+    		</div>
+    		
+    		
+    		<div class="modal" id="popupDetailsCNRT" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    			<div class="modal-dialog modal-lg" role="document">
+    				<div class="modal-content">
+    					<div class="modal-header modal-header-info">
+    						<h5 class="modal-title text-center" id="exampleModalLabel"><strong>Detalle de consulta CNRT</strong></h5>
+    					</div>
+    					<div class="modal-body text-left" id="dvDatos">
+                			<div class="panel panel-default">
+                				<div class="panel-body">
+                					<div id="dvVerifCNRT" class="col-sm-12 text-center">
+                					</div>
+                					<div id="dvDetalleCNRT" class="col-sm-12">
+                					</div>
+                                </div>
+                            </div>
+    					</div>
+    					<div class="modal-footer">
+    						<button class="btn btn-secondary btn-small" data-toggle="tooltip" id="exportarPdf" name="limpiar" type="button" data-placement="bottom" data-original-title="Generar reporte en PDF" style="display:none;">
+	                    		<i class="fa fa-print" aria-hidden="true"></i>
+	                    		<span>Exportar PDF</span>
+	                    	</button>
+    						<button type="button" class="btn btn-danger  res" data-dismiss="modal" data-original-title="Cerrar">Cerrar</button>
+    					</div>
+	    			</div>
+    			</div>
+    		</div>
+            
+    		<div class="modal" id="popupDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    			<div class="modal-dialog modal-lg" role="document">
+    				<div class="modal-content">
+    					<div class="modal-header modal-header-info">
+    						<h5 class="modal-title text-center" id="exampleModalLabel"><strong>Resultados obtenidos de Interpol</strong></h5>
+    					</div>
+    					<div class="modal-body text-left" id="dvDatos">
+                			<div class="panel panel-default">
+                				<div class="panel-body">
+                					<div id="dvTableInterpol" class="col-sm-12">
+                					</div>
+                                </div>
+                            </div>
+    					</div>
+	    					<div class="modal-footer">
+	    						<button type="button" class="btn btn-danger  res" data-dismiss="modal">Cerrar</button>
+	    					</div>
+	    				</div>
+    			</div>
+    		</div>
+    		
+    	</div>
+		
+</form>
+<script>
+var sInfoInterpol = "";
+    $(document).ready(function () {
+    		
+    		$('.pagination a').attr('class', 'btn btn-default');
+	        $('.pagination li').css('float', 'left');
+	        $('.pagination .active span').attr('class', 'btn btn-info');
+	        $('.pagination .prev span').attr('class', 'btn btn-default disabled');
+	        $('.pagination .next span').attr('class', 'btn btn-default disabled');
+   		    	
+            $('#tablaCNRT').DataTable({
+            	"scrollY": "600px",
+            	"scrollX": true,
+                "filter": true,
+                "paging": false,
+                "info": false,
+                "order": [[1, "desc"]],
+                "scrollCollapse": true,
+                "responsive": true,
+                "oLanguage": {
+    				"sSearch": 		   "Buscar:",
+    				"sEmptyTable": 	   "No se encontraron registros.",			
+    				"sProcessing":     "Procesando...",
+    				"sLengthMenu":     "Mostrar _MENU_ registros",
+    				"sZeroRecords":    "No se encontraron resultados",
+    				"sInfo":           "Mostrando registros del: _START_ al _END_ (de un total de _TOTAL_ registros)",
+    				"sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+    				"sInfoFiltered":   "(filtrado de un total de {{ TotalRegistros }} registros)",
+    				"sInfoPostFix":    "",
+    				"sSearch":         "Buscar:",
+    				"sUrl":            "",
+    				"sInfoThousands":  ",",
+    				"sLoadingRecords": "Cargando...",
+					"oPaginate": {
+	                    "sFirst":    "Pri",
+	                    "sLast":     "Ult",
+	                    "sNext":     "Sig",
+	                    "sPrevious": "Ant"
+	                	}
+					}
+	            });
+	            
+	            $('#popupDetailsCNRT').on('show.bs.modal', function (e) {
+	            	$('#exportarPdf').hide();	  
+	            });
+            
+	            $('#popupDetailsCNRT').on('hide.bs.modal', function (e) {
+	            	if($("#exportarPdf").is(":visible")){
+	            		$('#exportarPdf').hide();
+	            	}
+	            	$('#exportarPdf').unbind('click');	  
+	            });
+            	
+		        $('#limpiar').click( function () {
+		        	$("#txtNroDocumento").val("");
+		            $("#txtApellido"    ).val("");
+		            $("#txtNombre"      ).val("");
+		            
+       	    	    $('#dtfechaDesde').val( "" );
+			    	$('#dtfechaHasta').val( "" );
+		        });
+				
+				function fechaDiaActual(){
+				
+			    	var ahora = new Date();
+		            var mes = (ahora.getMonth() + 1);               
+		            var dia = ahora.getDate();
+		            if (mes < 10) 
+		                mes = "0" + mes;
+		            if (dia < 10) 
+		                dia = "0" + dia;
+		            var hoy = ahora.getFullYear() + '-' + mes + '-' + dia;
+		            return hoy;
+			    	
+				}
+	        
+				getBase64Image('{{asset("bundles/pfa/img/ocnbuenosaires.png")}}');
+	        });
+
+    
+    
+	function detalleCNRT(){
+		
+		sTabla = "";
+		var pId = $("#idCNRT").val();
+		 
+       	var sData = "{'id':"+pId+"}";
+       	var oData = JSON.stringify(sData);
+           var sRet = "";
+           var sPath = '{{ path ('cnrt_consultarPersonasCnrtId',{'id':'@id'}) }}';
+           sPath = sPath.replace('@id', pId);
+   		   $.ajax({
+                url:        sPath,  
+                type:       'GET',
+                dataType:   'json',
+                async:      false,
+                data:       oData,
+                success: function(data, status) {
+			       	  oData = jQuery.parseJSON( data );
+			       	  $("#cnrtData").val(data);
+                      if( oData.ID == null ){
+                   	   sRet = "Error, no se encontró el registro correspondiente al ID [" + ( pId == "" ? "null" : pId ) + "].";
+                      }else{
+                    	sTabla += "<div class=\"col-sm-12\">";
+                    	sTabla += "<div class=\"list-group\">";
+                        sTabla += "<div class=\"modal-header modal-header-info\">Información del pasajero</div>";
+                      	sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Id Pasajero</a>";
+			            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.ID_PASAJERO+"</a>";
+			            sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Documento</a>";
+			            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.NUMERO_DOCUMENTO+"</a>";
+			            sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Apellido y Nombre</a>";
+			            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.APELLIDO+" "+oData.NOMBRE+"</a>";
+                     	sTabla += "</div>";
+                        sTabla += "</div>";
+                        
+               			sTabla += "<div class=\"col-sm-12\">";
+                        sTabla += "<div class=\"list-group\">";
+                        sTabla += "<div class=\"modal-header modal-header-info\">Información del pasaje</div>";
+                      	sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Origen</a>";
+			            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.ORIGEN+"</a>";
+                      	sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Provincia Origen</a>";
+			            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.PCIA_ORIGEN+"</a>";
+                      	sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Destino</a>";
+			            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.DESTINO+"</a>";
+                      	sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Provincia Destino</a>";
+			            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.PCIA_DESTINO+"</a>";
+			            sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Fecha Salida</a>";
+			            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.FECHA_INICIO+"</a>";
+			            sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Fecha Llegada</a>";
+			            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.FECHA_FIN+"</a>";
+			            sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Nro. Butaca</a>";
+			            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.NRO_BUTACA+"</a>";
+                      	sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Dominio</a>";
+			            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.DOMINIO+"</a>";
+                      	sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Nro. Empresa</a>";
+			            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.NRO_EMPRESA+"</a>";
+                      	sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Desc. Empresa</a>";
+			            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.DESC_EMPRESA+"</a>";
+			            
+			            var obs = '';
+			            
+			            if(oData.OBSERVACIONES==null){
+			            	obs = "&nbsp;";
+			            }else{
+			            	obs = oData.OBSERVACIONES;
+			            }
+			            
+			            if( oData.FECHA_CANCELACION == "" || oData.FECHA_CANCELACION == null ){
+			            	sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Observación</a>";
+			            	sTabla += "<a class=\"col-sm-8 list-group-item\" >"+obs+"</a>";
+			            }else{
+				            sTabla += "</div>";
+	                        sTabla += "</div>";
+				            sTabla += "<div class=\"col-sm-12\">";
+	                        sTabla += "<div class=\"list-group\">";
+	                        sTabla += "<div class=\"modal-header modal-header-danger\">Importante</div>";
+	                      	sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Fecha Cancelación</a>";
+				            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+oData.FECHA_CANCELACION+"</a>";
+	                      	sTabla += "<a class=\"col-sm-4 list-group-item list-group-item-info\">Observación</a>";
+				            sTabla += "<a class=\"col-sm-8 list-group-item\" >"+obs+"</a>";
+				            sTabla += "</div>";
+	                        sTabla += "</div>";
+	                    }			            
+						$("#dvDetalleCNRT").html(sTabla);
+						
+						var msgVerif = "<span style=\"padding-right:3px; padding-top: 3px; display:inline-block;\"><img src=\"{{ asset('bundles/pfa/img/loadingSmall.gif')}}\"></img> <strong>Verificando actualizaci&oacute;n de datos en C.N.R.T.</strong></span>";
+						
+						$("#dvVerifCNRT").html(msgVerif);
+						
+						var oVerif = '';
+						var sPathV = '{{ path ('cnrt_verificarDatosPasajero',{'id':'@id','idCnrtPersona':'cnrtpersonaid'}) }}';
+				        sPathV = sPathV.replace('@id', oData.ID_PASAJERO);
+				        sPathV = sPathV.replace('cnrtpersonaid', pId);
+						
+						$.ajax({
+			                url:        sPathV,  
+			                type:       'GET',
+			                dataType:   'json',
+			                async:      true,
+			                data:       oVerif,
+			                success: function(data, status) {
+			                	console.log(data);
+			                	oVerif = jQuery.parseJSON( data );
+			                	if('error' in oVerif){
+			                		console.log(data);
+			                		$('#errorCnrt').val('true');
+			                		$("#dvVerifCNRT").html('<span style="color:red;"><strong>Error al intentar verificar los datos.</strong></span>')
+			                	}else{
+			                		$('#errorCnrt').val('false');
+			                		if(oVerif.modif && oVerif.cancelado){
+			                			alert("\tATENCI\u00D3N: EL VIAJE HA SIDO MODIFICADO Y CANCELADO\n\n\t\tINGRESE NUEVAMENTE A LA CONSULTA");
+			                			$("#popupDetailsCNRT").modal('hide');
+			                		}else if(oVerif.modif){
+			                			alert("\t\tATENCI\u00D3N: EL VIAJE HA SIDO MODIFICADO\n\n\t\tINGRESE NUEVAMENTE A LA CONSULTA");
+			                			$("#popupDetailsCNRT").modal('hide');
+			                		}else if(oVerif.cancelado){
+			                			alert("\t\tATENCI\u00D3N: EL VIAJE HA SIDO CANCELADO\n\n\t\tINGRESE NUEVAMENTE A LA CONSULTA");
+			                			$("#popupDetailsCNRT").modal('hide');
+			                		}else{
+			                			$("#dvVerifCNRT").html('');
+			                		}
+			                	}
+			                },
+			                error : function(xhr, textStatus, errorThrown) {
+			                	$('#errorCnrt').val('true');
+			                	console.log(errorThrown);
+			                	$("#dvVerifCNRT").html('<span style="color:red;"><strong>Error al intentar verificar los datos. ['+textStatus+']</strong></span>')
+			                },
+			                complete: function(data) {
+			                	$('#exportarPdf').unbind('click');
+			                	$("#exportarPdf").click(function(){
+			                		parent.exportarPdf(pId,oData.ID_PASAJERO,true);
+			                	});			                
+			                    $("#exportarPdf").show(); 
+			                }
+			            });
+						
+                      }	//	if( data.ID == null ){
+                },
+                error : function(xhr, textStatus, errorThrown) {
+                	sRet = 'Error al ejecutar la consulta Ajax. ' + textStatus;
+                }  
+             });
+            return sRet;
+
+	}	//	function detalleCNRT(){
+    
+	var logoInti;	
+		
+	function exportarPdf(id, cnrtId, precargado){
+		
+		$('#iconExportarPdf'+id).removeClass('fa-print').addClass('fa-spinner').addClass('fa-spin');
+		var error = false;
+		var errorCnrt = false;
+		
+		setTimeout(function (){
+			var ans = new Date($.now());
+			var vTime = pad(ans.getDate(),2)+'/'+pad(ans.getMonth()+1,2)+'/'+ans.getFullYear()+' '+pad(ans.getHours().toString(), 2)+':'+pad(ans.getMinutes().toString(),2)+':'+pad(ans.getSeconds().toString(),2);
+			var nTime = ans.getFullYear()+pad(ans.getMonth()+1,2)+pad(ans.getDate(),2)+pad(ans.getHours().toString(),2)+pad(ans.getMinutes().toString(),2)+pad(ans.getSeconds().toString(),2);
+			
+			if(precargado==false){
+				var sPathV = "{{ path ('cnrt_verificarDatosPasajero',{'id':'~id','idCnrtPersona':'cnrtpersonaid'}) }}";
+				
+				sPathV = sPathV.replace('~id', cnrtId);
+		        sPathV = sPathV.replace('cnrtpersonaid', id);
+		        
+				$.ajax({
+	                url:        sPathV,  
+	                type:       'GET',
+	                dataType:   'json',
+	                async:      false,
+	                data:       '',
+	                success: function(data, status) {
+	                	console.log(data);
+	                	oVerif = jQuery.parseJSON( data );
+	                	if('error' in oVerif){
+	                		console.log('Error al intentar verificar los datos CNRT.');
+	                		console.log(data);
+	                		errorCnrt = true;
+	                	}else{
+	                		if(oVerif.modif && oVerif.cancelado){
+	                			alert("\tATENCI\u00D3N: EL VIAJE HA SIDO MODIFICADO Y CANCELADO");
+	                		}else if(oVerif.modif){
+	                			alert("\t\tATENCI\u00D3N: EL VIAJE HA SIDO MODIFICADO");                			
+	                		}else if(oVerif.cancelado){
+	                			alert("\t\tATENCI\u00D3N: EL VIAJE HA SIDO CANCELADO");
+	                		}
+	                	}
+	                },
+	                error : function(xhr, textStatus, errorThrown) {  
+	                	console.log(errorThrown);
+	                	$("#dvVerifCNRT").html('<span style="color:red;"><strong>Error al intentar verificar los datos. ['+textStatus+']</strong></span>')
+	                	errorCnrt = true;
+	                },
+	                complete: function(data) {
+	                	$("#exportarPdf").show(); 
+	                }
+	            });	
+				
+				var sData = "{'id':"+id+"}";
+	        	var oData = JSON.stringify(sData);
+	            var sRet = "";
+	            var sPath = '{{ path ('cnrt_consultarPersonasCnrtId',{'id':'@id'}) }}';
+	            sPath = sPath.replace('@id', id);
+	    		$.ajax({
+	                 url:        sPath,  
+	                 type:       'GET',
+	                 dataType:   'json',
+	                 async:      false,
+	                 data:       oData,
+	                 success: function(data, status) {
+	                	   $("#personaData").val(data);
+	                 },
+	                 error : function(xhr, textStatus, errorThrown) {  
+	                	 console.log('Error al ejecutar la consulta Ajax. ' + textStatus);
+	                	 error = true;
+	                 }  
+	            });
+	    		
+	    		var sData = "{'id':"+id+"}";
+	           	var oData = JSON.stringify(sData);
+	            var sRet = "";
+	            var sPath = '{{ path ('cnrt_consultarPersonasCnrtId',{'id':'@id'}) }}';
+	            sPath = sPath.replace('@id', id);
+				$.ajax({
+			        url:        sPath,  
+			        type:       'GET',
+			        dataType:   'json',
+			        async:      false,
+			        data:       oData,
+			        success: function(data, status) {
+			  	  oData = jQuery.parseJSON( data );
+			  	  $("#cnrtData").val(data);
+			        },
+			     error : function(xhr, textStatus, errorThrown) {  
+			        	 console.log('Error al ejecutar la consulta Ajax (Datos CNRT) ' + textStatus);
+			        	 error = true;
+			         }  
+			     });
+				
+			}
+		
+			var personaData = jQuery.parseJSON( $("#personaData").val() );
+			var interpolData = jQuery.parseJSON( personaData.RESPUESTA_DETAILS );
+			var cnrtData = jQuery.parseJSON( $("#cnrtData").val() );
+			var sPath = '{{ path('cnrt_audito_reporte',{'id':'idCnrtAuditoRep'}) }}';
+            sPath = sPath.replace('idCnrtAuditoRep', id);
+			
+            $.ajax({
+		        url:        sPath,  
+		        type:       'GET',
+		        dataType:   'json',
+		        async:      false,
+		        success: function(data, status) {
+		  	    	console.log( jQuery.parseJSON( data ));
+		     	},
+		     error : function(xhr, textStatus, errorThrown) {  
+		        	 console.log('Error al ejecutar la consulta Ajax (Auditoria Reporte PDF) ' + textStatus);
+		        	 error = true;
+		         }  
+		     });			
+			
+			
+			var interpolArray = [[ { text: 'Detalle de consulta Interpol', colSpan:2, bold: true, style: 'headerCell'}, {text:''} ]];
+			
+			for (const [key, value] of Object.entries(interpolData)) {
+			  	if(typeof value === 'object'){
+			  		for (const [keya, valuea] of Object.entries(value)) {
+					  	if(typeof valuea === 'object'){
+					  		
+					  		for (const [keyb, valueb] of Object.entries(valuea)) {
+								
+			                    if(typeof valueb === 'object'){
+			                    }else{
+			                    	interpolArray.push([ { text: keyb in oTradu ? oTradu[keyb] : keyb , bold: true, style: 'titleCell' }, valueb.toString() ]);
+							  	}
+					  		}
+					  	}
+	                    else{
+	                    	if(keya=='type_id' && valuea in oAlarmasTipo){
+	                    		interpolArray.push([ { text: "Tipo de alarma", bold: true, style: 'titleCell' }, { 'text' : oAlarmasTipo[valuea]['valueTrad'].toString(), bold:true, color: oAlarmasTipo[valuea]['textColor'], fillColor: oAlarmasTipo[valuea]['backColor'] } ]);	
+	        		  		}else{
+	        		  			interpolArray.push([ { text: keya in oTradu ? oTradu[keya] : keya, bold: true, style: 'titleCell' }, valuea.toString() ]);	
+	        		  		}
+					  	}
+			  		}
+			  	}else{
+			  		interpolArray.push([ { text: key in oTradu ? oTradu[key] : key, bold: true, style: 'titleCell' }, value.toString() ]);
+			  	}
+			  	
+			}
+					
+			var resultado = "";
+			
+			if(personaData.RESULTADO=="0"){
+				resultado = personaData.RESULTADO.toString() + " - SIN NOVEDAD";
+			}else if(personaData.RESULTADO=="1"){
+				resultado = personaData.RESULTADO.toString() + " - POSITIVO";
+			}	
+			
+			var msgError = '';
+			
+			if(errorCnrt||$('#errorCnrt').val()=='true'){
+				msgError = 'ATENCIÓN: Se produjo un error al intentar verificar los datos de CNRT. Considerar que los mismos podrían estar desactualizados, se recomienda volver a realizar el reporte para poder constatar los datos. Si el problema persiste comunicarse con los administradores del sistema.';
+			}
+			
+			
+			var docDefinition = {
+					pageSize: 'A4',
+				    pageMargins: [40, 60, 40, 40],
+					footer: function(currentPage, pageCount) { 
+					  return { text: 'Usuario: ' + '{{ app.user }}'+'    Fecha y hora: '+ vTime + '      Página ' +currentPage.toString() + ' de ' + pageCount , style: 'footerDoc' }
+					},
+					header: function(currentPage, pageCount, pageSize) {
+					  return [
+					      {	image: logoInti, fit: [150,150], margin:[210,10,0,0] }
+					  ]
+					},
+					content: [
+					   {text: msgError, style: 'cartelError' },
+					   {text: 'Datos de auditoría CNRT', style: 'header'},
+					   {table: {
+					      headerRows: 0,
+					      widths: [ 'auto', '*' ],
+					      body: [    			        	
+								          [ { text: 'Información de consulta', colSpan:2, bold: true, style: 'headerCell'}, {text:''} ],
+								          [ { text: 'Id CNRT', bold: true, style: 'titleCell' }, personaData.ID === null ? '' : personaData.ID.toString() ],
+								          [ { text: 'Fecha Consulta', bold: true, style: 'titleCell' }, personaData.FECHA_CONSULTA === null ? '' : personaData.FECHA_CONSULTA.toString() ],
+								          [ { text: 'Pasaje', colSpan:2, bold: true, style: 'headerCell'}, {text:''} ],
+								          [ { text: 'Id Pasajero', bold: true, style: 'titleCell' }, personaData.ID_PASAJERO === null ? '' : personaData.ID_PASAJERO.toString() ],
+								          [ { text: 'Fecha Viaje', bold: true, style: 'titleCell' }, personaData.FECHA_INICIO === null ? '' : personaData.FECHA_INICIO.toString() ],
+								          [ { text: 'Pasajero', colSpan:2, bold: true, style: 'headerCell'}, {text:''} ],
+								          [ { text: 'Número de documento', bold: true, style: 'titleCell' }, personaData.NUMERO_DOCUMENTO === null ? '' : personaData.NUMERO_DOCUMENTO.toString() ],
+								          [ { text: 'Apellido / Nombre', bold: true, style: 'titleCell' }, personaData.APELLIDO === null ? '' : personaData.APELLIDO.toString() + " " + personaData.NOMBRE === null ? '' : personaData.NOMBRE.toString() ],
+								          [ { text: 'Fecha Nacimiento', bold: true, style: 'titleCell' }, personaData.FECHA_NACIMIENTO === null ? '' : personaData.FECHA_NACIMIENTO.toString() ],
+								          [ { text: 'Interpol', colSpan:2, bold: true, style: 'headerCell'}, {text:''} ],
+								          [ { text: 'Estado', bold: true, style: 'titleCell' }, personaData.ESTADO === null ? '' : personaData.ESTADO.toString() + " - " + oEstados[personaData.ESTADO] ],
+								          [ { text: 'Resultado', bold: true, style: 'titleCell' }, resultado ],
+								        ]  
+					    }
+					},
+			 		{text: 'Resultados obtenidos de Interpol', style: 'subheader'},
+					{	 
+				      table: {
+				        headerRows: 0,
+				        widths: [ 'auto', '*' ],
+				        body: interpolArray
+				      }
+				    },
+				    {text: 'IMPORTANTE: La Comisión Nacional de Regulación del Transporte (CNRT) puede realizar modificaciones sobre la presente información. Para evitar información discontinua la misma se actualiza cada vez que se consulta. Se recomienda la discreción del usuario.', style: 'aviso'},
+				    {text: 'Detalle de consulta CNRT', style: 'subheader'},
+				    {	 
+						      table: {
+						        headerRows: 0,
+						        widths: [ 'auto', '*' ],
+						        body: [    			        	
+						          [ { text: 'Información del pasajero', colSpan:2, bold: true, style: 'headerCell'}, {text:''} ],
+						          [ { text: 'Id Pasajero', bold: true, style: 'titleCell' }, cnrtData.ID_PASAJERO === null ? '' : cnrtData.ID_PASAJERO.toString() ],					          
+						          [ { text: 'Apellido y Nombre', bold: true, style: 'titleCell' }, (cnrtData.APELLIDO === null ? '' : cnrtData.APELLIDO.toString())+" "+(cnrtData.NOMBRE === null ? '' : cnrtData.NOMBRE.toString()) ],
+						          [ { text: 'Documento', bold: true, style: 'titleCell' }, cnrtData.NUMERO_DOCUMENTO === null ? '' : cnrtData.NUMERO_DOCUMENTO.toString() ],
+						          [ { text: 'Información del pasaje', colSpan:2, bold: true, style: 'headerCell'}, {text:''} ],
+						          [ { text: 'Origen', bold: true, style: 'titleCell' }, cnrtData.ORIGEN === null ? '' : cnrtData.ORIGEN.toString() ],
+						          [ { text: 'Provincia Origen', bold: true, style: 'titleCell' }, cnrtData.PCIA_ORIGEN === null ? '' : cnrtData.PCIA_ORIGEN.toString() ],
+						          [ { text: 'Destino', bold: true, style: 'titleCell' }, cnrtData.DESTINO === null ? '' : cnrtData.DESTINO.toString() ],
+						          [ { text: 'Provincia Destino', bold: true, style: 'titleCell' }, cnrtData.PCIA_DESTINO === null ? '' : cnrtData.PCIA_DESTINO.toString() ],
+						          [ { text: 'Fecha Salida', bold: true, style: 'titleCell' }, cnrtData.FECHA_INICIO === null ? '' : cnrtData.FECHA_INICIO.toString() ],
+						          [ { text: 'Fecha Llegada', bold: true, style: 'titleCell' }, cnrtData.FECHA_FIN === null ? '' : cnrtData.FECHA_FIN.toString() ],
+						          [ { text: 'Nro. Butaca', bold: true, style: 'titleCell' }, cnrtData.NRO_BUTACA === null ? '' : cnrtData.NRO_BUTACA.toString() ],
+						          [ { text: 'Dominio', bold: true, style: 'titleCell' }, cnrtData.DOMINIO === null ? '' : cnrtData.DOMINIO.toString() ],
+						          [ { text: 'Nro. Empresa', bold: true, style: 'titleCell' }, cnrtData.NRO_EMPRESA === null ? '' : cnrtData.NRO_EMPRESA.toString() ],
+						          [ { text: 'Desc. Empresa', bold: true, style: 'titleCell' }, cnrtData.DESC_EMPRESA === null ? '' : cnrtData.DESC_EMPRESA.toString() ],
+						          [ { text: 'Observación', bold: true, style: 'titleCell' }, cnrtData.OBSERVACIONES === null ? '' : cnrtData.OBSERVACIONES.toString() ]
+						        ]
+						      }
+						    }      			  	
+				  ],
+				  styles: {
+					headerDoc: {
+						color: "gray",
+						alignment: "center"
+					},
+					footerDoc: {
+						color: "gray",
+						alignment: "center"
+					},    					
+				    header: {
+						fontSize: 18,
+						bold: true,
+						margin: [0, 0, 0, 10]
+					},
+					subheader: {
+						fontSize: 16,
+						bold: true,
+						margin: [0, 10, 0, 5]
+					},
+					aviso: {
+						color: '#ac2925',
+						fontSize: 16,
+						bold: true,
+						margin: [0, 10, 0, 5],
+						alignment: 'justify'
+					},
+					cartelError: {
+						color: '#f00000',
+						fontSize: 16,
+						bold: true,
+						margin: [0, 10, 0, 5],
+						alignment: 'justify'
+					},
+				    headerCell: { fillColor: '#5bc0de', color: 'white', alignment: 'center' },
+				    titleCell: { fillColor: '#c4e3f3' }
+				   }
+	    		};
+			
+			if(id==''){
+				id = personaData.ID;
+			}
+			
+	    	pdfMake.createPdf(docDefinition).download('reportecnrt_'+id+'_'+nTime+'.pdf');
+	    	
+	    	$('#iconExportarPdf'+id).removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-print');
+		}, 1000);
+		
+    }
+	
+	function pad (str, max) {
+		str = str.toString();
+		return str.length < max ? pad("0" + str, max) : str;
+	}
+	
+	function getBase64Image(img) {
+		readImage(img,  function(base64) {  logoInti = base64; });
+	}
+	
+	function readImage(url, callback) {   
+	    var request = new
+	    XMLHttpRequest();   request.onload = function() {
+	       var file = new FileReader();
+	       file.onloadend = function() {
+	          callback(file.result);
+	       }
+	       file.readAsDataURL(request.response);   };   
+	       request.open('GET', url);   
+	       request.responseType = 'blob';              
+	       request.send(); 
+	}
+	
+    function detalleInterpol(){
+    	sTabla = "";
+    	
+		var jData = JSON.parse(sInfoInterpol);
+		sTabla += "<div class=\"list-group\">";
+        sTabla += "<div class=\"modal-header modal-header-info\">Detalle de consulta Interpol</div>";		  	
+		for (const [key, value] of Object.entries(jData)) {
+		  	if(typeof value === 'object'){
+		  		for (const [keya, valuea] of Object.entries(value)) {
+				  	if(typeof valuea === 'object'){
+				  		//console.log(valuea);
+				  		
+				  		for (const [keyb, valueb] of Object.entries(valuea)) {
+							//console.log(`${keyb}: ${valueb}`);
+		                    if(typeof valueB === 'object'){
+		                    }else{
+							  	sTabla += "<a class=\"col-sm-3 list-group-item list-group-item-info\">"+(keyb in oTradu ? oTradu[keyb] : keyb)+"</a>";
+					            sTabla += "<a class=\"col-sm-3 list-group-item\" >"+valueb+"</a>";
+						  	}
+				  		}
+				  	}
+                    else{
+                    	if(keya=='type_id' && valuea in oAlarmasTipo){
+                    		sTabla += "<a class=\"col-sm-3 list-group-item list-group-item-info\" >Tipo de alarma</a>";
+                    		sTabla += "<a class=\"col-sm-3 list-group-item\" style=\"font-weight: bold;color:"+oAlarmasTipo[valuea]['textColor']+";background-color:"+oAlarmasTipo[valuea]['backColor']+";\">"+oAlarmasTipo[valuea]['valueTrad']+"</a>";
+                    	}else{
+                    		sTabla += "<a class=\"col-sm-3 list-group-item list-group-item-info\">"+(keya in oTradu ? oTradu[keya] : keya)+"</a>";
+                    		sTabla += "<a class=\"col-sm-3 list-group-item\" >"+valuea+"</a>";		
+                    	}
+					  	
+			            
+				  	}
+		  		}
+		  	}else{
+			  	sTabla += "<a class=\"col-sm-3 list-group-item list-group-item-info\">"+(key in oTradu ? oTradu[key] : key)+"</a>";
+	            sTabla += "<a class=\"col-sm-3 list-group-item\" >"+value+"</a>";
+		  	}
+		  	
+		}
+		sTabla += "</div>";
+		
+		$("#dvTableInterpol" ).html(sTabla);
+	}	//	function detalleInterpol(){
+        	
+	        function mostrarDetalle(pId, pReprocesar){
+	        	$("#btnCerrarDetalle").attr("disabled", true);
+        		$("#btnReprocesar").hide();
+
+	        	$("#imgCargando").show();
+	        	$("#liveToastBtn1").hide();
+	        	$("#liveToastBtn2").hide();
+	   	        $("#aApellido" ).html("");
+	   	        $("#aDocumento" ).html("");
+               	$("#aFechaNac" ).html("");
+	            $("#aFechaInicio" ).html("");
+	            $("#aResultado" ).html("");
+				$("#dvDetails" ).html("");
+        		$("#idPasajero" ).html("");
+        		$("#aEstado" ).html("");
+	   	        $("#aidcnrt" ).html("");
+               	$("#aFechaConsulta" ).html("");
+
+
+	            var sRetorno = "";
+	            $('#popDetalle').modal( 'toggle' );
+	            sRetorno = consultarRegistro( pId, pReprocesar );
+	            if (sRetorno !="OK"){
+					alert(sRetorno);
+					return false;
+	            }
+
+	        	$("#imgCargando").hide();
+	        	$("#btnCerrarDetalle").attr("disabled", false);
+	        	
+	        	if(pReprocesar){
+	        		$("#btnReprocesar").show();
+	        		$('#btnReprocesar').clave = pId;
+	        	}
+	        	
+	        }
+	            
+	        function consultarRegistro( pId, pReprocesar ){
+	        	var sData = "{'id':"+pId+"}";
+	        	var oData = JSON.stringify(sData);
+	            var sRet = "";
+	            var sPath = '{{ path ('cnrt_consultarPersonasCnrtId',{'id':'@id'}) }}';
+	            sPath = sPath.replace('@id', pId);
+	    		 $.ajax({
+	                 url:        sPath,  
+	                 type:       'GET',
+	                 dataType:   'json',
+	                 async:      false,
+	                 data:       oData,
+	                 success: function(data, status) {
+	                	   $("#personaData").val(data);
+					       oData = jQuery.parseJSON( data );
+					       
+	                       if( oData.ID == null ){
+	                    	   sRet = "Error, no se encontró el registro correspondiente al ID [" + ( pId == "" ? "null" : pId ) + "].";
+	                       }else{
+	                       		$("#idCNRT" ).val(oData.ID);
+	                       		$("#aidcnrt" ).html(oData.ID);
+               					$("#aFechaConsulta" ).html(oData.FECHA_CONSULTA);
+	                       		$("#idPasajero" ).html(oData.ID_PASAJERO);
+   	                            $("#aApellido" ).html(oData.APELLIDO + " " + oData.NOMBRE);
+   	                            $("#aDocumento" ).html(oData.NUMERO_DOCUMENTO+'&nbsp;');
+	                       		$("#aFechaNac" ).html(oData.FECHA_NACIMIENTO+'&nbsp;').toString();
+	                       		$("#aFechaInicio" ).html(oData.FECHA_INICIO+'&nbsp;');
+	                       		
+	                       		if(oData.RESULTADO=="0"){
+	                       			$("#aResultado" ).html( oData.RESULTADO + " - " + "SIN NOVEDAD" );
+	                       		}else if(oData.RESULTADO=="1"){
+	                       			$("#aResultado" ).html( oData.RESULTADO + " - " + "POSITIVO");
+	                       			$("#liveToastBtn1").show();
+	                       			$("#liveToastBtn2").show();
+	                       		}else{
+									$("#aResultado" ).html( (oData.RESULTADO==null?"&nbsp;":oData.RESULTADO) );
+	                       		}
+	                       		$("#aEstado" ).html(oData.ESTADO + " - " + oEstados[oData.ESTADO]);
+
+	                       		sInfoInterpol = "";
+	                       		sInfoInterpol = oData.RESPUESTA_DETAILS;
+	                       		$("#btnReprocesar").attr("disabled", false);
+	                       		
+	                       		
+	                       		if(pReprocesar){
+	                       			//	solo se debería poder reprocesar si el estado es diferente de VERIFICADO
+	                       			if( oData.ESTADO != "1" ){
+					        			$("#btnReprocesar").show();
+						        		$('#btnReprocesar').clave = pId;
+					        		}
+					        	}
+		                       		
+	                            sRet = "OK";
+	                           
+	                       }	//	if( data.ID == null ){
+	                 },
+	                 error : function(xhr, textStatus, errorThrown) {  
+	                	 sRet = 'Error al ejecutar la consulta Ajax. ' + textStatus;
+	                 }  
+	              });
+	             return sRet;
+	    	}	//	function consultarRegistro(){
+	    	
+	        function reprocesarInterpol( ){
+	        	$("#iconReprocesar").addClass('fa-spin');
+	        	$("#btnReprocesar").attr('disabled','true');
+	        	$("#txtReprocesar").html(' Espere por favor...');
+	        	
+	        	setTimeout(function (){
+	        		
+					var pId = $("#idCNRT").val();
+		        	var sData = "{'id':"+pId+"}";
+		        	var oData = JSON.stringify(sData);
+		            var sRet = "";
+		            var sPath = '{{ path ('cnrt_reprocesarInterpol',{'id':'@id'}) }}';
+		            sPath = sPath.replace('@id', pId);
+		    		$.ajax({
+		            	url:        sPath,  
+		                type:       'GET',
+		                dataType:   'json',
+		                async:      false,
+		                data:       oData,
+		                success: function(data, status) {
+							oData = ( data );
+							$("#imgCargando").hide();
+		                    if( oData.ID == null ){
+		                    	sRet = "Error, no se encontró el registro correspondiente al ID [" + ( pId == "" ? "null" : pId ) + "].";
+		                    }else{
+		                       		if(oData.RESULTADO=="0"){
+		                       			$("#aResultado" ).html( oData.RESULTADO + " - " + "SIN NOVEDAD" );
+		                       		}else if(oData.RESULTADO=="1"){
+		                       			$("#aResultado" ).html( oData.RESULTADO + " - " + "POSITIVO");
+		                       			$("#liveToastBtn1").show();
+		                       			$("#liveToastBtn2").show();
+		                       			console.log("#btnReprocesar"+pId);
+		                       			$("#btnReprocesar"+pId).hide();
+		                       		}else{
+										$("#aResultado" ).html( oData.RESULTADO );
+		                       		}
+		                       		$("#aEstado" ).html(oData.ESTADO + " - " + oEstados[oData.ESTADO]);
+		                       		$("#dvDetails" ).html(oData.RESPUESTA_DETAILS);	
+	
+		                    }	//	if( data.ID == null ){
+		                 },
+		                 error : function(xhr, textStatus, errorThrown) {  
+		                	 sRet = 'Error al ejecutar la consulta Ajax. ' + textStatus;
+		                 }  
+		              });
+		    		
+		    		$("#iconReprocesar").removeClass('fa-spin');
+		    		$("#btnReprocesar").removeAttr('disabled');
+		    		$("#txtReprocesar").html(' Reprocesar');
+		    		
+		    		alert('La persona fue reprocesada correctamente. Verifique nuevamente el estado de la misma.');
+		    		
+		    		return sRet;
+		    		
+		    	}, 1000);
+	             
+	    	}
+	    	
+	    	oEstados = [
+                        "PENDIENTE",
+                        "VERIFICADO",
+                        "INEXISTENTE RENAPER",
+                        "ERROR COMUNICACION RENAPER",
+                        "ERROR COMUNICACION INTERPOL",
+                        "ERROR COMUNICACION IDGE",
+                        "INEXISTENTE IDGE",
+                        "ESTADO NO DEFINIDO"
+                      ];
+	    	
+	    	oTradu = {
+	    		'notification' : 'Notificación',
+	    		'type_id' : 'Tipo',
+	    		'date' : 'Fecha',
+	    		'issued_on' : 'Emitida en',
+	    		'issued_by' : 'Emitida por',
+	    		'arrest_warrant' : 'Pedido de arresto',
+	    		'document' : 'Documento',
+	    		'file' : 'Archivo',
+	    		'nickname' : 'Nickname',
+	    		'father' : 'Padre',
+	    		'mother' : 'Madre',
+	    		'country_id' : 'País',
+	    		'caution_id' : 'Precaución',
+	    		'caution' : 'Precaución',
+	    		'offence_id' : 'Delito',
+	    		'office_id' : 'Oficio',
+	    		'office_reference' : 'Of. Referencia',
+	    		'message_id' : 'Id Mensaje',
+	    		'status_id' : 'Estado',
+	    		'qualification_id' : 'Calificación',
+	    		'name' : 'Apellido',
+	    		'forename' : 'Nombre',
+	    		'name_at_birth' : 'Ape. Nacimiento',
+	    		'sex_id' : 'Sexo',
+	    		'access_mode_id' : 'Modo Acceso',
+	    		'country_of_issue_id' : 'País',
+	    		'access_mode_id' : 'Modo de Acceso',
+	    		'sentenced' : 'Sentencia',
+	    		'signatory' : 'Firmante',
+	    		'expiry_date' : 'Expiración',
+	    		'country_of_issuance_id' : 'País Emisión',
+	    		'date_of_issuance' : 'Fecha Emisión',
+	    		'date_of_birth' : 'Fecha de Nacimiento',
+	    		'place_of_birth' : 'Lugar de Nacimiento',
+	    		'country_of_birth_id' : 'País de Nacimiento',
+	    		'fingerprint_available' : 'Huella Digital Disponible',
+	    		'db_last_updated_on' : 'Actualizado en',
+	    		'db_review_date' : 'Fecha de Revisión',
+	    		'extradition_request' : 'Pedido Extradición',
+	    		'path' : 'Path',
+	    		'charge' : 'Cargo',
+	    		'criminal_history' : 'Historia Criminal',
+	    		'icis' : 'Icis',
+	    		'nr' : 'Nro',
+	    		'alias' : 'Alias',
+	    		'language_id' : 'Lenguaje',
+	    		'vin' : 'Vin',
+	    		'make' : 'Marca',
+	    		'engine_nr' : 'Nro. Motor',
+	    		'color_id' : 'Color',
+	    		'diffusion' : 'Difusión',
+	    		'model' : 'Modelo',
+	    		'reporting_country_id' : 'Pais Denuncia',
+	    		'db_insert_on' : 'Fecha de Alta',
+	    		'registration_mark' : 'Dominio',
+	    		'registration_country_id' : 'País de Registro',
+	    		'sltdId' : 'Id Documento'
+	    	};
+	    	
+	    	
+	    	oAlarmasTipo = {
+	    			'BLACK'        :   {'valueTrad':'NEGRA','textColor':'white','backColor':'black'} ,
+	    			'BLACK DIFF'   :   {'valueTrad':'NEGRA DIFF','textColor':'yellow','backColor':'black'} ,
+	    			'BLUE'         :   {'valueTrad':'AZUL','textColor':'white','backColor':'blue'} ,
+	    			'BLUE DIFF'    :   {'valueTrad':'AZUL DIFF','textColor':'white','backColor':'blue'} ,
+	    			'CORRIGENDUM'  :   {'valueTrad':'CORRIGENDUM','textColor':'white','backColor':'green'} ,
+	    			'GREEN'        :   {'valueTrad':'VERDE','textColor':'white','backColor':'green'} ,
+	    			'GREEN DIFF'   :   {'valueTrad':'VERDE','textColor':'white','backColor':'green'} ,
+	    			'ORANGE'       :   {'valueTrad':'NARANJA','textColor':'black','backColor':'orange'} ,
+	    			'RED'          :   {'valueTrad':'ROJA','textColor':'white','backColor':'red'} ,
+	    			'RED DIFF'     :   {'valueTrad':'ROJA DIFF','textColor':'white','backColor':'red'} ,
+	    			'UN'           :   {'valueTrad':'UN','textColor':'black','backColor':'cyan'} ,  
+	    			'YELLOW'       :   {'valueTrad':'AMARILLA','textColor':'black','backColor':'yellow'},
+	    			'YELLOW DIFF'  :   {'valueTrad':'AMARILLA DIFF','textColor':'black','backColor':'yellow'} ,
+	    			'DIFFUSION'    :   {'valueTrad':'DIFUSIÓN','textColor':'black','backColor':'white'} 	    			  	
+	    	};
+	
+</script>
+{% endblock %}

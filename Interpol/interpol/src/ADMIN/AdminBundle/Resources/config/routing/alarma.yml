@@ -1,0 +1,17 @@
+alarmas:
+    path:     /
+    defaults: { _controller: "ADMINAdminBundle:Alarma:index" }
+alarmas_trabajar:
+    path:     /trabajar/{id}
+    defaults: { _controller: "ADMINAdminBundle:Alarma:trabajar" } 
+alarmas_buscar_imagen:
+    path:     /buscarimagen
+    defaults: { _controller: "ADMINAdminBundle:Alarma:buscarImagen" }
+    requirements: { _method: post|get }
+alarmas_show:
+    path:     /show/{id}
+    defaults: { _controller: "ADMINAdminBundle:Alarma:show" }
+alarmas_estadisticas:
+    path:     /estadisticas
+    defaults: { _controller: "ADMINAdminBundle:Alarma:estadisticas" }
+    requirements: { _method: post|get }  

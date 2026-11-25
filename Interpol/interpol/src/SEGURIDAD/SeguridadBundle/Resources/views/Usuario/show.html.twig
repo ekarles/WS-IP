@@ -1,0 +1,93 @@
+{% extends 'GESTIONGestionBundle::base.html.twig' %} 
+{% block body -%}
+	<div class="row text-center">
+		<h1>Usuario</h1>
+	</div>
+	<div class="col-xs-12 col-md-12" style="margin-bottom: 2%;">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<b>Datos del usuario "{{entity}}"</b>
+				<div _ngcontent-ktt-12="" class="pull-right">
+					<a class="btn btn-default pull-right" style="margin-right: 1em" href="javascript:window.history.back()">
+		                Volver
+		            </a>
+                 </div>
+			</div>
+			<div class="panel-body">
+				<div class="col-sm-12 col-md-12">
+                   	<div class="row">
+                   		<div  class="container">
+	                   		<div class="row" >		                        
+		                   		<div class="col-md-6" >
+					                <div class="alert alert-default" role="alert"><strong>Apellido: </strong>{{ entity.apellido|default('Sin datos') }}</div>
+					            </div>
+					            <div class="col-md-6" >
+					                <div class="alert alert-default" role="alert"><strong>Nombre: </strong>{{ entity.nombre|default('Sin datos') }}</div>
+					            </div>
+					            <div class="col-md-6" >
+					                <div class="alert alert-default" role="alert"><strong>Usuario: </strong>{{ entity.usuario|default('Sin datos') }}</div>
+					            </div>
+					            <div class="col-md-6" >
+					                <div class="alert alert-default" role="alert"><strong>Tipo Doc.: </strong>{{ entity.tipodoc|default('Sin datos') }}</div>
+					            </div>
+					            <div class="col-md-6" >
+					                <div class="alert alert-default" role="alert"><strong>Nro. Doc.: </strong>{{ entity.numerodoc|default('Sin datos') }}</div>
+					            </div>
+					            <div class="col-md-6" >
+					                <div class="alert alert-default" role="alert"><strong>Dependencia: </strong>{{ entity.depenid|default('Sin datos') }}</div>
+					            </div>
+					            <div class="col-md-6" >
+					                <div class="alert alert-default" role="alert"><strong>Instituci&oacute;n: </strong>{{entity.depenid is null ? 'Sin datos' : entity.depenid.institucionid.nombre}}</div>
+					            </div>
+					            <div class="col-md-6" >
+					                <div class="alert alert-default" role="alert"><strong>Jerarqu&iacute;a: </strong>{{ entity.jerarquia|default('Sin datos') }}</div>
+					            </div>
+					            <div class="col-md-6" >
+					            	<div class="alert alert-default" role="alert"><strong>Estado: </strong>{{ entity.borrado==1?'Borrado':(entity.activo==1?'Activo':'Inactivo')|default('Sin datos') }}</div>
+					            </div>
+					            <div class="col-md-6" >
+					                <div class="alert alert-default" role="alert"><strong>Ip Habilitada: </strong>{{ entity.iphabilitada|default('Sin datos') }}</div>
+					            </div>
+					            <div class="col-md-6" >
+					                <div class="alert alert-default" role="alert"><strong>Expiraci&oacute;n de clave: </strong>{{ entity.expiracionpassword ? entity.expiracionpassword|date('d/m/Y') : 'Sin datos' }}</div>
+					            </div>
+					            <div class="col-md-6" >
+					                <div class="alert alert-default" role="alert"><strong>&Uacute;ltima Ip: </strong>{{ entity.ultimaip|default('Sin datos') }}</div>
+					            </div>
+					            <div class="col-md-6" >
+					                <div class="alert alert-default" role="alert"><strong>&Uacute;ltimo Login: </strong>{{ entity.ultimologin ? entity.ultimologin|date('d/m/Y H:i:s') : 'Sin datos' }}</div>
+					            </div>
+					            <div class="col-md-6" >
+					                <div class="alert alert-default" role="alert"><strong>Cant. Consultas: </strong>{{ entity.cantPersona+entity.cantDocumento+entity.cantVehiculo+entity.cantCombinada+entity.cantLote }}</div>
+					            </div>
+					            <div class="col-md-12" >
+					                <div class="alert alert-default" role="alert"><strong>Observaciones: </strong>{{ entity.observacion }}</div>
+					            </div>
+					            <div class="col-md-12" >
+						            <h4><b><u>Perfiles asignados:</u><b></h4> 
+									{% for perfil  in entity.perfilid %}
+									    <h4>{{ perfil.id ~ ' - ' ~ perfil.descripcion }}:</h4>			
+											{% for permiso in perfil.permisoid %}
+											    {{ permiso.id ~ ' - ' ~ permiso.permiso}}
+											    {% if loop.index < perfil.permisoid|length %}, {% endif %}					    
+											{% endfor %}	
+										<br><br>
+									{% endfor %}
+								</div>
+                   			</div>	
+                   		</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer">
+	            <div class="container">
+	                <a class="btn btn-default pull-right" style="margin-right: 1em" href="javascript:window.history.back()">
+		                Volver
+		            </a>
+	            </div>
+	        </div>
+		</div>
+	</div>
+	<script>
+	</script>
+{% endblock %}
